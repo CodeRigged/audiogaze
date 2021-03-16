@@ -1,0 +1,20 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.js",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node -r esm .",
+    "server": "npm run build && npm run start"
+  },
+  "keywords": [],
+  "author": "your name",
+  "dependencies": {
+    "dotenv-flow": "^3.2.0",
+    "esm": "^3.2.25",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {}
+}
