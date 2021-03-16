@@ -1,0 +1,32 @@
+@import "./partials/extensions";
+@import "./partials/variables";
+
+.range-label {
+  position: absolute;
+  transform: translateY(-10px);
+  font-weight: 100;
+}
+.range-seperator {
+  padding: 0.24rem !important;
+  hr {
+    margin: auto;
+    width: 50%;
+    border: 0.12rem solid;
+  }
+}
+.no-data {
+  font: italic bold 18px Arial;
+  padding-left: 18px;
+}
+
+.opacity-0 {
+  pointer-events: none;
+  opacity: 0;
+}
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  filter: brightness(175%);
+}
