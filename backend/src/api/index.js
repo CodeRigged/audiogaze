@@ -1,11 +1,11 @@
-import express from "express";
+import express from 'express';
+import GazepointRoute from './routes/EyetrackerRouter';
+import TrialRouter from './routes/TrialRouter';
+
 const api = express();
 
-/* register your routes here */
-// api.use('/some/endpoint', /* router */)
+/* defines routes */
+api.use('/gazepoint', GazepointRoute);
+api.use('/trials', TrialRouter);
 
-/* define a route handler for the default home page */
-api.get("/", (req, res) => {
-  res.send("Have fun coding!");
-});
 export default api;
