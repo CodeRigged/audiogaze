@@ -20,18 +20,21 @@ const addTrial = {
   },
 
   actions: {
-    async addTrial({state, commit, dispatch}) {
+    async addTrial({state, dispatch}) {
       const trial = state;
       await Vue.axios
         .post('/trials', {trial}, {message: 'Adding Trial'})
         .then((res) => {
           dispatch('updateTrials', res.data, {root: true});
-          commit('resetState');
-          router.push('/');
+          dispatch('resetTrial');
         })
         .catch((e) => {
           console.log(e);
         });
+    },
+    resetTrial({commit}) {
+      commit('resetState');
+      router.push('/');
     },
   },
 

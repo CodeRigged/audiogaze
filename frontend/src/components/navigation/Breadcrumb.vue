@@ -1,9 +1,5 @@
 <template>
-  <v-row class="flex-grow-0 ma-0 pa-0">
-    <v-col>
-      <v-breadcrumbs large :items="items"></v-breadcrumbs>
-    </v-col>
-  </v-row>
+  <v-breadcrumbs large :items="items"></v-breadcrumbs>
 </template>
 
 <script>

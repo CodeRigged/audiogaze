@@ -6,8 +6,8 @@ Vue.use(VueRouter);
 const components = require.context('@/views', true, /.*.(vue)$/);
 const routes = components.keys().map((x) => {
   const component = components(x).default;
-  const {name, path} = component;
-  return {name, path, component};
+  const {name, path, title} = component;
+  return {name, path, component, meta: {title}};
 });
 
 const router = new VueRouter({
