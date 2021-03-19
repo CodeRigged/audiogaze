@@ -1,5 +1,5 @@
 <template>
-  <div class="dark--text text-uppercase headline pa-2">{{ title }}</div>
+  <div class="headline pa-1">{{ title }}</div>
 </template>
 
 <script>

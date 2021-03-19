@@ -2,6 +2,7 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 import {vuetify} from '@/plugins';
+import store from '@/store';
 
 // register global components
 const components = require.context(
@@ -16,6 +17,7 @@ components.keys().forEach((x) => {
 });
 
 new Vue({
+  store,
   router,
   vuetify,
   render: (h) => h(App),

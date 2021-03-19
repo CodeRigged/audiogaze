@@ -1,3 +1,4 @@
 /* eslint-disable no-unused-vars */
-const modules = {};
+import addTrial from './addTrial';
+const modules = {addTrial};
 export default modules;

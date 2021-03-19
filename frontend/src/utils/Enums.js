@@ -1,17 +1,17 @@
 const {
   // Paths
   BASE_URL: index,
-  VUE_APP_PATH_NEW_TEST: newTest,
+  VUE_APP_PATH_ADD_TRIAL: addTrial,
   // CONFIG
   VUE_APP_API_BASE_URL: apiBaseURL,
 } = process.env;
 
-const PATHS = Object.freeze({
+const paths = Object.freeze({
   index,
-  newTest
+  addTrial,
 });
 
 const CONFIG = Object.freeze({
   apiBaseURL,
 });
-export {PATHS, CONFIG};
+export {paths, CONFIG};

@@ -1,4 +1,4 @@
 export default {
-  apiEndpoint: "http://localhost:3000/",
-  home: "/",
+  apiEndpoint: 'http://localhost:3000/',
+  home: '/',
 };

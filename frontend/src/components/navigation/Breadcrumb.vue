@@ -36,7 +36,6 @@ export default {
   watch: {
     $route(to) {
       const {name, meta, path} = to;
-      console.log(meta);
       name !== 'index'
         ? this.addBreadcrumb(meta.title, path)
         : this.removeLastBreacrumb();

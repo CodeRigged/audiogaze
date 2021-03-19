@@ -7,7 +7,7 @@
       :index="index + 1"
       @add="onAdd(row)"
       @remove="onRemove(index)"
-      :removable="rows.length > 1"
+      :removable="rows.length === 1"
     />
   </v-container>
 </template>
@@ -15,7 +15,7 @@
 import InputRow from './InputRow.vue';
 
 export default {
-  name: 'test-page',
+  name: 'create-trial-page',
   description: 'description',
   mixins: [],
   data: () => ({

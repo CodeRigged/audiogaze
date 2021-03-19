@@ -6,8 +6,12 @@ const trialService = new TrialService();
 const addTrial = async (req, res) => {
   // TODO: finish addTrial function
   const trial = req.body.trial;
-  await trialService.add(trial);
-  res.json(trial);
+  try {
+    await trialService.add(trial);
+    res.json(await trialService.getAll());
+  } catch (e) {
+    res.sendStatus(500);
+  }
 };
 /** @type {import('express').RequestHandler} */
 const getTrials = async (req, res) => {

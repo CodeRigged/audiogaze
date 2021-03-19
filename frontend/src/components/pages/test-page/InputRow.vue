@@ -11,7 +11,7 @@
     <v-col>
       <range v-model="value.range" label="Timerange" prepend-text="seconds" />
     </v-col>
-    <v-col>
+    <v-col cols="3">
       <v-combobox
         v-model="value.channel"
         multiple
@@ -19,7 +19,12 @@
         :items="channelTypes"
       />
     </v-col>
-    <v-col cols="1"> </v-col>
+    <v-col cols="2">
+      <v-icon class="ml-2" @click="$emit('add')">mdi-plus</v-icon>
+      <v-icon :disabled="removable" class="ml-2" @click="$emit('remove')">
+        mdi-delete
+      </v-icon>
+    </v-col>
   </v-row>
 </template>
 <script>
@@ -39,14 +44,7 @@ export default {
   methods: {},
   computed: {
     channelTypes() {
-      return [
-        'Left (0)',
-        'Right (1)',
-        'Center (2)',
-        'Subwoofer (3)',
-        'Surround Left (4)',
-        'Surround Right (5)',
-      ];
+      return Array.from(new Array(8), (val, index) => `Channel ${index + 1}`);
     },
   },
   mounted() {},

@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex';
 import Breadcrumb from '@/components/navigation/Breadcrumb.vue';
 // import ErrorOverlay from '@/components/other/ErrorOverlay.vue';
 // import AbsoluteCenter from '@/components/other/AbsoluteCenter.vue';
@@ -24,13 +23,8 @@ export default {
     // AbsoluteCenter,
   },
   name: 'app',
-  methods: {
-    ...mapActions(['setup']),
-  },
+  methods: {},
   watch: {},
-  async created() {
-    await this.setup();
-  },
 };
 </script>
 <style lang="scss">
