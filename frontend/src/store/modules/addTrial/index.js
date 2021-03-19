@@ -23,7 +23,7 @@ const addTrial = {
     async addTrial({state, commit, dispatch}) {
       const trial = state;
       await Vue.axios
-        .post('/trials', {trial})
+        .post('/trials', {trial}, {message: 'Adding Trial'})
         .then((res) => {
           dispatch('updateTrials', res.data, {root: true});
           commit('resetState');

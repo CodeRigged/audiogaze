@@ -3,10 +3,8 @@
     <!-- <error-overlay /> -->
     <breadcrumb />
     <v-main class="background">
-      <!-- <absolute-center v-if="isLoading">
-        <v-progress-circular :size="50" color="primary" indeterminate />
-      </absolute-center> -->
-      <router-view />
+      <loading-filter v-if="isLoading" />
+      <router-view v-show="!isLoading" />
     </v-main>
   </v-app>
 </template>
@@ -14,17 +12,23 @@
 <script>
 import Breadcrumb from '@/components/navigation/Breadcrumb.vue';
 // import ErrorOverlay from '@/components/other/ErrorOverlay.vue';
-// import AbsoluteCenter from '@/components/other/AbsoluteCenter.vue';
+import LoadingFilter from '@/components/other/LoadingFilter.vue';
+import {mapState} from 'vuex';
 
 export default {
   components: {
     // ErrorOverlay,
     Breadcrumb,
+    LoadingFilter,
     // AbsoluteCenter,
   },
   name: 'app',
   methods: {},
+  computed: {...mapState(['isLoading'])},
   watch: {},
+  created() {
+    this.$store.dispatch('setup');
+  },
 };
 </script>
 <style lang="scss">
