@@ -13,6 +13,7 @@ export default new Vuex.Store({
       trial: {number: 2, image: 4, timeRange: 4, actions: 2},
       audio: {number: 1, track: 3, timeRange: 4, channel: 2, actions: 2},
     },
+    isFullScreen: false,
     isLoading: false,
     loadingMessage: null,
   },
@@ -24,12 +25,23 @@ export default new Vuex.Store({
     loading(state, isLoading) {
       state.isLoading = isLoading;
     },
+    isFullScreen(state, isFullScreen) {
+      state.isFullScreen = isFullScreen;
+    },
     setLoadingMessage(state, message) {
       state.loadingMessage = message;
     },
   },
   actions: {
-    setup({commit, dispatch}) {
+    setup({dispatch, commit}) {
+      dispatch('setInterceptors');
+      document.addEventListener('fullscreenchange', (e) => {
+        if (!(document.webkitIsFullScreen || document.mozFullScreen || false)) {
+          commit('isFullScreen', false);
+        }
+      });
+    },
+    setInterceptors({commit, dispatch}) {
       const {request, response} = Vue.axios.interceptors;
       request.use(
         (config) => {
@@ -60,6 +72,17 @@ export default new Vuex.Store({
           return Promise.reject(err);
         },
       );
+    },
+    toggleFullScreen({commit}) {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+        commit('isFullScreen', true);
+      } else {
+        if (document.exitFullscreen) {
+          commit('isFullScreen', false);
+          document.exitFullscreen();
+        }
+      }
     },
     resetMessage({commit}) {
       commit('loading', false);

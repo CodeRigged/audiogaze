@@ -1,5 +1,11 @@
-@import "./partials/extensions";
-@import "./partials/variables";
+@import './partials/extensions';
+@import './partials/variables';
+
+html {
+  overflow-y: auto !important;
+  // scrollbar-width: none;
+  // -ms-overflow-style: none;
+}
 
 .range-label {
   position: absolute;

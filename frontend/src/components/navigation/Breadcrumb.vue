@@ -1,8 +1,9 @@
 <template>
-  <v-breadcrumbs large :items="items"></v-breadcrumbs>
+  <v-breadcrumbs v-if="!isFullScreen" large :items="items"></v-breadcrumbs>
 </template>
 
 <script>
+import {mapState} from 'vuex';
 export default {
   name: 'breadcrumb',
   data: () => ({
@@ -25,6 +26,7 @@ export default {
     },
   },
   computed: {
+    ...mapState(['isFullScreen']),
     isHome() {
       return this.items.length > 1;
     },
