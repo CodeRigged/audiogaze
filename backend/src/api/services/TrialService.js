@@ -17,4 +17,13 @@ export default class TrialService {
       err && error(err);
     });
   }
+  parseInput(trial) {
+    //TODO
+    const {name, tracks} = trial;
+    const parsedTracks = tracks.map(({image, timeRange, audios}, index) => {
+      return {number: index};
+    });
+    const parsedTrial = {name};
+    return parsedTrial;
+  }
 }
