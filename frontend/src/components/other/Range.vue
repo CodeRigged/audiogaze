@@ -1,13 +1,10 @@
 <template>
   <v-row align="baseline" dense class="range-container">
-    <div v-if="label" class="range-label" :class="{'primary--text': focused}">
-      {{ label }}
-    </div>
     <v-col cols="4">
       <v-text-field
         v-on="listeners"
-        v-model="value.from"
-        @input="handleInput"
+        v-model.number="value.from"
+        @keypress="handleInput"
         label="from"
       />
     </v-col>
@@ -15,9 +12,29 @@
       <hr />
     </v-col>
     <v-col cols="4">
-      <v-text-field v-on="listeners" v-model="value.to" label="to" />
+      <v-text-field
+        v-on="listeners"
+        v-model.number="value.to"
+        @keypress="handleInput"
+        label="to"
+      />
     </v-col>
-    <v-col>{{ prependText }}</v-col>
+    <v-col>
+      <v-select
+        label="in"
+        :items="time"
+        v-model="value.timeUnit"
+        item-text="timeUnit"
+        item-value="symbol"
+      >
+        <template v-slot:item="{item}">
+          {{ item.timeUnit }}
+        </template>
+        <template v-slot:selection="{item}">
+          {{ item.symbol }}
+        </template>
+      </v-select>
+    </v-col>
   </v-row>
 </template>
 <script>
@@ -27,6 +44,7 @@ export default {
   mixins: [],
   data() {
     return {
+      timeUnit: null,
       focused: false,
     };
   },
@@ -37,21 +55,33 @@ export default {
     prependText: String,
   },
   watch: {
-    range: {
-      handler(val) {
-        this.$emit('input', val);
-      },
-      deep: true,
+    timeUnit(as) {
+      console.log(as);
     },
   },
   methods: {
-    handleInput(newVal) {
-      if (parseInt(newVal) > parseInt(this.to)) {
-        this.to = newVal;
+    handleInput(event) {
+      event = event ? event : window.event;
+      var charCode = event.which ? event.which : event.keyCode;
+      if (
+        charCode > 31 &&
+        (charCode < 48 || charCode > 57)
+        // &&
+        // charCode !== 46
+      ) {
+        event.preventDefault();
+      } else {
+        return true;
       }
     },
   },
   computed: {
+    time() {
+      return [
+        {symbol: 's', timeUnit: 'seconds'},
+        {symbol: 'ms', timeUnit: 'milliseconds'},
+      ];
+    },
     listeners() {
       return {
         focus: () => {
