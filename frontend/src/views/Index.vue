@@ -12,11 +12,43 @@
       <v-toolbar flat>
         <v-toolbar-title>Trials</v-toolbar-title>
         <v-spacer />
-        <v-btn :to="path">New trial</v-btn>
+        <v-btn :to="addTrial">
+          New trial
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
       </v-toolbar>
     </template>
     <template v-slot:expanded-item="{headers, item}">
-      <td :colspan="headers.length">More info about {{ item.name }}</td>
+      <td class="pa-1 " :colspan="headers.length + 1">
+        <v-card flat>
+          <v-card-text>
+            <v-row class="caption">
+              <v-col>ID</v-col>
+              <v-col>Timestamp</v-col>
+            </v-row>
+            <v-row v-for="i in 5" :key="i">
+              <v-col>{{ `id ${i}` }}</v-col>
+              <v-col>{{ `someDate` }}</v-col>
+            </v-row>
+          </v-card-text>
+          <v-divider />
+          <v-card-actions>
+            <v-btn small>
+              Export data
+              <v-icon>mdi-download</v-icon>
+            </v-btn>
+            <v-spacer />
+            <v-btn small>
+              View Trial
+              <v-icon>mdi-eye</v-icon>
+            </v-btn>
+            <v-btn small :to="`trial/${item._id}`">
+              Start Trial
+              <v-icon>mdi-play</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </td>
     </template>
   </v-data-table>
 </template>
@@ -30,7 +62,9 @@ export default {
   data: () => ({expanded: [], singleExpand: false}),
   description: 'Overview page',
   computed: {
-    ...mapState({path: (state) => state.paths.addTrial}),
+    ...mapState({
+      addTrial: (state) => state.paths.addTrial,
+    }),
     trialHeaders() {
       return [
         {
