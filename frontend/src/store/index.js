@@ -9,6 +9,10 @@ export default new Vuex.Store({
   state: {
     trials: [],
     paths,
+    colsWidth: {
+      trial: {number: 2, image: 4, timeRange: 4, actions: 2},
+      audio: {number: 1, track: 3, timeRange: 4, channel: 2, actions: 2},
+    },
     isLoading: false,
     loadingMessage: null,
   },

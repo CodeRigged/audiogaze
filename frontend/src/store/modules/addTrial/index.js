@@ -1,8 +1,29 @@
 import Vue from 'vue';
 import router from '@/router';
 
+const defaultAudioState = () => ({
+  audioPath: null,
+  channels: null,
+  timeRange: {
+    from: 0,
+    to: null,
+    timeUnit: null,
+  },
+});
+
+const defaultTrackState = () => ({
+  image: null,
+  timeRange: {
+    from: 0,
+    to: null,
+    timeUnit: null,
+  },
+  audios: [defaultAudioState()],
+});
+
 const defaultTrialState = () => ({
   name: null,
+  tracks: [defaultTrackState()],
 });
 
 const namespaced = true;
@@ -16,6 +37,9 @@ const addTrial = {
     },
     updateName(state, name) {
       state.name = name;
+    },
+    updateTracks(state, tracks) {
+      state.tracks = tracks;
     },
   },
 
@@ -31,6 +55,22 @@ const addTrial = {
         .catch((e) => {
           console.log(e);
         });
+    },
+    addTrack({state}, track) {
+      const {to} = track.timeRange;
+      const newRow = defaultTrackState();
+      newRow.timeRange.from = to;
+      state.tracks.push(newRow);
+    },
+    removeTrack({state}, trackIndex) {
+      state.tracks.splice(trackIndex, 1);
+    },
+    addAudio({state}, {trackIndex, audio}) {
+      console.log(audio);
+      state.tracks[trackIndex].audios.push(defaultAudioState());
+    },
+    removeAudio({state}, {trackIndex, audioIndex}) {
+      state.tracks[trackIndex].audios.splice(audioIndex, 1);
     },
     resetTrial({commit}) {
       commit('resetState');
