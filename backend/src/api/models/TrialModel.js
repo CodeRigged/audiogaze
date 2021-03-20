@@ -9,10 +9,10 @@ const trialSchema = new mongoose.Schema({
     required,
   },
 
-  tracks: {
-    type: [trackSchema],
-    required,
-  },
+  // tracks: {
+  //   type: [trackSchema],
+  //   required,
+  // },
   results: {
     type: Array,
   },

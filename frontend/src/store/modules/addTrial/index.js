@@ -45,7 +45,7 @@ const addTrial = {
 
   actions: {
     async addTrial({state, dispatch}) {
-      const trial = state;
+      const trial = {name: state.name};
       await Vue.axios
         .post('/trials', {trial}, {message: 'Adding Trial'})
         .then((res) => {

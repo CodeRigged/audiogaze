@@ -15,7 +15,7 @@
 </template>
 <script>
 import {paths} from '@/utils/Enums';
-import CreateTrial from '@/components/pages/test-page/CreateTrial.vue';
+import CreateTrial from '@/components/pages/create-trial/CreateTrial';
 import {mapActions, mapMutations, mapState} from 'vuex';
 
 export default {
