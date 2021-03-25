@@ -1,16 +1,8 @@
 import Vue from 'vue';
 import router from '@/router';
 
-const defaultAudioState = () => ({
-  audioPath: null,
-  channels: null,
-  timeRange: {
-    from: 0,
-    to: null,
-    timeUnit: null,
-  },
-});
-
+/*  Default state of a track sequence. 
+    A track sequence doesn't require any audio. */
 const defaultTrackState = () => ({
   image: null,
   timeRange: {
@@ -21,6 +13,18 @@ const defaultTrackState = () => ({
   audios: [defaultAudioState()],
 });
 
+/* default state of an audio sequence */
+const defaultAudioState = () => ({
+  audioPath: null,
+  channels: null,
+  timeRange: {
+    from: 0,
+    to: null,
+    timeUnit: null,
+  },
+});
+
+/* default state of a trial */
 const defaultTrialState = () => ({
   name: null,
   tracks: [defaultTrackState()],
@@ -45,7 +49,25 @@ const addTrial = {
 
   actions: {
     async addTrial({state, dispatch}) {
-      const trial = {name: state.name};
+      const trial = {
+        name: state.name,
+        tracks: [
+          {
+            timeRange: {
+              from: 0,
+              to: 1000,
+              timeUnit: 'ms',
+            },
+          },
+          {
+            timeRange: {
+              from: 1,
+              to: 3,
+              timeUnit: 's',
+            },
+          },
+        ],
+      };
       await Vue.axios
         .post('/trials', {trial}, {message: 'Adding Trial'})
         .then((res) => {

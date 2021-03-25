@@ -72,6 +72,11 @@ export default {
           align: 'start',
           value: 'name',
         },
+        {
+          text: 'Trial duration (in ms)',
+          align: 'start',
+          value: 'duration',
+        },
         {text: '', value: 'data-table-expand'},
       ];
     },

@@ -48,7 +48,7 @@ export default new Vuex.Store({
           const {method, baseURL, url, message} = config;
           console.log(
             `%cMade ${method} request to ${baseURL + url}`,
-            'background-color:#848484; font-size:14px; color:#9EFF8A; font-weight:800',
+            'display: inline-block; padding: 4px ;background-color:#848484;border-radius: 0 40px 40px 0; font-size:14px; color:#9EFF8A; font-weight:800',
           );
           commit('loading', true);
           if (message) {
