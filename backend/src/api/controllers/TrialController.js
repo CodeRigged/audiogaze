@@ -5,7 +5,7 @@ const trialService = new TrialService();
 /** @type {import('express').RequestHandler} */
 const addTrial = async (req, res) => {
   // TODO: finish addTrial function
-  const trial = req.body.trial;
+  const trial = trialService.parseInput(req.body.trial);
   try {
     await trialService.add(trial);
     res.json(await trialService.getAll());
