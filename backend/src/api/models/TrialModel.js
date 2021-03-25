@@ -8,11 +8,11 @@ const trialSchema = new mongoose.Schema({
     type: String,
     required,
   },
-
-  // tracks: {
-  //   type: [trackSchema],
-  //   required,
-  // },
+  duration: {type: Number, required},
+  tracks: {
+    type: [trackSchema],
+    required,
+  },
   results: {
     type: Array,
   },
