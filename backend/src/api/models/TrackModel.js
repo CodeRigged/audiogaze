@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 const required = true;
 
 const timeRangeSchema = new mongoose.Schema({
-  from: Number,
-  to: Number,
+  from: {type: Number, required},
+  to: {type: Number, required},
 });
 
 const audioSchema = new mongoose.Schema({
@@ -34,7 +34,7 @@ const trackSchema = new mongoose.Schema({
   image: {
     type: Buffer,
     contentType: String,
-    required,
+    // required,
   },
   timeRange: {
     type: timeRangeSchema,
