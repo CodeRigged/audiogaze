@@ -31,10 +31,9 @@ const trackSchema = new mongoose.Schema({
     type: Number,
     required,
   },
-  image: {
-    type: Buffer,
-    contentType: String,
-    // required,
+  imagePath: {
+    type: String,
+    required,
   },
   timeRange: {
     type: timeRangeSchema,

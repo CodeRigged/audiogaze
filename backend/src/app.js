@@ -17,11 +17,12 @@ mongoose.connect(`mongodb://${config.HOST}/${config.DB_NAME}`, {
 
 const db = mongoose.connection;
 db.dropDatabase();
+
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => console.log('Connected to database.'));
 
 /* register your middleware functions */
-app.use(express.static('/public/'));
+app.use(express.static('public'));
 app.use(express.json({limit: '5mb'}));
 app.use(express.urlencoded({extended: true}));
 

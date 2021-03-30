@@ -12,7 +12,7 @@ class TrialService {
         : console.log(`Successfully added new trial : ${addedTrial}`);
     });
   }
-  getSingle(id) {
+  getById(id) {
     return Trial.findById(id, (err, trial) => {
       err && error(err);
     });
