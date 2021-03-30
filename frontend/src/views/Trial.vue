@@ -1,20 +1,23 @@
 <template>
-  <v-parallax :height="screenHeight" :src="image">
-    <absolute-center class="title">Test starting in 3...</absolute-center>
-    <div class="bottom-right">
-      <v-icon
-        v-if="!isFullScreen"
-        size="70"
-        color="white"
-        @click="toggleFullScreen"
-      >
-        mdi-fullscreen
-      </v-icon>
-    </div>
-  </v-parallax>
+  <div>
+    <v-parallax v-if="image" :height="screenHeight" :src="image">
+      <absolute-center class="title">Test starting in 3...</absolute-center>
+      <div class="bottom-right">
+        <v-icon
+          v-if="!isFullScreen"
+          size="70"
+          color="white"
+          @click="toggleFullScreen"
+        >
+          mdi-fullscreen
+        </v-icon>
+      </div>
+    </v-parallax>
+    <absolute-center v-else class="title">Test has ended</absolute-center>
+  </div>
 </template>
 <script>
-import Test from '@/assets/images/background-test.jpg';
+import Test from '@/assets/test/background-test.jpg';
 import {paths} from '@/utils/Enums';
 import {mapActions, mapState} from 'vuex';
 import AbsoluteCenter from '@/components/other/AbsoluteCenter.vue';
@@ -25,8 +28,10 @@ export default {
   path: paths.runTrial,
   data: () => ({}),
   computed: {
-    ...mapState(['isFullScreen']),
+    ...mapState(['isFullScreen', 'activeTrial']),
     image() {
+      // const {duration,tracks} = this.activeTrial;
+      // "require(`@/assets/test/${imagePath}`)"
       return Test;
     },
     screenHeight() {
@@ -34,6 +39,9 @@ export default {
     },
   },
   methods: {...mapActions(['toggleFullScreen'])},
+  created() {
+    this.$store.dispatch('getTrial', this.$route.params.id);
+  },
 };
 </script>
 <style lang="scss" scoped>

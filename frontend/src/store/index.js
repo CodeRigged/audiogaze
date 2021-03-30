@@ -7,6 +7,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    activeTrial: null,
     trials: [],
     paths,
     colsWidth: {
@@ -93,6 +94,16 @@ export default new Vuex.Store({
         .get('/trials')
         .then((res) => {
           commit('updateState', {key: 'trials', data: res.data});
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    async getTrial({commit}, id) {
+      await Vue.axios
+        .get(`/trials/${id}`, {message: 'Preparing trial...'})
+        .then((res) => {
+          commit('updateState', {key: 'activeTrial', data: res.data});
         })
         .catch((e) => {
           console.log(e);
