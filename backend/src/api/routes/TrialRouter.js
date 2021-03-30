@@ -6,5 +6,6 @@ const TrialRouter = Router();
 TrialRouter.route('/')
   .get(TrialController.getTrials)
   .post(TrialController.addTrial);
+TrialRouter.route('/:id').get(TrialController.getTrialById);
 
 export default TrialRouter;
