@@ -18,6 +18,7 @@
         </v-btn>
       </v-toolbar>
     </template>
+    <template v-slot:item.index="{index}">{{ index + 1 }}</template>
     <template v-slot:expanded-item="{headers, item}">
       <td class="pa-1 " :colspan="headers.length + 1">
         <v-card flat>
@@ -25,10 +26,6 @@
             <v-row class="caption">
               <v-col>ID</v-col>
               <v-col>Timestamp</v-col>
-            </v-row>
-            <v-row v-for="i in 5" :key="i">
-              <v-col>{{ `id ${i}` }}</v-col>
-              <v-col>{{ `someDate` }}</v-col>
             </v-row>
           </v-card-text>
           <v-divider />
@@ -67,6 +64,7 @@ export default {
     }),
     trialHeaders() {
       return [
+        {text: 'Index', align: 'start', value: 'index', width: 100},
         {
           text: 'Name',
           align: 'start',
@@ -76,6 +74,11 @@ export default {
           text: 'Trial duration (in ms)',
           align: 'start',
           value: 'duration',
+        },
+        {
+          text: 'Created at',
+          align: 'start',
+          value: 'createdAt',
         },
         {text: '', value: 'data-table-expand'},
       ];
