@@ -1,9 +1,11 @@
 <template>
-  <v-row align="baseline" justify="center">
-    <v-col :cols="audioNumber">{{ `${index}` }}</v-col>
+  <v-row class="pl-3" align="baseline" justify="center">
+    <v-col class="text-center caption" :cols="audioNumber">{{
+      `Audio ${index + 1}`
+    }}</v-col>
     <v-col :cols="track">
       <v-file-input
-        v-model="value.audioPath"
+        v-model="file"
         label="Track"
         prepend-icon="mdi-image"
         accept=".mp3"
@@ -22,12 +24,14 @@
         multiple
         label="Channel"
         :items="channelTypes"
+        item-value="id"
+        item-text="text"
       />
     </v-col>
     <v-col :cols="actions">
-      <v-icon dense @click="$emit('add')">mdi-plus</v-icon>
+      <v-icon dense @click="$emit('add')">mdi-music-note-plus</v-icon>
       <v-icon dense :disabled="removable" class="ml-2" @click="$emit('remove')">
-        mdi-delete
+        mdi-trash-can
       </v-icon>
     </v-col>
   </v-row>
@@ -41,12 +45,17 @@ export default {
   components: {
     Range,
   },
+  data: () => ({file: null}),
   props: {
     removable: {type: Boolean, default: true},
-    index: String,
+    index: Number,
     value: Object,
   },
-  watch: {},
+  watch: {
+    file(track) {
+      this.value.audioPath = track?.name;
+    },
+  },
   methods: {},
   computed: {
     ...mapState({
@@ -57,7 +66,10 @@ export default {
       actions: (state) => state.colsWidth.audio.actions,
     }),
     channelTypes() {
-      return Array.from(new Array(8), (val, index) => `Channel ${index + 1}`);
+      return Array.from(new Array(8), (val, index) => ({
+        id: index + 1,
+        text: `Channel ${index + 1}`,
+      }));
     },
   },
   mounted() {},
