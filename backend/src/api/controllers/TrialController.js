@@ -1,22 +1,24 @@
 import TrialService from '../services/TrialService';
 
-const trialService = new TrialService();
-
 /** @type {import('express').RequestHandler} */
 const addTrial = async (req, res) => {
-  // TODO: finish addTrial function
-  const trial = trialService.parseInput(req.body.trial);
   try {
-    await trialService.add(trial);
-    res.json(await trialService.getAll());
+    const trial = TrialService.parseInput(req.body.trial);
+    await TrialService.add(trial);
+    res.json(await TrialService.getAll());
   } catch (e) {
     res.sendStatus(500);
   }
 };
+
 /** @type {import('express').RequestHandler} */
-const getTrials = async (req, res) => {
-  // TODO: finish getAllTrials function
-  res.json(await trialService.getAll());
+const getTrialById = async (req, res) => {
+  res.json(await TrialService.getById(req.params.id));
 };
 
-export default {addTrial, getTrials};
+/** @type {import('express').RequestHandler} */
+const getTrials = async (req, res) => {
+  res.json(await TrialService.getAll());
+};
+
+export default {addTrial, getTrials, getTrial};
