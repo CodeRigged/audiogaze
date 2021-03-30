@@ -7,7 +7,7 @@
     >
       <image-row
         v-model="tracksArray[trackIndex]"
-        :index="trackIndex + 1"
+        :index="trackIndex"
         @add="addTrack(track)"
         @remove="removeTrack(trackIndex)"
         @open="switchViewOfAudioRow(trackIndex)"
@@ -18,9 +18,9 @@
           :key="`Audio-${audioIndex}`"
           v-for="(audio, audioIndex) in tracksArray[trackIndex].audios"
           v-model="tracksArray[trackIndex].audios[audioIndex]"
-          :index="`${trackIndex + 1}.${audioIndex + 1}`"
-          @add="addAudio({trackIndex, audio})"
-          @remove="removeAudio({trackIndex, audioIndex})"
+          :index="audioIndex"
+          @add="addAudio(trackIndex, audio)"
+          @remove="removeAudio(trackIndex, audioIndex)"
           :removable="tracksArray[trackIndex].audios.length === 1"
         />
       </div>
@@ -28,7 +28,7 @@
   </v-container>
 </template>
 <script>
-import {mapActions, mapMutations, mapState} from 'vuex';
+import {/* mapActions, */ mapMutations, mapState} from 'vuex';
 import AudioRow from './AudioRow.vue';
 import ImageHeaders from './ImageHeaders.vue';
 import ImageRow from './ImageRow.vue';
@@ -46,7 +46,14 @@ export default {
     AudioRow,
   },
   props: {},
-  watch: {},
+  watch: {
+    tracksArray: {
+      handler(tracks) {
+        this.updateTracks(tracks);
+      },
+      deep: true,
+    },
+  },
   methods: {
     switchViewOfAudioRow(trackIndex) {
       if (
@@ -58,8 +65,8 @@ export default {
         this.showAudiosIndex = trackIndex;
       }
     },
-    ...mapMutations('addTrial', ['updateTracks']),
-    ...mapActions('addTrial', [
+    ...mapMutations('addTrial', [
+      'updateTracks',
       'addTrack',
       'removeTrack',
       'addAudio',
