@@ -1,12 +1,12 @@
 <template>
   <v-row align="baseline" justify="center">
-    <v-col :cols="trialNumber">{{ `${index}.` }}</v-col>
+    <v-col :cols="trialNumber">{{ `${index + 1}.` }}</v-col>
     <v-col :cols="image">
       <v-file-input
-        v-model="value.image"
+        v-model="file"
         label="Add image"
         prepend-icon="mdi-image"
-        accept=".png"
+        accept=".png, .jpeg, .jpg"
       />
     </v-col>
     <v-col :cols="timeRange">
@@ -39,7 +39,7 @@ import {mapState} from 'vuex';
 export default {
   name: 'input-row',
   description: 'Input row',
-  data: () => ({isClosed: true}),
+  data: () => ({file: null, isClosed: true}),
   components: {
     Range,
   },
@@ -49,13 +49,8 @@ export default {
     value: Object,
   },
   watch: {
-    'value.image'(file) {
-      const reader = new FileReader();
-      var res = null;
-      reader.addEventListener('load', (e) => (res = e.target.result));
-      reader.readAsDataURL(file);
-
-      console.log(res);
+    file(file) {
+      this.value.imagePath = file?.name;
     },
   },
   methods: {},
