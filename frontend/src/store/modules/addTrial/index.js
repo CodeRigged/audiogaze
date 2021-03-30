@@ -1,10 +1,13 @@
+/* eslint-disable no-unused-vars */
 import Vue from 'vue';
 import router from '@/router';
+
+const log = console.log;
 
 /*  Default state of a track sequence. 
     A track sequence doesn't require any audio. */
 const defaultTrackState = () => ({
-  image: null,
+  imagePath: null,
   timeRange: {
     from: 0,
     to: null,
@@ -42,34 +45,40 @@ const addTrial = {
     updateName(state, name) {
       state.name = name;
     },
+    addTrack(state, track) {
+      const {to} = track.timeRange;
+      const newRow = defaultTrackState();
+      newRow.timeRange.from = to;
+      state.tracks.push(newRow);
+    },
     updateTracks(state, tracks) {
       state.tracks = tracks;
+    },
+    removeTrack(state, trackIndex) {
+      state.tracks.splice(trackIndex, 1);
+    },
+    addAudio(state, trackIndex /* audio */) {
+      state.tracks[trackIndex].audios.push(defaultAudioState());
+    },
+    removeAudio(state, trackIndex, audioIndex) {
+      state.tracks[trackIndex].audios.splice(audioIndex, 1);
     },
   },
 
   actions: {
+    /**
+     * @param {{state: {tracks:Array}}} - An object parameter with string and number properties
+     */
     async addTrial({state, dispatch}) {
-      const trial = {
-        name: state.name,
-        tracks: [
-          {
-            timeRange: {
-              from: 0,
-              to: 1000,
-              timeUnit: 'ms',
-            },
-          },
-          {
-            timeRange: {
-              from: 1,
-              to: 3,
-              timeUnit: 's',
-            },
-          },
-        ],
-      };
       await Vue.axios
-        .post('/trials', {trial}, {message: 'Adding Trial'})
+        .post(
+          '/trials',
+          {trial: state},
+          {
+            // headers: {'Content-Type': 'multipart/form-data'},
+            message: 'Adding Trial',
+          },
+        )
         .then((res) => {
           dispatch('updateTrials', res.data, {root: true});
           dispatch('resetTrial');
@@ -77,22 +86,6 @@ const addTrial = {
         .catch((e) => {
           console.log(e);
         });
-    },
-    addTrack({state}, track) {
-      const {to} = track.timeRange;
-      const newRow = defaultTrackState();
-      newRow.timeRange.from = to;
-      state.tracks.push(newRow);
-    },
-    removeTrack({state}, trackIndex) {
-      state.tracks.splice(trackIndex, 1);
-    },
-    addAudio({state}, {trackIndex, audio}) {
-      console.log(audio);
-      state.tracks[trackIndex].audios.push(defaultAudioState());
-    },
-    removeAudio({state}, {trackIndex, audioIndex}) {
-      state.tracks[trackIndex].audios.splice(audioIndex, 1);
     },
     resetTrial({commit}) {
       commit('resetState');
