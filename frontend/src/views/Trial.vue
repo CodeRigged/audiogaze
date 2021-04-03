@@ -15,7 +15,7 @@
       <v-card-title> Thanks for taking the trial!</v-card-title>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn plain>Return to overview</v-btn>
+        <v-btn to="/" plain>Return to overview</v-btn>
         <v-spacer />
         <v-btn text @click="runTrials">Retake</v-btn>
       </v-card-actions>
