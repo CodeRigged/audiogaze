@@ -18,17 +18,19 @@
     </v-col>
     <v-col :cols="actions">
       <v-icon dense @click="$emit('add')">mdi-plus</v-icon>
-      <v-icon dense :disabled="removable" class="ml-2" @click="$emit('remove')">
-        mdi-delete
-      </v-icon>
       <v-icon
-        class="ml-4"
+        dense
+        :disabled="removable"
+        class="ml-2"
         @click="
-          $emit('open');
-          isClosed = !isClosed;
+          file = null;
+          $emit('remove');
         "
       >
-        {{ isClosed ? 'mdi-chevron-down' : 'mdi-chevron-up' }}
+        mdi-delete
+      </v-icon>
+      <v-icon class="ml-4" :disabled="includesAudio" @click="$emit('open')">
+        {{ !includesAudio ? 'mdi-music-note-plus' : '' }}
       </v-icon>
     </v-col>
   </v-row>
@@ -39,16 +41,23 @@ import {mapState} from 'vuex';
 export default {
   name: 'input-row',
   description: 'Input row',
-  data: () => ({file: null, isClosed: true}),
+  data: () => ({file: null}),
   components: {
     Range,
   },
   props: {
     removable: {type: Boolean, default: true},
+    includesAudio: {type: Boolean, default: true},
     index: Number,
     value: Object,
   },
   watch: {
+    'value.timeRange': {
+      handler(timeRange) {
+        this.$emit('timerange-change', timeRange);
+      },
+      deep: true,
+    },
     file(file) {
       this.value.imagePath = file?.name;
     },

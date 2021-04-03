@@ -13,7 +13,7 @@ const defaultTrackState = () => ({
     to: null,
     timeUnit: null,
   },
-  audios: [defaultAudioState()],
+  audios: [],
 });
 
 /* default state of an audio sequence */
@@ -49,6 +49,7 @@ const addTrial = {
       const {to} = track.timeRange;
       const newRow = defaultTrackState();
       newRow.timeRange.from = to;
+      newRow.timeRange.to = to;
       state.tracks.push(newRow);
     },
     updateTracks(state, tracks) {
@@ -57,10 +58,20 @@ const addTrial = {
     removeTrack(state, trackIndex) {
       state.tracks.splice(trackIndex, 1);
     },
+    updateTimeRanges(state, {trackIndex, timeRange}) {
+      const previous = trackIndex - 1;
+      const next = trackIndex + 1;
+      if (previous >= 0) {
+        state.tracks[previous].timeRange.to = timeRange.from;
+      }
+      if (next === state.tracks.length - 1) {
+        state.tracks[next].timeRange.from = timeRange.to;
+      }
+    },
     addAudio(state, trackIndex /* audio */) {
       state.tracks[trackIndex].audios.push(defaultAudioState());
     },
-    removeAudio(state, trackIndex, audioIndex) {
+    removeAudio(state, {trackIndex, audioIndex}) {
       state.tracks[trackIndex].audios.splice(audioIndex, 1);
     },
   },

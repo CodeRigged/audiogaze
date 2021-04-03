@@ -9,19 +9,22 @@
         v-model="tracksArray[trackIndex]"
         :index="trackIndex"
         @add="addTrack(track)"
+        @open="switchViewOfAudioRow(trackIndex, track.audios.length === 0)"
         @remove="removeTrack(trackIndex)"
-        @open="switchViewOfAudioRow(trackIndex)"
+        @timerange-change="
+          (timeRange) => updateTimeRanges({trackIndex, timeRange})
+        "
+        :includesAudio="track.audios.length > 0"
         :removable="tracksArray.length === 1"
       />
-      <div v-if="showAudiosIndex === trackIndex" class="background">
+      <div v-if="track.audios.length > 0" class="background">
         <audio-row
           :key="`Audio-${audioIndex}`"
-          v-for="(audio, audioIndex) in tracksArray[trackIndex].audios"
-          v-model="tracksArray[trackIndex].audios[audioIndex]"
+          v-for="(audio, audioIndex) in track.audios"
+          v-model="track.audios[audioIndex]"
           :index="audioIndex"
           @add="addAudio(trackIndex, audio)"
-          @remove="removeAudio(trackIndex, audioIndex)"
-          :removable="tracksArray[trackIndex].audios.length === 1"
+          @remove="removeAudio({trackIndex, audioIndex})"
         />
       </div>
     </div>
@@ -32,7 +35,6 @@ import {/* mapActions, */ mapMutations, mapState} from 'vuex';
 import AudioRow from './AudioRow.vue';
 import ImageHeaders from './ImageHeaders.vue';
 import ImageRow from './ImageRow.vue';
-// import InputRow from './InputRow.vue';
 
 export default {
   name: 'create-trial-page',
@@ -40,7 +42,6 @@ export default {
   mixins: [],
   data: () => ({showAudiosIndex: null}),
   components: {
-    // InputRow,
     ImageRow,
     ImageHeaders,
     AudioRow,
@@ -55,7 +56,10 @@ export default {
     },
   },
   methods: {
-    switchViewOfAudioRow(trackIndex) {
+    switchViewOfAudioRow(trackIndex, addAudio) {
+      if (addAudio) {
+        this.addAudio(trackIndex);
+      }
       if (
         this.showAudiosIndex !== null &&
         trackIndex === this.showAudiosIndex
@@ -66,11 +70,12 @@ export default {
       }
     },
     ...mapMutations('addTrial', [
-      'updateTracks',
       'addTrack',
+      'updateTracks',
       'removeTrack',
       'addAudio',
       'removeAudio',
+      'updateTimeRanges',
     ]),
   },
   computed: {

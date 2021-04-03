@@ -55,6 +55,16 @@ export default {
     prependText: String,
   },
   watch: {
+    'value.from'(from) {
+      if (from > this.value.to) {
+        this.value.to = from;
+      }
+    },
+    'value.to'(to) {
+      if (to < this.value.from) {
+        this.value.from = to;
+      }
+    },
     timeUnit(as) {
       console.log(as);
     },

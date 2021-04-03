@@ -1,8 +1,8 @@
 <template>
   <v-row class="pl-3" align="baseline" justify="center">
-    <v-col class="text-center caption" :cols="audioNumber">{{
-      `Audio ${index + 1}`
-    }}</v-col>
+    <v-col class="text-center caption" :cols="audioNumber"
+      >{{ `Audio ${index + 1}` }}
+    </v-col>
     <v-col :cols="track">
       <v-file-input
         v-model="file"
@@ -30,7 +30,14 @@
     </v-col>
     <v-col :cols="actions">
       <v-icon dense @click="$emit('add')">mdi-music-note-plus</v-icon>
-      <v-icon dense :disabled="removable" class="ml-2" @click="$emit('remove')">
+      <v-icon
+        dense
+        class="ml-2"
+        @click="
+          file = null;
+          $emit('remove');
+        "
+      >
         mdi-trash-can
       </v-icon>
     </v-col>
@@ -47,7 +54,6 @@ export default {
   },
   data: () => ({file: null}),
   props: {
-    removable: {type: Boolean, default: true},
     index: Number,
     value: Object,
   },
