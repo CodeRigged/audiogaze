@@ -1,18 +1,14 @@
 <template>
-  <absolute-center>
-    <absolute-center>
+  <div class="absolute-center">
+    <div>
       {{ loadingMessage ? loadingMessage : 'Loading, please wait...' }}
-    </absolute-center>
-    <absolute-center>
       <v-progress-circular :size="20" color="primary" width="3" indeterminate />
-    </absolute-center>
-  </absolute-center>
+    </div>
+  </div>
 </template>
 <script>
 import {mapState} from 'vuex';
-import AbsoluteCenter from './AbsoluteCenter.vue';
 export default {
-  components: {AbsoluteCenter},
   name: 'loading-template',
   data: () => ({}),
   props: {},
