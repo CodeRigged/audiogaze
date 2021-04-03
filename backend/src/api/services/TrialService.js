@@ -35,7 +35,8 @@ class TrialService {
       };
 
       const validAudios = audios.reduce((output, curVal) => {
-        const {audioPath, channels} = curVal;
+        const {audioPath, channels, timeRange} = curVal;
+        output.timeRange = convertTimesToMilliseconds(timeRange);
         if (audioPath && channels) {
           curVal.channels = channels.map(({id}) => id);
           curVal.number = output.length;
