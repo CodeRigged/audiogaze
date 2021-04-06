@@ -1,10 +1,10 @@
 import net from 'net';
 import config from '../../config';
 
-export default class EyetrackerService {
-  client = new net.Socket();
+class EyetrackerService {
   connected = false;
-  timestamp = null;
+  data = [];
+  client = new net.Socket();
   dataVariables = [
     {
       id: 'fixationCoordinates',
@@ -14,25 +14,19 @@ export default class EyetrackerService {
     {id: 'rightEyeCoordinates', enabler: 'ENABLE_SEND_POG_RIGHT'},
     {id: 'pupilDiameter', enabler: 'ENABLE_SEND_PUPILMM'},
   ];
-  constructor() {
-    this.startService();
-    this.timestamp = new Date();
-  }
 
-  startService() {
+  connect(options) {
     this.client.setEncoding('utf-8');
     this.client.setTimeout(5000, () => {
       console.log('Ended Gazepoint eyetracker [timeout].');
     });
-  }
-
-  connectToEyeTracker(options) {
     this.client.connect({
       host: config.HOST,
       port: config.GAZEPOINT_PORT,
     });
     return new Promise((resolve, reject) => {
       this.client.on('connect', () => {
+        this.connected = true;
         // Send message to Gazepoint API server to enable data
         this.client.write('<SET ID="ENABLE_SEND_DATA" STATE="1" />\r\n');
 
@@ -65,13 +59,16 @@ export default class EyetrackerService {
 
   listenToDataStream() {
     this.client.on('data', (data) => {
-      console.log(data);
+      this.data.push({timestamp: Date.now(), data});
     });
   }
 
   disableDataStream() {
-    this.client.destroy((e) => {
-      console.log(e);
+    this.client.end();
+    this.client.on('close', () => {
+      this.data = [];
+      this.connected = false;
+      console.log('Gazepoint eyetracker closed.');
     });
   }
 
@@ -84,3 +81,4 @@ export default class EyetrackerService {
     });
   }
 }
+export default new EyetrackerService();

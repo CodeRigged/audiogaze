@@ -1,21 +1,32 @@
 import EyetrackerService from '../services/EyetrackerService';
 
 /** @type {import("express").RequestHandler} */
-const connectToServer = async (req, res) => {
-  // TODO: finish connectToServer function
-  const service = new EyetrackerService();
+const connectEyetracker = async (req, res) => {
+  if (EyetrackerService.connected) {
+    res.sendStatus(200);
+  } else {
+    const connected = await EyetrackerService.connect();
 
-  const connected = service.connectToEyeTracker();
-  // service.listenToDataStream();
-  // console.log(success);
-  connected
-    .then((success) => {
-      res.sendStatus(200);
-    })
-    .catch((e) => {
-      res.sendStatus(502);
-    });
-  service.listenToDataStream();
+    connected
+      .then((success) => {
+        res.sendStatus(200);
+      })
+      .catch((e) => {
+        res.sendStatus(503);
+      });
+
+    EyetrackerService.listenToDataStream();
+  }
 };
 
-export default {connectToServer};
+/** @type {import("express").RequestHandler} */
+const getData = async (req, res) => {
+  if (EyetrackerService.connected) {
+    await res.send(EyetrackerService.data);
+    EyetrackerService.disableDataStream();
+  } else {
+    res.sendStatus(503);
+  }
+};
+
+export default {connectEyetracker, getData};

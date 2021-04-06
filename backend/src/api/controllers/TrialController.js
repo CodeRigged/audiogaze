@@ -13,7 +13,16 @@ const addTrial = async (req, res) => {
 
 /** @type {import('express').RequestHandler} */
 const getTrialById = async (req, res) => {
-  res.json(await TrialService.getById(req.params.id));
+  try {
+    const trial = await TrialService.getById(req.params.id);
+    if (trial) {
+      res.json(trial);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (e) {
+    res.sendStatus(500);
+  }
 };
 
 /** @type {import('express').RequestHandler} */
