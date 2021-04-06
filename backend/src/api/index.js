@@ -5,7 +5,7 @@ import TrialRouter from './routes/TrialRouter';
 const api = express();
 
 /* defines routes */
-api.use('/gazepoint', GazepointRoute);
+api.use('/eyetracker', GazepointRoute);
 api.use('/trials', TrialRouter);
 
 export default api;

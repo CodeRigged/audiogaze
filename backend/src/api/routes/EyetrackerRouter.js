@@ -1,12 +1,9 @@
-import net from 'net';
 import {Router} from 'express';
 import EyetrackerController from '../controllers/EyetrackerController';
 
 const GazepointRoute = Router();
 
-const client = new net.Socket();
-client.setEncoding('utf-8');
-
-GazepointRoute.route('/start').get(EyetrackerController.connectToServer);
+GazepointRoute.route('/connect').get(EyetrackerController.connectEyetracker);
+GazepointRoute.route('/data').get(EyetrackerController.getData);
 
 export default GazepointRoute;
