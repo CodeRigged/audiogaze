@@ -34,44 +34,58 @@ export default {
   path: paths.runTrial,
   data: () => ({
     trials: [],
-    audios: [],
     currentTrial: 0,
-    currentAudio: 0,
     imgSrc: null,
+    audios: [],
+    currentAudio: 0,
     audioSrc: null,
     trialStarted: false,
     trialEnded: false,
+    data: [],
   }),
   computed: {
-    ...mapState(['isFullScreen', 'activeTrial']),
+    ...mapState(['isFullScreen']),
   },
   methods: {
     ...mapActions(['toggleFullScreen']),
     runTrials() {
-      this.trialEnded = false;
       this.trialStarted = true;
+      this.trialEnded = false;
       this.toggleFullScreen();
       this.nextTrial();
     },
     nextTrial() {
       const ttlTrial = this.trials.length;
       const {interval, src, audios} = this.trials[this.currentTrial++];
+      this.data.push({src, timestamp: Date.now(), started: true});
+      setTimeout(() => {
+        this.data.push({
+          type: 'img',
+          src,
+          timestamp: Date.now(),
+          started: false,
+        });
+      }, interval);
       this.imgSrc = src;
-      console.log('Displaying: ' + this.imgSrc);
       if (audios) {
         this.audios = audios;
         this.runAudio();
       }
-      document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-          this.trialEnded = true;
-        }
-      });
       if (this.currentTrial < ttlTrial && !this.trialEnded) {
         setTimeout(this.nextTrial, interval);
       } else {
         setTimeout(() => {
           this.trialEnded = true;
+          this.currentTrial = 0;
+          this.trials.forEach(({audios}) => {
+            if (audios) {
+              audios.forEach(({audio}) => {
+                console.log(audio);
+                audio.currentTime = 0;
+              });
+            }
+          });
+          this.data = [];
           this.toggleFullScreen();
         }, interval);
       }
@@ -81,6 +95,18 @@ export default {
       const {interval, audio, src /* channels */} = this.audios[
         this.currentAudio++
       ];
+
+      this.data.push({src, timestamp: Date.now(), started: true});
+
+      setTimeout(() => {
+        this.data.push({
+          type: 'audio',
+          src,
+          timestamp: Date.now(),
+          started: false,
+        });
+      }, interval);
+
       audio.play();
 
       setTimeout(() => {
@@ -93,31 +119,43 @@ export default {
         console.log(`At ${new Date()}: ${src} has stopped playing`);
       }, interval);
     },
+    mapTrack(tracks) {
+      return tracks.map(({imagePath, timeRange, audios}) => {
+        const track = {};
+        track.interval = timeRange.to - timeRange.from;
+        track.src = require(process.env.VUE_APP_PATH_TO_IMAGES_FOLDER +
+          imagePath);
+        if (audios.length > 0) {
+          track.audios = audios.map(({timeRange, audioPath, channels}) => {
+            const audio = {};
+            audio.interval = timeRange.to - timeRange.from;
+            audio.src = audioPath;
+            audio.audio = new Audio(
+              require(process.env.VUE_APP_PATH_TO_AUDIO_FOLDER + audioPath),
+            );
+            audio.channels = channels;
+            return audio;
+          });
+        }
+        return track;
+      });
+    },
   },
   async mounted() {
-    await this.$store.dispatch('getTrial', this.$route.params.id);
-    const {tracks} = this.activeTrial;
-    console.log(tracks);
-    this.trials = tracks.map(({imagePath, timeRange, audios}) => {
-      const track = {};
-      track.interval = timeRange.to - timeRange.from;
-      track.src = require(process.env.VUE_APP_PATH_TO_IMAGES_FOLDER +
-        imagePath);
-      if (audios.length > 0) {
-        track.audios = audios.map(({timeRange, audioPath, channels}) => {
-          const audio = {};
-          audio.interval = timeRange.to - timeRange.from;
-          audio.src = audioPath;
-          audio.audio = new Audio(
-            require(process.env.VUE_APP_PATH_TO_AUDIO_FOLDER + audioPath),
-          );
-
-          audio.channels = channels;
-          return audio;
-        });
-      }
-      return track;
-    });
+    const status = await this.$store.dispatch(
+      'connectEyetracker',
+      this.$route.params.id,
+    );
+    console.log(status);
+    if (status === 200) {
+      const trial = await this.$store.dispatch(
+        'getTrial',
+        this.$route.params.id,
+      );
+      console.log(trial);
+      const {tracks} = trial;
+      this.trials = this.mapTrack(tracks);
+    }
   },
 };
 </script>

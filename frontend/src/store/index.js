@@ -7,7 +7,6 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    activeTrial: null,
     trials: [],
     paths,
     colsWidth: {
@@ -99,15 +98,19 @@ export default new Vuex.Store({
           console.log(e);
         });
     },
+    async connectEyetracker() {
+      const res = await Vue.axios.get(`/eyetracker/connect`, {
+        message: 'Connecting to Gazepoint Eyetracker..',
+      });
+      const status = res.status;
+      return status;
+    },
     async getTrial({commit}, id) {
-      await Vue.axios
-        .get(`/trials/${id}`, {message: 'Preparing trial...'})
-        .then((res) => {
-          commit('updateState', {key: 'activeTrial', data: res.data});
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      const res = await Vue.axios.get(`/trials/${id}`, {
+        message: 'Preparing trial...',
+      });
+      const data = res.data;
+      return data;
     },
     updateTrials({commit}, data) {
       commit('updateState', {key: 'trials', data});

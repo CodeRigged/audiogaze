@@ -87,8 +87,8 @@ export default {
       return this.$store.state.trials;
     },
   },
-  created() {
-    this.$store.dispatch('loadTrials');
+  async created() {
+    await this.$store.dispatch('loadTrials');
   },
 };
 </script>
