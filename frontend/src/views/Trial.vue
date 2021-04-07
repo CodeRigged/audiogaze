@@ -56,35 +56,57 @@ export default {
     },
     nextTrial() {
       const ttlTrial = this.trials.length;
-      const {interval, src, audios} = this.trials[this.currentTrial++];
-      this.data.push({src, timestamp: Date.now(), started: true});
+      const {interval, src, audios, imagePath} = this.trials[
+        this.currentTrial++
+      ];
+
+      this.imgSrc = src;
+
+      this.data.push({
+        type: 'img',
+        src: imagePath,
+        timestamp: Date.now(),
+        started: true,
+      });
+
+      console.log(`Displaying ${imagePath} at ${new Date()}.`);
+
       setTimeout(() => {
         this.data.push({
           type: 'img',
-          src,
+          src: imagePath,
           timestamp: Date.now(),
           started: false,
         });
       }, interval);
-      this.imgSrc = src;
+
       if (audios) {
         this.audios = audios;
         this.runAudio();
       }
+
       if (this.currentTrial < ttlTrial && !this.trialEnded) {
         setTimeout(this.nextTrial, interval);
       } else {
-        setTimeout(() => {
+        setTimeout(async () => {
           this.trialEnded = true;
           this.currentTrial = 0;
+
           this.trials.forEach(({audios}) => {
             if (audios) {
               audios.forEach(({audio}) => {
-                console.log(audio);
                 audio.currentTime = 0;
               });
             }
           });
+
+          const results = await this.$store.dispatch('sendResults', {
+            id: this.$route.params.id,
+            clientData: this.data,
+          });
+
+          console.log(results);
+
           this.data = [];
           this.toggleFullScreen();
         }, interval);
@@ -95,8 +117,13 @@ export default {
       const {interval, audio, src /* channels */} = this.audios[
         this.currentAudio++
       ];
-
-      this.data.push({src, timestamp: Date.now(), started: true});
+      console.log(`At ${new Date()}: ${src} has started playing`);
+      this.data.push({
+        type: 'audio',
+        src,
+        timestamp: Date.now(),
+        started: true,
+      });
 
       setTimeout(() => {
         this.data.push({
@@ -123,6 +150,7 @@ export default {
       return tracks.map(({imagePath, timeRange, audios}) => {
         const track = {};
         track.interval = timeRange.to - timeRange.from;
+        track.imagePath = imagePath;
         track.src = require(process.env.VUE_APP_PATH_TO_IMAGES_FOLDER +
           imagePath);
         if (audios.length > 0) {
@@ -146,7 +174,6 @@ export default {
       'connectEyetracker',
       this.$route.params.id,
     );
-    console.log(status);
     if (status === 200) {
       const trial = await this.$store.dispatch(
         'getTrial',

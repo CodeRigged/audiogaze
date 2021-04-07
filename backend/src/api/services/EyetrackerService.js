@@ -53,10 +53,6 @@ class EyetrackerService {
     });
   }
 
-  getScreenSize() {
-    this.client.write('<SET ID="ENABLE_SEND_DATA" STATE="1" />\r\n');
-  }
-
   listenToDataStream() {
     this.client.on('data', (data) => {
       this.data.push({timestamp: Date.now(), data});

@@ -112,6 +112,10 @@ export default new Vuex.Store({
       const data = res.data;
       return data;
     },
+    async sendResults(action, {clientData, id}) {
+      const res = await Vue.axios.put(`trials/${id}`, clientData);
+      return res;
+    },
     updateTrials({commit}, data) {
       commit('updateState', {key: 'trials', data});
     },
