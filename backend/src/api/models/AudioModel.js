@@ -1,15 +1,14 @@
 import mongoose from 'mongoose';
-import audioSchema from './AudioModel';
 import timeRangeSchema from './TimeRangeModel';
 
 const required = true;
 
-const trackSchema = new mongoose.Schema({
+const audioSchema = new mongoose.Schema({
   number: {
     type: Number,
     required,
   },
-  imagePath: {
+  audioPath: {
     type: String,
     required,
   },
@@ -17,9 +16,10 @@ const trackSchema = new mongoose.Schema({
     type: timeRangeSchema,
     required,
   },
-  audios: {
-    type: [audioSchema],
+  channels: {
+    type: [Number],
+    required,
   },
 });
 
-export default trackSchema;
+export default audioSchema;

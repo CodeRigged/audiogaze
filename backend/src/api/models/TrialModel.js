@@ -1,4 +1,3 @@
-import {Timestamp} from 'bson';
 import mongoose from 'mongoose';
 import trackSchema from './TrackModel';
 
