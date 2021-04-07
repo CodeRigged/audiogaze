@@ -4,12 +4,11 @@
       <v-divider></v-divider>
 
       <v-card-actions>
+        <div class="caption">
+          {{ version }}
+        </div>
         <v-spacer />
-        <v-btn
-          :ripple="false"
-          plain
-          href="https://github.com/CodeRigged/gazepoint-with-audio"
-        >
+        <v-btn x-small :ripple="false" plain :href="link">
           Github
           <v-icon>mdi-github</v-icon>
         </v-btn>
@@ -27,7 +26,14 @@ export default {
   props: {},
   watch: {},
   methods: {},
-  computed: {},
+  computed: {
+    version() {
+      return 'v.' + process.env.PACKAGE_VERSION;
+    },
+    link() {
+      return 'https://github.com/CodeRigged/gazepoint-with-audio';
+    },
+  },
   mounted() {},
 };
 </script>
