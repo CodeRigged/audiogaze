@@ -1,54 +1,56 @@
 <template>
-  <v-data-table
-    :headers="trialHeaders"
-    :items="trials"
-    single-expand
-    :items-per-page="15"
-    :expanded.sync="expanded"
-    item-key="name"
-    show-expand
-    class="elevation-1"
-  >
-    <template v-slot:top>
-      <v-toolbar flat>
-        <v-toolbar-title>Trials</v-toolbar-title>
-        <v-spacer />
-        <v-btn :to="addTrial">
-          New trial
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
-      </v-toolbar>
-    </template>
-    <template v-slot:item.index="{index}">{{ index + 1 }}</template>
-    <template v-slot:expanded-item="{headers, item}">
-      <td class="pa-1" :colspan="headers.length + 1">
-        <v-card flat>
-          <v-card-text>
-            <v-row class="caption">
-              <v-col>ID</v-col>
-              <v-col>Timestamp</v-col>
-            </v-row>
-          </v-card-text>
-          <v-divider />
-          <v-card-actions>
-            <v-btn small>
-              Export data
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-            <v-spacer />
-            <v-btn small>
-              View Trial
-              <v-icon>mdi-eye</v-icon>
-            </v-btn>
-            <v-btn small :to="`trial/${item._id}`">
-              Start Trial
-              <v-icon>mdi-play</v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </td>
-    </template>
-  </v-data-table>
+  <v-container fluid>
+    <v-data-table
+      :headers="trialHeaders"
+      :items="trials"
+      single-expand
+      :items-per-page="15"
+      :expanded.sync="expanded"
+      item-key="name"
+      show-expand
+      class="elevation-1"
+    >
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-toolbar-title>Trials</v-toolbar-title>
+          <v-spacer />
+          <v-btn :to="addTrial">
+            New trial
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-toolbar>
+      </template>
+      <template v-slot:item.index="{index}">{{ index + 1 }}</template>
+      <template v-slot:expanded-item="{headers, item}">
+        <td class="pa-1" :colspan="headers.length + 1">
+          <v-card flat>
+            <v-card-text>
+              <v-row class="caption">
+                <v-col>ID</v-col>
+                <v-col>Timestamp</v-col>
+              </v-row>
+            </v-card-text>
+            <v-divider />
+            <v-card-actions>
+              <v-btn small>
+                Export data
+                <v-icon>mdi-download</v-icon>
+              </v-btn>
+              <v-spacer />
+              <v-btn small>
+                View Trial
+                <v-icon>mdi-eye</v-icon>
+              </v-btn>
+              <v-btn small :to="`trial/${item._id}`">
+                Start Trial
+                <v-icon>mdi-play</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </td>
+      </template>
+    </v-data-table>
+  </v-container>
 </template>
 <script>
 import {paths} from '@/utils/Enums';

@@ -1,14 +1,12 @@
 <template>
   <v-app>
     <!-- <error-overlay /> -->
-    <breadcrumb />
+    <breadcrumb v-if="!isFullScreen" />
     <v-main class="background">
       <loading-filter v-if="isLoading" />
-      <v-container fluid>
-        <router-view v-show="!isLoading" />
-      </v-container>
+      <router-view v-show="!isLoading" />
     </v-main>
-    <app-footer />
+    <app-footer v-if="!isFullScreen" />
   </v-app>
 </template>
 
@@ -29,7 +27,7 @@ export default {
   },
   name: 'app',
   methods: {},
-  computed: {...mapState(['isLoading'])},
+  computed: {...mapState(['isLoading', 'isFullScreen'])},
   watch: {},
   created() {
     this.$store.dispatch('setup');

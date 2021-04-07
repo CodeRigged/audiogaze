@@ -1,31 +1,33 @@
 <template>
-  <v-card class="pa-2">
-    <v-card-title>
-      <v-row>
-        <v-col cols="8">
-          <v-text-field v-model="trial" label="Trial name" clearable />
-        </v-col>
-        <v-col>
-          <v-select
-            v-model="precision"
-            :items="time"
-            label="Timerange precision"
-            item-text="timeUnit"
-            item-value="symbol"
-          />
-        </v-col>
-      </v-row>
-    </v-card-title>
-    <v-card-text>
-      <create-trial />
-    </v-card-text>
-    <v-divider />
-    <v-card-actions>
-      <v-spacer />
-      <v-btn @click="resetTrial" plain>Cancel</v-btn>
-      <v-btn @click="addTrial">Confirm</v-btn>
-    </v-card-actions>
-  </v-card>
+  <v-container fluid>
+    <v-card class="pa-2">
+      <v-card-title>
+        <v-row>
+          <v-col cols="8">
+            <v-text-field v-model="trial" label="Trial name" clearable />
+          </v-col>
+          <v-col>
+            <v-select
+              v-model="precision"
+              :items="time"
+              label="Timerange precision"
+              item-text="timeUnit"
+              item-value="symbol"
+            />
+          </v-col>
+        </v-row>
+      </v-card-title>
+      <v-card-text>
+        <create-trial />
+      </v-card-text>
+      <v-divider />
+      <v-card-actions>
+        <v-spacer />
+        <v-btn @click="resetTrial" plain>Cancel</v-btn>
+        <v-btn @click="addTrial">Confirm</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-container>
 </template>
 <script>
 import {paths} from '@/utils/Enums';
