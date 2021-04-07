@@ -6,7 +6,7 @@ const {
   ENDPOINT = /* default endpoint */ '/',
   HOST = /* default host */ '127.0.0.1',
   GAZEPOINT_PORT = /* default gazepoint port */ '4242',
-  DB_NAME /* change name in  */,
+  DB_NAME /* change name in environment file */,
 } = process.env;
 
 const config = Object.freeze({

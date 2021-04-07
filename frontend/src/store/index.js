@@ -92,7 +92,13 @@ export default new Vuex.Store({
       await Vue.axios
         .get('/trials')
         .then((res) => {
-          commit('updateState', {key: 'trials', data: res.data});
+          commit(
+            'updateState',
+            {key: 'trials', data: res.data},
+            {
+              message: 'Loading Trials...',
+            },
+          );
         })
         .catch((e) => {
           console.log(e);
@@ -113,7 +119,9 @@ export default new Vuex.Store({
       return data;
     },
     async sendResults(action, {clientData, id}) {
-      const res = await Vue.axios.put(`trials/${id}`, clientData);
+      const res = await Vue.axios.put(`trials/${id}`, clientData, {
+        message: 'Trial is ending...',
+      });
       return res;
     },
     updateTrials({commit}, data) {
