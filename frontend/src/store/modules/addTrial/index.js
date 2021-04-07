@@ -11,7 +11,6 @@ const defaultTrackState = () => ({
   timeRange: {
     from: 0,
     to: null,
-    timeUnit: null,
   },
   audios: [],
 });
@@ -23,13 +22,13 @@ const defaultAudioState = () => ({
   timeRange: {
     from: 0,
     to: null,
-    timeUnit: null,
   },
 });
 
 /* default state of a trial */
 const defaultTrialState = () => ({
   name: null,
+  timeUnit: null,
   tracks: [defaultTrackState()],
 });
 
@@ -44,6 +43,9 @@ const addTrial = {
     },
     updateName(state, name) {
       state.name = name;
+    },
+    updateTimeUnit(state, timeUnit) {
+      state.timeUnit = timeUnit;
     },
     addTrack(state, track) {
       const {to} = track.timeRange;
@@ -87,7 +89,7 @@ const addTrial = {
           {trial: state},
           {
             // headers: {'Content-Type': 'multipart/form-data'},
-            message: 'Adding Trial',
+            message: 'Adding Trial...',
           },
         )
         .then((res) => {

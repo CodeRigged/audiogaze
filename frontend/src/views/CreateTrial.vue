@@ -1,7 +1,20 @@
 <template>
   <v-card class="pa-2">
     <v-card-title>
-      <v-text-field v-model="trial" label="Trial name" clearable />
+      <v-row>
+        <v-col cols="8">
+          <v-text-field v-model="trial" label="Trial name" clearable />
+        </v-col>
+        <v-col>
+          <v-select
+            v-model="precision"
+            :items="time"
+            label="Precision"
+            item-text="timeUnit"
+            item-value="symbol"
+          />
+        </v-col>
+      </v-row>
     </v-card-title>
     <v-card-text>
       <create-trial />
@@ -26,17 +39,31 @@ export default {
   title: 'New trial',
   path: paths.addTrial,
   methods: {
-    ...mapMutations('addTrial', ['updateName']),
+    ...mapMutations('addTrial', ['updateName', 'updateTimeUnit']),
     ...mapActions('addTrial', ['addTrial', 'resetTrial']),
   },
   computed: {
-    ...mapState('addTrial', ['name']),
+    time() {
+      return [
+        {symbol: 's', timeUnit: 'seconds'},
+        {symbol: 'ms', timeUnit: 'milliseconds'},
+      ];
+    },
+    ...mapState('addTrial', ['name', 'timeUnit']),
     trial: {
       get() {
         return this.name;
       },
       set(name) {
         this.updateName(name);
+      },
+    },
+    precision: {
+      get() {
+        return this.timeUnit;
+      },
+      set(timeUnit) {
+        this.updateTimeUnit(timeUnit);
       },
     },
   },

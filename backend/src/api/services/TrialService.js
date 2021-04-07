@@ -26,17 +26,17 @@ class TrialService {
    * @param {{name: string, tracks: Array}} trial
    */
   parseInput(trial) {
-    const {name, tracks} = trial;
+    const {name, tracks, timeUnit} = trial;
     const parsedTracks = tracks.map(({imagePath, timeRange, audios}, index) => {
       const track = {
         number: index,
         imagePath,
-        timeRange: convertTimesToMilliseconds(timeRange),
+        timeRange: convertTimesToMilliseconds(timeRange, timeUnit),
       };
 
       const validAudios = audios.reduce((output, curVal) => {
         const {audioPath, channels, timeRange} = curVal;
-        curVal.timeRange = convertTimesToMilliseconds(timeRange);
+        curVal.timeRange = convertTimesToMilliseconds(timeRange, timeUnit);
         if (audioPath && channels) {
           curVal.channels = channels.map(({id}) => id);
           curVal.number = output.length;
@@ -63,15 +63,14 @@ class TrialService {
   }
 }
 
-function convertTimesToMilliseconds(timeRange) {
-  const timeUnit = timeRange.timeUnit;
-  delete timeRange.timeUnit;
+function convertTimesToMilliseconds(timeRange, timeUnit) {
   switch (timeUnit) {
     case 'ms':
       return timeRange;
     case 's':
-      const {from, to} = timeRange;
-      return {from: from * 1000, to: to * 1000};
+      timeRange.from *= 1000;
+      timeRange.to *= 1000;
+      return timeRange;
     default:
       return new Error();
   }

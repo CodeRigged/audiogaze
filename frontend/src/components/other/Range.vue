@@ -19,22 +19,6 @@
         label="to"
       />
     </v-col>
-    <v-col>
-      <v-select
-        label="in"
-        :items="time"
-        v-model="value.timeUnit"
-        item-text="timeUnit"
-        item-value="symbol"
-      >
-        <template v-slot:item="{item}">
-          {{ item.timeUnit }}
-        </template>
-        <template v-slot:selection="{item}">
-          {{ item.symbol }}
-        </template>
-      </v-select>
-    </v-col>
   </v-row>
 </template>
 <script>
@@ -44,7 +28,6 @@ export default {
   mixins: [],
   data() {
     return {
-      timeUnit: null,
       focused: false,
     };
   },
@@ -65,9 +48,6 @@ export default {
         this.value.from = to;
       }
     },
-    timeUnit(as) {
-      console.log(as);
-    },
   },
   methods: {
     handleInput(event) {
@@ -86,12 +66,6 @@ export default {
     },
   },
   computed: {
-    time() {
-      return [
-        {symbol: 's', timeUnit: 'seconds'},
-        {symbol: 'ms', timeUnit: 'milliseconds'},
-      ];
-    },
     listeners() {
       return {
         focus: () => {
