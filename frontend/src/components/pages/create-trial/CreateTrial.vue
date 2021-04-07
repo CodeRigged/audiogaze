@@ -4,6 +4,7 @@
     <div
       :key="`Track-${trackIndex}`"
       v-for="(track, trackIndex) in tracksArray"
+      class="mb-5"
     >
       <image-row
         v-model="tracksArray[trackIndex]"
@@ -17,8 +18,10 @@
         :includesAudio="track.audios.length > 0"
         :removable="tracksArray.length === 1"
       />
-      <div v-if="track.audios.length > 0" class="background">
+
+      <div v-if="track.audios.length > 0">
         <audio-row
+          class="background"
           :key="`Audio-${audioIndex}`"
           v-for="(audio, audioIndex) in track.audios"
           v-model="track.audios[audioIndex]"

@@ -3,6 +3,7 @@
     :headers="trialHeaders"
     :items="trials"
     single-expand
+    :items-per-page="15"
     :expanded.sync="expanded"
     item-key="name"
     show-expand
@@ -20,7 +21,7 @@
     </template>
     <template v-slot:item.index="{index}">{{ index + 1 }}</template>
     <template v-slot:expanded-item="{headers, item}">
-      <td class="pa-1 " :colspan="headers.length + 1">
+      <td class="pa-1" :colspan="headers.length + 1">
         <v-card flat>
           <v-card-text>
             <v-row class="caption">

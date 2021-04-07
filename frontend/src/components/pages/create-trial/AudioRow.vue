@@ -1,5 +1,6 @@
 <template>
   <v-row class="pl-3" align="baseline" justify="center">
+    <v-divider vertical />
     <v-col class="text-center caption" :cols="audioNumber"
       >{{ `Audio ${index + 1}` }}
     </v-col>

@@ -1,6 +1,6 @@
 <template>
   <v-row align="baseline" dense class="range-container">
-    <v-col cols="4">
+    <v-col>
       <v-text-field
         v-on="listeners"
         v-model.number="value.from"
@@ -11,7 +11,7 @@
     <v-col align-self="center" class="range-seperator" cols="1">
       <hr />
     </v-col>
-    <v-col cols="4">
+    <v-col>
       <v-text-field
         v-on="listeners"
         v-model.number="value.to"

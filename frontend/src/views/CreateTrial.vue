@@ -9,7 +9,7 @@
           <v-select
             v-model="precision"
             :items="time"
-            label="Precision"
+            label="Timerange precision"
             item-text="timeUnit"
             item-value="symbol"
           />
@@ -19,6 +19,7 @@
     <v-card-text>
       <create-trial />
     </v-card-text>
+    <v-divider />
     <v-card-actions>
       <v-spacer />
       <v-btn @click="resetTrial" plain>Cancel</v-btn>
