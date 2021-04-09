@@ -5,11 +5,17 @@ const Trial = mongoose.model('Trial', trialModel);
 
 class TrialService {
   add(service) {
-    const newTrial = new Trial(service);
-    newTrial.save((err, addedTrial) => {
-      err
-        ? console.error(err)
-        : console.log(`Successfully added new trial : ${addedTrial}`);
+    return new Promise((resolve, reject) => {
+      const newTrial = new Trial(service);
+      newTrial.save((err, addedTrial) => {
+        if (err) {
+          console.error(err);
+          reject(false);
+        } else {
+          console.log(`Successfully added new trial : ${addedTrial}`);
+          resolve(true);
+        }
+      });
     });
   }
   getById(id) {
