@@ -59,6 +59,12 @@ export default {
     value: Object,
   },
   watch: {
+    'value.timeRange': {
+      handler(timeRange) {
+        this.$emit('timerange-change', timeRange);
+      },
+      deep: true,
+    },
     file(track) {
       this.value.audioPath = track?.name;
     },

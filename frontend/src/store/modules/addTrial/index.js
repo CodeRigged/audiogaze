@@ -60,17 +60,35 @@ const addTrial = {
     removeTrack(state, trackIndex) {
       state.tracks.splice(trackIndex, 1);
     },
-    updateTimeRanges(state, {trackIndex, timeRange}) {
-      const previous = trackIndex - 1;
-      const next = trackIndex + 1;
-      if (previous >= 0) {
-        state.tracks[previous].timeRange.to = timeRange.from;
-      }
-      if (next === state.tracks.length - 1) {
-        state.tracks[next].timeRange.from = timeRange.to;
+    updateTimeRanges(state, {trackIndex, audioIndex, timeRange, updateAudio}) {
+      if (!updateAudio) {
+        const previous = trackIndex - 1;
+        const next = trackIndex + 1;
+        if (previous >= 0) {
+          state.tracks[previous].timeRange.to = timeRange.from;
+        }
+        if (next === state.tracks.length - 1) {
+          state.tracks[next].timeRange.from = timeRange.to;
+        }
+      } else {
+        const audiosLength = state.tracks[trackIndex].audios.length;
+        const previous = audioIndex - 1;
+        const next = audioIndex + 1;
+        console.log(audioIndex, audiosLength);
+        if (next === audiosLength) {
+          state.tracks[trackIndex].timeRange.to = timeRange.to;
+        }
+        if (previous >= 0) {
+          state.tracks[trackIndex].audios[previous].timeRange.to =
+            timeRange.from;
+        }
+        if (next === audiosLength - 1) {
+          log('test');
+          state.tracks[trackIndex].audios[next].timeRange.from = timeRange.to;
+        }
       }
     },
-    addAudio(state, trackIndex /* audio */) {
+    addAudio(state, trackIndex) {
       state.tracks[trackIndex].audios.push(defaultAudioState());
     },
     removeAudio(state, {trackIndex, audioIndex}) {

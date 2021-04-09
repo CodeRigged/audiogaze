@@ -9,25 +9,35 @@
       <image-row
         v-model="tracksArray[trackIndex]"
         :index="trackIndex"
+        :includesAudio="track.audios.length > 0"
+        :removable="tracksArray.length === 1"
         @add="addTrack(track)"
         @open="switchViewOfAudioRow(trackIndex, track.audios.length === 0)"
         @remove="removeTrack(trackIndex)"
         @timerange-change="
-          (timeRange) => updateTimeRanges({trackIndex, timeRange})
+          (timeRange) =>
+            updateTimeRanges({trackIndex, updateAudio: false, timeRange})
         "
-        :includesAudio="track.audios.length > 0"
-        :removable="tracksArray.length === 1"
       />
 
       <div v-if="track.audios.length > 0">
         <audio-row
-          class="background"
-          :key="`Audio-${audioIndex}`"
           v-for="(audio, audioIndex) in track.audios"
           v-model="track.audios[audioIndex]"
           :index="audioIndex"
+          :key="`Audio-${audioIndex}`"
+          class="background"
           @add="addAudio(trackIndex, audio)"
           @remove="removeAudio({trackIndex, audioIndex})"
+          @timerange-change="
+            (timeRange) =>
+              updateTimeRanges({
+                audioIndex,
+                trackIndex,
+                timeRange,
+                updateAudio: true,
+              })
+          "
         />
       </div>
     </div>
