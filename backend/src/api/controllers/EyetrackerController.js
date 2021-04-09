@@ -1,20 +1,23 @@
-import {xml2js, xml2json} from 'xml-js';
+import {
+  InformationalCodes,
+  ServerErrorCodes,
+  SuccessfulCodes,
+} from 'more-http-status-codes';
+import {xml2js} from 'xml-js';
 import EyetrackerService from '../services/EyetrackerService';
 
 /** @type {import("express").RequestHandler} */
 const connectEyetracker = async (req, res) => {
   if (EyetrackerService.connected) {
-    res.sendStatus(200);
+    res.sendStatus(InformationalCodes.CONTINUE);
   } else {
-    const connected = EyetrackerService.connect();
-
-    connected
+    EyetrackerService.connect()
       .then((success) => {
-        res.sendStatus(200);
+        res.sendStatus(SuccessfulCodes.OK);
         EyetrackerService.listenToDataStream();
       })
       .catch((e) => {
-        res.sendStatus(503);
+        res.sendStatus(ServerErrorCodes.SERVICE_UNAVAILABLE);
       });
   }
 };
@@ -28,14 +31,18 @@ const loadData = async (req, res, next) => {
     });
     next();
     EyetrackerService.disableDataStream();
-  } else { 
-    res.sendStatus(503);
+  } else {
+    res.sendStatus(ServerErrorCodes.SERVICE_UNAVAILABLE);
   }
 };
 
 /** @type {import("express").RequestHandler} */
 const sendData = async (req, res) => {
-  res.json(req.eyetrackerData);
+  try {
+    res.json(req.eyetrackerData);
+  } catch (error) {
+    res.sendStatus(ServerErrorCodes.SERVICE_UNAVAILABLE);
+  }
 };
 
 export default {connectEyetracker, loadData, sendData};

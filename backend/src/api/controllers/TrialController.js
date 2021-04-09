@@ -1,13 +1,15 @@
 import TrialService from '../services/TrialService';
+import {ClientErrorCodes, SuccessfulCodes} from 'more-http-status-codes';
 
 /** @type {import('express').RequestHandler} */
 const addTrial = async (req, res) => {
   try {
     const trial = TrialService.parseInput(req.body.trial);
-    await TrialService.add(trial);
-    res.json(await TrialService.getAll());
+    const added = await TrialService.add(trial);
+    added &&
+      res.status(SuccessfulCodes.CREATED).json(await TrialService.getAll());
   } catch (e) {
-    res.sendStatus(500);
+    res.sendStatus(ClientErrorCodes.BAD_REQUEST);
   }
 };
 
@@ -16,18 +18,22 @@ const getTrialById = async (req, res) => {
   try {
     const trial = await TrialService.getById(req.params.id);
     if (trial) {
-      res.json(trial);
+      res.status(SuccessfulCodes.OK).json(trial);
     } else {
-      res.sendStatus(404);
+      res.sendStatus(ClientErrorCodes.NOT_FOUND);
     }
   } catch (e) {
-    res.sendStatus(500);
+    res.sendStatus(ClientErrorCodes.BAD_REQUEST);
   }
 };
 
 /** @type {import('express').RequestHandler} */
-const getTrials = async (req, res) => {
-  res.json(await TrialService.getAll());
+const getTrials = async (req, res) => {´
+  try {
+    res.json(await TrialService.getAll());
+  } catch (error) {
+    res.sendStatus(ClientErrorCodes.BAD_REQUEST);
+  }
 };
 
 /** @type {import('express').RequestHandler} */
@@ -71,7 +77,7 @@ const syncData = async (req, res) => {
     res.send(results);
   } catch (e) {
     console.log(e);
-    res.sendStatus(400);
+    res.sendStatus(ClientErrorCodes.BAD_REQUEST);
   }
 };
 
