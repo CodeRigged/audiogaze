@@ -6,7 +6,7 @@
       single-expand
       :items-per-page="15"
       :expanded.sync="expanded"
-      item-key="name"
+      item-key="_id"
       show-expand
       class="elevation-1"
     >
