@@ -26,6 +26,7 @@ class EyetrackerService {
     });
     return new Promise((resolve, reject) => {
       this.client.on('connect', () => {
+        console.log('Gazepoint eyetracker connected.');
         this.connected = true;
         // Send message to Gazepoint API server to enable data
         this.client.write('<SET ID="ENABLE_SEND_DATA" STATE="1" />\r\n');

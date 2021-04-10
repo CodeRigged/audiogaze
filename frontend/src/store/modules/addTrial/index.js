@@ -61,9 +61,18 @@ const addTrial = {
       state.tracks.splice(trackIndex, 1);
     },
     updateTimeRanges(state, {trackIndex, audioIndex, timeRange, updateAudio}) {
+      const audiosLength = state.tracks[trackIndex].audios.length;
       if (!updateAudio) {
         const previous = trackIndex - 1;
         const next = trackIndex + 1;
+        if (
+          audiosLength > 0 &&
+          state.tracks[trackIndex].audios[audiosLength - 1].timeRange.to >=
+            timeRange.to
+        ) {
+          state.tracks[trackIndex].audios[audiosLength - 1].timeRange.to =
+            timeRange.to;
+        }
         if (previous >= 0) {
           state.tracks[previous].timeRange.to = timeRange.from;
         }
@@ -71,11 +80,12 @@ const addTrial = {
           state.tracks[next].timeRange.from = timeRange.to;
         }
       } else {
-        const audiosLength = state.tracks[trackIndex].audios.length;
         const previous = audioIndex - 1;
         const next = audioIndex + 1;
-        console.log(audioIndex, audiosLength);
-        if (next === audiosLength) {
+        if (
+          next === audiosLength &&
+          state.tracks[trackIndex].timeRange.to < timeRange.to
+        ) {
           state.tracks[trackIndex].timeRange.to = timeRange.to;
         }
         if (previous >= 0) {

@@ -28,7 +28,7 @@ const getTrialById = async (req, res) => {
 };
 
 /** @type {import('express').RequestHandler} */
-const getTrials = async (req, res) => {´
+const getTrials = async (req, res) => {
   try {
     res.json(await TrialService.getAll());
   } catch (error) {
