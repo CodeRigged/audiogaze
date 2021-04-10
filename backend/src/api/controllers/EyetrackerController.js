@@ -9,7 +9,7 @@ import EyetrackerService from '../services/EyetrackerService';
 /** @type {import("express").RequestHandler} */
 const connectEyetracker = async (req, res) => {
   if (EyetrackerService.connected) {
-    res.sendStatus(InformationalCodes.CONTINUE);
+    res.sendStatus(SuccessfulCodes.OK);
   } else {
     EyetrackerService.connect()
       .then((success) => {
@@ -29,8 +29,8 @@ const loadData = async (req, res, next) => {
       element.data = xml2js(element.data, {compact: true});
       return element;
     });
-    next();
     EyetrackerService.disableDataStream();
+    next();
   } else {
     res.sendStatus(ServerErrorCodes.SERVICE_UNAVAILABLE);
   }

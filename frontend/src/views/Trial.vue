@@ -34,6 +34,7 @@ export default {
   path: paths.runTrial,
   data: () => ({
     trials: [],
+    currentStartTime: 0,
     currentTrial: 0,
     imgSrc: null,
     audios: [],
@@ -56,10 +57,11 @@ export default {
     },
     nextTrial() {
       const ttlTrial = this.trials.length;
-      const {interval, src, audios, imagePath} = this.trials[
+      const {startAt, stopAt, src, audios, imagePath} = this.trials[
         this.currentTrial++
       ];
-
+      this.currentStartTime = startAt;
+      const interval = stopAt - startAt;
       this.imgSrc = src;
 
       this.data.push({
@@ -84,7 +86,6 @@ export default {
         this.audios = audios;
         this.runAudio();
       }
-
       if (this.currentTrial < ttlTrial && !this.trialEnded) {
         setTimeout(this.nextTrial, interval);
       } else {
@@ -99,13 +100,13 @@ export default {
               });
             }
           });
-
+          console.log(this.data);
           const results = await this.$store.dispatch('sendResults', {
             id: this.$route.params.id,
             clientData: this.data,
           });
 
-          console.log(results);
+          console.log(this.data, results);
 
           this.data = [];
           this.toggleFullScreen();
@@ -114,49 +115,48 @@ export default {
     },
     runAudio() {
       const ttlAudios = this.audios.length;
-      const {interval, audio, src /* channels */} = this.audios[
+      const {startAt, stopAt, audio, src /* channels */} = this.audios[
         this.currentAudio++
       ];
-      console.log(`At ${new Date()}: ${src} has started playing`);
-      this.data.push({
-        type: 'audio',
-        src,
-        timestamp: Date.now(),
-        started: true,
-      });
-
       setTimeout(() => {
+        audio.play();
+        console.log(`At ${new Date()}: ${src} has started playing`);
+        this.data.push({
+          type: 'audio',
+          src,
+          timestamp: Date.now(),
+          started: true,
+        });
+      }, startAt - this.currentStartTime);
+      setTimeout(() => {
+        console.log(`At ${new Date()}: ${src} has stopped playing`);
         this.data.push({
           type: 'audio',
           src,
           timestamp: Date.now(),
           started: false,
         });
-      }, interval);
-
-      audio.play();
-
-      setTimeout(() => {
         audio.pause();
         if (this.currentAudio < ttlAudios) {
           this.runAudio();
         } else {
           this.currentAudio = 0;
         }
-        console.log(`At ${new Date()}: ${src} has stopped playing`);
-      }, interval);
+      }, startAt - this.currentStartTime + stopAt - startAt);
     },
     mapTrack(tracks) {
       return tracks.map(({imagePath, timeRange, audios}) => {
         const track = {};
-        track.interval = timeRange.to - timeRange.from;
+        track.startAt = timeRange.from;
+        track.stopAt = timeRange.to;
         track.imagePath = imagePath;
         track.src = require(process.env.VUE_APP_PATH_TO_IMAGES_FOLDER +
           imagePath);
         if (audios.length > 0) {
           track.audios = audios.map(({timeRange, audioPath, channels}) => {
             const audio = {};
-            audio.interval = timeRange.to - timeRange.from;
+            audio.startAt = timeRange.from;
+            audio.stopAt = timeRange.to;
             audio.src = audioPath;
             audio.audio = new Audio(
               require(process.env.VUE_APP_PATH_TO_AUDIO_FOLDER + audioPath),
