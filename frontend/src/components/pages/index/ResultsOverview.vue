@@ -2,7 +2,7 @@
   <v-data-table hide-default-footer :headers="resultsHeaders" :items="results">
     <template v-slot:item.index="{index}">{{ index + 1 }}</template
     ><template v-slot:item.index="{index}">{{ index + 1 }}</template>
-    <template v-slot:item.actions="{}">
+    <template v-slot:item.actions="{item}">
       <v-menu offset-y bottom>
         <template #activator="{on,attrs}">
           <v-btn text v-on="on" v-bind="attrs">Export</v-btn>
@@ -11,7 +11,7 @@
           <v-list-item
             v-for="({title, onClick}, index) in downloadOptions"
             :key="index"
-            @click="onClick"
+            @click="onClick(item._id)"
           >
             <v-list-item-title v-text="title" />
             <v-list-item-icon>
@@ -21,35 +21,7 @@
         </v-list>
       </v-menu>
     </template>
-    <!-- <template v-slot:expanded-item="{headers, item}">
-      <td class="pa-1" :colspan="headers.length + 1">
-        <v-card flat>
-          <v-card-text> </v-card-text>
-          <v-divider />
-          <v-card-actions>
-            <v-btn small>
-              Export
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </td>
-    </template> -->
   </v-data-table>
-  <!-- <v-row class="caption">
-    <v-col>ID</v-col>
-    <v-col>Taken at</v-col>
-    <v-col cols="2">Action</v-col>
-  </v-row>
-  <div v-for="result in item.results" :key="result._id">
-    <v-row>
-      <v-col>{{ result._id }}</v-col>
-      <v-col>{{ result.createdAt }}</v-col>
-      <v-col cols="2">
-        <v-btn>Export</v-btn>
-      </v-col>
-    </v-row>
-    <v-divider></v-divider> -->
 </template>
 <script>
 export default {
@@ -57,14 +29,67 @@ export default {
   data: () => ({}),
   props: {results: Array},
   methods: {
-    exportData(id) {
-      console.log(id);
+    convertToCSV(json) {
+      const replacer = (key, value) => (value === null ? 'No value' : value); // specify how you want to handle null values here
+      const header = Object.keys(json[0]);
+      const csv = [
+        header.join(';'), // header row first
+        ...json.map((row) =>
+          header
+            .map((fieldName) => JSON.stringify(row[fieldName], replacer))
+            .join(';'),
+        ),
+      ].join('\r\n');
+      return csv;
     },
-    exportToCSV() {
-      console.log('CSV');
+    exportToCSV(id) {
+      const json = this.results.find((item) => item._id === id).data;
+      const csv = this.convertToCSV(json);
+      const data = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+      const fileName = `${id}.csv`;
+      if (navigator.msSaveBlob) {
+        // IE 10+
+        navigator.msSaveBlob(data, fileName);
+      } else {
+        const link = document.createElement('a');
+        if (link.download !== undefined) {
+          // feature detection
+          // Browsers that support HTML5 download attribute
+          const url = URL.createObjectURL(data);
+          link.setAttribute('href', url);
+          link.setAttribute('download', fileName);
+          link.style.visibility = 'hidden';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      }
     },
-    exportToJSON() {
-      console.log('JSON');
+    exportToJSON(id) {
+      const data = new Blob(
+        [JSON.stringify(this.results.find((item) => item._id === id).data)],
+        {
+          type: 'data:application/json',
+        },
+      );
+      const fileName = `${id}.json`;
+      if (window.navigator.msSaveOrOpenBlob) {
+        // ie11
+        window.navigator.msSaveOrOpenBlob(data, fileName);
+      } else {
+        const link = document.createElement('a');
+        if (link.download !== undefined) {
+          // feature detection
+          // Browsers that support HTML5 download attribute
+          const url = URL.createObjectURL(data);
+          link.setAttribute('href', url);
+          link.setAttribute('download', fileName);
+          link.style.visibility = 'hidden';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      }
     },
   },
   computed: {
