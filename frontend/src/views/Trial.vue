@@ -17,7 +17,7 @@
       <v-card-actions>
         <v-btn to="/" plain>Return to overview</v-btn>
         <v-spacer />
-        <v-btn text @click="runTrials">Retake</v-btn>
+        <v-btn text @click="retake">Retake</v-btn>
       </v-card-actions>
     </v-card>
     <div class="absolute-center" v-else-if="!trialStarted">
@@ -48,7 +48,16 @@ export default {
     ...mapState(['isFullScreen']),
   },
   methods: {
-    ...mapActions(['toggleFullScreen']),
+    ...mapActions(['toggleFullScreen', 'connectEyetracker']),
+    async retake() {
+      const status = await this.connectEyetracker(this.$route.params.id);
+      if (status === 200) {
+        this.runTrials();
+      } else {
+        console.log('No connection to eyetracker possible');
+      }
+    },
+
     runTrials() {
       this.trialStarted = true;
       this.trialEnded = false;
@@ -170,10 +179,7 @@ export default {
     },
   },
   async mounted() {
-    const status = await this.$store.dispatch(
-      'connectEyetracker',
-      this.$route.params.id,
-    );
+    const status = await this.connectEyetracker(this.$route.params.id);
     if (status === 200) {
       const trial = await this.$store.dispatch(
         'getTrial',
