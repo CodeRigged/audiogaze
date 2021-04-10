@@ -185,7 +185,6 @@ export default {
         'getTrial',
         this.$route.params.id,
       );
-      console.log(trial);
       const {tracks} = trial;
       this.trials = this.mapTrack(tracks);
     }

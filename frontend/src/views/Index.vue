@@ -29,12 +29,12 @@
             </v-card-text>
             <v-divider />
             <v-card-actions>
-              <v-btn small>
+              <v-btn disabled small>
                 Export all results
                 <v-icon>mdi-download</v-icon>
               </v-btn>
               <v-spacer />
-              <v-btn small>
+              <v-btn :to="`preview/trial/${item._id}`" small>
                 View Trial
                 <v-icon>mdi-eye</v-icon>
               </v-btn>
