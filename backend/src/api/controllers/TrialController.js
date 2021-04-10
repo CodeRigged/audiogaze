@@ -80,16 +80,18 @@ const syncData = async (req, res) => {
           const {data, timestamp: eyetrackerTime} = eyetrackerData[
             dataRecordStartIndex
           ];
-          const eyetrackerAttributes = data.REC._attributes;
-          const timestamp =
-            eyetrackerTime /* + dataRecordStartTime - imgStartTime */ -
-            startTime;
+          if (data.REC) {
+            const eyetrackerAttributes = data.REC._attributes;
+            const timestamp =
+              eyetrackerTime /* + dataRecordStartTime - imgStartTime */ -
+              startTime;
 
-          results.push({
-            imgSrc,
-            timestamp,
-            ...eyetrackerAttributes,
-          });
+            results.push({
+              imgSrc,
+              timestamp,
+              ...eyetrackerAttributes,
+            });
+          }
         }
       }
     }
@@ -125,7 +127,6 @@ const syncData = async (req, res) => {
           } else {
             value.audioSrc = null;
           }
-          // console.log(value);
           return value;
         });
       }
@@ -135,6 +136,7 @@ const syncData = async (req, res) => {
         res.status(SuccessfulCodes.OK).send('Data successfully synchronized.');
       })
       .catch((e) => {
+        console.log(e);
         res.sendStatus(ServerErrorCodes.INTERNAL_SERVER_ERROR);
       });
   } catch (e) {

@@ -29,8 +29,8 @@ const loadData = async (req, res, next) => {
       element.data = xml2js(element.data, {compact: true});
       return element;
     });
-    EyetrackerService.disableDataStream();
     next();
+    EyetrackerService.disableDataStream();
   } else {
     res.sendStatus(ServerErrorCodes.SERVICE_UNAVAILABLE);
   }

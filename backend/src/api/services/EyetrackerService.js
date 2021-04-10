@@ -16,6 +16,7 @@ class EyetrackerService {
   ];
 
   connect(options) {
+    this.client = new net.Socket();
     this.client.setEncoding('utf-8');
     this.client.setTimeout(5000, () => {
       console.log('Ended Gazepoint eyetracker [timeout].');
@@ -63,18 +64,9 @@ class EyetrackerService {
   disableDataStream() {
     this.client.end();
     this.client.on('close', () => {
-      this.data = [];
       this.connected = false;
+      this.data = [];
       console.log('Gazepoint eyetracker closed.');
-    });
-  }
-
-  enableSelectedDataStream(variables) {
-    this.client.on('connect', () => {
-      console.log('Connected with Gazepoint API server');
-      // Send message to Gazepoint API server to enable data
-      this.client.write('<SET ID="ENABLE_SEND_DATA" STATE="1" />\r\n');
-      this.dataVariables.forEach((dataVariables) => {});
     });
   }
 }
