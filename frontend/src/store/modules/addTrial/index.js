@@ -47,7 +47,8 @@ const addTrial = {
     updateTimeUnit(state, timeUnit) {
       state.timeUnit = timeUnit;
     },
-    addTrack(state, track) {
+    addTrack(state) {
+      const track = state.tracks[state.tracks.length - 1];
       const {to} = track.timeRange;
       const newRow = defaultTrackState();
       newRow.timeRange.from = to;
@@ -76,7 +77,7 @@ const addTrial = {
         if (previous >= 0) {
           state.tracks[previous].timeRange.to = timeRange.from;
         }
-        if (next === state.tracks.length - 1) {
+        if (next <= state.tracks.length - 1) {
           state.tracks[next].timeRange.from = timeRange.to;
         }
       } else {
@@ -88,18 +89,32 @@ const addTrial = {
         ) {
           state.tracks[trackIndex].timeRange.to = timeRange.to;
         }
-        if (previous >= 0) {
+        if (
+          previous >= 0 &&
+          state.tracks[trackIndex].audios[previous].timeRange.to >
+            timeRange.from
+        ) {
           state.tracks[trackIndex].audios[previous].timeRange.to =
             timeRange.from;
         }
-        if (next === audiosLength - 1) {
-          log('test');
+        if (
+          next <= audiosLength - 1 &&
+          state.tracks[trackIndex].audios[next].timeRange.from < timeRange.to
+        ) {
           state.tracks[trackIndex].audios[next].timeRange.from = timeRange.to;
         }
       }
     },
     addAudio(state, trackIndex) {
-      state.tracks[trackIndex].audios.push(defaultAudioState());
+      const newRow = defaultAudioState();
+      const audios = state.tracks[trackIndex].audios;
+      const audio = audios[audios.length - 1];
+      if (audio) {
+        const to = audio.timeRange.to;
+        newRow.timeRange.from = to;
+        newRow.timeRange.to = to;
+      }
+      state.tracks[trackIndex].audios.push(newRow);
     },
     removeAudio(state, {trackIndex, audioIndex}) {
       state.tracks[trackIndex].audios.splice(audioIndex, 1);

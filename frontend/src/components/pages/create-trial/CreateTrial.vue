@@ -11,7 +11,7 @@
         :index="trackIndex"
         :includesAudio="track.audios.length > 0"
         :removable="tracksArray.length === 1"
-        @add="addTrack(track)"
+        @add="addTrack"
         @open="switchViewOfAudioRow(trackIndex, track.audios.length === 0)"
         @remove="removeTrack(trackIndex)"
         @timerange-change="
