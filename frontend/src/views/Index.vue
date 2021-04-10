@@ -25,15 +25,12 @@
         <td class="pa-1" :colspan="headers.length + 1">
           <v-card flat>
             <v-card-text>
-              <v-row class="caption">
-                <v-col>ID</v-col>
-                <v-col>Timestamp</v-col>
-              </v-row>
+              <results-overview :results="item.results" />
             </v-card-text>
             <v-divider />
             <v-card-actions>
               <v-btn small>
-                Export data
+                Export all results
                 <v-icon>mdi-download</v-icon>
               </v-btn>
               <v-spacer />
@@ -55,11 +52,15 @@
 <script>
 import {paths} from '@/utils/Enums';
 import {mapState} from 'vuex';
+import ResultsOverview from '@/components/pages/index/ResultsOverview.vue';
 export default {
   name: 'index',
   title: 'Home',
   path: paths.index,
   data: () => ({expanded: [], singleExpand: false}),
+  components: {
+    ResultsOverview,
+  },
   description: 'Overview page',
   computed: {
     ...mapState({
@@ -78,10 +79,16 @@ export default {
           align: 'start',
           value: 'duration',
         },
+
         {
           text: 'Created at',
           align: 'start',
           value: 'createdAt',
+        },
+        {
+          text: 'Updated at',
+          align: 'start',
+          value: 'updatedAt',
         },
         {text: '', value: 'data-table-expand'},
       ];
