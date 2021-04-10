@@ -18,6 +18,30 @@ class TrialService {
       });
     });
   }
+  update(id, data) {
+    return new Promise((resolve, reject) => {
+      Trial.findByIdAndUpdate(
+        id,
+        {
+          $push: {
+            results: {
+              data,
+            },
+          },
+        },
+        {new: true},
+        (err, updatedTrial) => {
+          if (err) {
+            console.error(err);
+            reject(false);
+          } else {
+            console.log(`Successfully updated trial ${id}: ${updatedTrial}`);
+            resolve(true);
+          }
+        },
+      );
+    });
+  }
   getById(id) {
     return Trial.findById(id, (err, trial) => {
       err && error(err);

@@ -1,0 +1,92 @@
+import mongoose from 'mongoose';
+
+const required = true;
+
+const singleRecord = new mongoose.Schema({
+  FPOGD: {
+    type: String,
+    required,
+  },
+  FPOGID: {
+    type: String,
+    required,
+  },
+  FPOGS: {
+    type: String,
+    required,
+  },
+  FPOGV: {
+    type: String,
+    required,
+  },
+  FPOGX: {
+    type: String,
+    required,
+  },
+  FPOGY: {
+    type: String,
+    required,
+  },
+  LPMM: {
+    type: String,
+    required,
+  },
+  LPMMV: {
+    type: String,
+    required,
+  },
+  LPOGV: {
+    type: String,
+    required,
+  },
+  LPOGX: {
+    type: String,
+    required,
+  },
+  LPOGY: {
+    type: String,
+    required,
+  },
+  RPMM: {
+    type: String,
+    required,
+  },
+  RPMMV: {
+    type: String,
+    required,
+  },
+  RPOGV: {
+    type: String,
+    required,
+  },
+  RPOGX: {
+    type: String,
+    required,
+  },
+  RPOGY: {
+    type: String,
+    required,
+  },
+  audioSrc: {
+    type: String,
+  },
+  imgSrc: {
+    type: String,
+    required,
+  },
+  timestamp: {
+    type: Number,
+    required,
+  },
+});
+
+const recordsSchema = new mongoose.Schema(
+  {
+    data: [{type: singleRecord, immutable: true}],
+  },
+  {
+    timestamps: {takenAt: 'created_at'},
+  },
+);
+
+export default recordsSchema;

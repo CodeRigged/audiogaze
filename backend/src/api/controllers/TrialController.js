@@ -1,5 +1,9 @@
 import TrialService from '../services/TrialService';
-import {ClientErrorCodes, SuccessfulCodes} from 'more-http-status-codes';
+import {
+  ClientErrorCodes,
+  ServerErrorCodes,
+  SuccessfulCodes,
+} from 'more-http-status-codes';
 
 /** @type {import('express').RequestHandler} */
 const addTrial = async (req, res) => {
@@ -39,42 +43,100 @@ const getTrials = async (req, res) => {
 /** @type {import('express').RequestHandler} */
 const syncData = async (req, res) => {
   try {
+    const id = req.params.id;
     /**  @type {Array} */
     const clientData = req.body;
-    clientData.sort((x, y) => y.timestamp - x.timestamp);
+    // clientData.sort((x, y) => x.timestamp - y.timestamp);
     /**  @type {Array} */
     const eyetrackerData = req.eyetrackerData;
+    var results = [];
 
-    const results = [];
-
+    const startTime = clientData[0].timestamp;
     for (let index = 0; index < clientData.length; index++) {
-      const {type, src, timestamp: startTime, started} = clientData[index];
+      const {type, src: imgSrc, timestamp: imgStartTime, started} = clientData[
+        index++
+      ];
       if (started && type === 'img') {
-        const endItem = clientData.find(
-          (item) => item.src === src && !item.started,
+        let dataRecordStartIndex = eyetrackerData.findIndex(
+          (data) => data.timestamp > imgStartTime,
         );
 
-        console.log();
+        let endItem = clientData.find(
+          (item) => imgSrc === item.src && !item.started && item.type === 'img',
+        );
 
-        var startIndex =
-          eyetrackerData.findIndex((data) => data.timestamp > startTime) - 1;
-        const endIndex =
-          eyetrackerData.findIndex(
-            (data) => data.timestamp > endItem.timestamp,
-          ) - 1;
+        let dataRecordEndIndex = eyetrackerData.findIndex(
+          (data) => data.timestamp > endItem.timestamp,
+        );
 
-        for (startIndex; startIndex < endIndex; startIndex++) {
-          const {data, timestamp: eyetrackerTime} = eyetrackerData[startIndex];
+        /*       const dataRecordStartTime =
+          eyetrackerData[dataRecordStartIndex].timestamp; */
+
+        for (
+          dataRecordStartIndex;
+          dataRecordStartIndex < dataRecordEndIndex;
+          dataRecordStartIndex++
+        ) {
+          const {data, timestamp: eyetrackerTime} = eyetrackerData[
+            dataRecordStartIndex
+          ];
           const eyetrackerAttributes = data.REC._attributes;
+          const timestamp =
+            eyetrackerTime /* + dataRecordStartTime - imgStartTime */ -
+            startTime;
+
           results.push({
-            src,
-            timestamp: endItem.timestamp - eyetrackerTime,
+            imgSrc,
+            timestamp,
             ...eyetrackerAttributes,
           });
         }
       }
     }
-    res.send(results);
+    for (let index = 0; index < clientData.length; index++) {
+      const {
+        type,
+        src: audioSrc,
+        timestamp: audioStartTime,
+        started,
+      } = clientData[index];
+      if (started && type === 'audio') {
+        let audioEndTime = clientData.find(
+          (item) =>
+            audioSrc === item.src && !item.started && item.type === 'audio',
+        ).timestamp;
+
+        let audioEndIndex = clientData.findIndex(
+          (item) =>
+            audioSrc === item.src && !item.started && item.type === 'audio',
+        );
+        index = audioEndIndex + 1;
+
+        results = results.map((value) => {
+          if (value.audioSrc) {
+            return value;
+          }
+          const timestamp = value.timestamp;
+          if (
+            audioStartTime - startTime <= timestamp &&
+            timestamp <= audioEndTime - startTime
+          ) {
+            value.audioSrc = audioSrc;
+          } else {
+            value.audioSrc = null;
+          }
+          // console.log(value);
+          return value;
+        });
+      }
+    }
+    TrialService.update(id, results)
+      .then((success) => {
+        res.status(SuccessfulCodes.OK).send('Data successfully synchronized.');
+      })
+      .catch((e) => {
+        res.sendStatus(ServerErrorCodes.INTERNAL_SERVER_ERROR);
+      });
   } catch (e) {
     console.log(e);
     res.sendStatus(ClientErrorCodes.BAD_REQUEST);

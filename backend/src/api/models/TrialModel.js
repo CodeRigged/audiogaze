@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import recordsSchema from './RecordModel';
 import trackSchema from './TrackModel';
 
 const required = true;
@@ -15,7 +16,7 @@ const trialSchema = new mongoose.Schema(
       required,
     },
     results: {
-      type: Array,
+      type: [recordsSchema],
     },
   },
   {
