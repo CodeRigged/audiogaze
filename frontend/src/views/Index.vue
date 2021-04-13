@@ -97,7 +97,7 @@ export default {
       return this.$store.state.trials;
     },
   },
-  async created() {
+  async mounted() {
     await this.$store.dispatch('loadTrials');
   },
 };

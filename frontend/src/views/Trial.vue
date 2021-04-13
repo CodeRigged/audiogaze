@@ -57,7 +57,39 @@ export default {
         console.log('No connection to eyetracker possible');
       }
     },
+    // async play() {
+    // TODO
 
+    //   const audioElement = new Audio(
+    //     require(process.env.VUE_APP_PATH_TO_AUDIO_FOLDER +
+    //       `One Down Dog - Wes Hutchinson.mp3`),
+    //   );
+
+    //   const audioCtx = new AudioContext();
+
+    //   const audioSrc = audioCtx.createMediaElementSource(audioElement);
+
+    //   const volumeNodeL = new GainNode(audioCtx);
+    //   const volumeNodeR = new GainNode(audioCtx);
+
+    //   volumeNodeL.gain.value = 0;
+    //   volumeNodeR.gain.value = 2;
+
+    //   const splitterNode = audioCtx.createChannelSplitter(2);
+    //   const mergerNode = audioCtx.createChannelMerger(2);
+
+    //   audioSrc.connect(splitterNode);
+
+    //   splitterNode.connect(volumeNodeL, 0);
+    //   splitterNode.connect(volumeNodeR, 1);
+
+    //   volumeNodeL.connect(mergerNode, 0, 0); // connect INPUT channel 0
+    //   volumeNodeR.connect(mergerNode, 0, 1); // connect INPUT channel 1
+
+    //   mergerNode.connect(audioCtx.destination);
+
+    //   audioElement.play();
+    // },
     runTrials() {
       this.trialStarted = true;
       this.trialEnded = false;
