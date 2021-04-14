@@ -26,7 +26,7 @@ export default new Vuex.Store({
       dispatch('setInterceptors');
       document.addEventListener('fullscreenchange', (e) => {
         if (!(document.webkitIsFullScreen || document.mozFullScreen || false)) {
-          commit('isFullScreen', false);
+          commit('appState/isFullScreen', false);
         }
       });
     },
@@ -48,7 +48,17 @@ export default new Vuex.Store({
             font-weight:800
             `,
           );
-          console.log(message);
+          console.log(
+            `%c${message}`,
+            `
+            display: inline-block;
+            padding: 2px;
+            border-bottom: 2px dashed #77aaff;
+            font-size:12px; 
+            color:rgb(255, 222, 36);
+            font-weight:800
+          `,
+          );
 
           if (message) {
             dispatch('appState/setLoading', message);
