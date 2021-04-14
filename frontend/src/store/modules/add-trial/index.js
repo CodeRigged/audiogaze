@@ -136,6 +136,9 @@ const addTrial = {
         )
         .then((res) => {
           dispatch('updateTrials', res.data, {root: true});
+          dispatch('appState/setInformation', `Successfully added new trial.`, {
+            root: true,
+          });
           dispatch('resetTrial');
         })
         .catch((e) => {

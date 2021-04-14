@@ -13,6 +13,19 @@ const defaultAppState = () => ({
   loadingMessage: null,
   showErrorOverlay: false,
   errorMessage: null,
+  loading: {
+    isVisible: false,
+    message: null,
+  },
+  errorOverlay: {
+    isVisible: false,
+    message: null,
+  },
+  infoSnackbar: {
+    isVisible: false,
+    message: null,
+    timeout: 2000,
+  },
 });
 
 const namespaced = true;
@@ -36,9 +49,24 @@ const addTrial = {
     setErrorMessage(state, message) {
       state.errorMessage = message;
     },
+    setMessage(state, {key, message}) {
+      state[key].message = message;
+    },
+    setVisibility(state, {key, isVisible}) {
+      state[key].isVisible = isVisible;
+    },
   },
 
   actions: {
+    setInformation({commit}, message) {
+      if (typeof message === 'string') {
+        commit('setVisibility', {key: 'infoSnackbar', isVisible: true});
+        commit('setMessage', {key: 'infoSnackbar', message});
+      } else {
+        commit('setVisibility', {key: 'infoSnackbar', isVisible: false});
+        commit('setMessage', {key: 'infoSnackbar', message: null});
+      }
+    },
     setErrorVisibility({commit}, message) {
       if (typeof message === 'string') {
         commit('errorOverlay', true);
@@ -65,7 +93,17 @@ const addTrial = {
     },
   },
 
-  getters: {},
+  getters: {
+    infoSnackbarVisible(state) {
+      return state.infoSnackbar.isVisible;
+    },
+    infoSnackbarMessage(state) {
+      return state.infoSnackbar.message;
+    },
+    snackbarTimeout(state) {
+      return state.infoSnackbar.timeout;
+    },
+  },
 };
 
 export default addTrial;
