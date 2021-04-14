@@ -3,10 +3,10 @@
     <v-data-table
       :headers="trialHeaders"
       :items="trials"
-      single-expand
       :items-per-page="15"
       :expanded.sync="expanded"
       item-key="_id"
+      single-expand
       show-expand
       class="elevation-1"
     >

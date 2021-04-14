@@ -131,8 +131,7 @@ const addTrial = {
           '/trials',
           {trial: state},
           {
-            // headers: {'Content-Type': 'multipart/form-data'},
-            message: 'Adding Trial...',
+            message: 'Saving Trial',
           },
         )
         .then((res) => {
@@ -140,7 +139,13 @@ const addTrial = {
           dispatch('resetTrial');
         })
         .catch((e) => {
-          console.log(e);
+          dispatch(
+            'setErrorVisibility',
+            `Couldn't add trial. Please check if you have correctly input all fields.`,
+            {
+              root: true,
+            },
+          );
         });
     },
     resetTrial({commit}) {

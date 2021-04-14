@@ -73,7 +73,6 @@ export default {
   watch: {},
   async created() {
     this.trial = await this.$store.dispatch('getTrial', this.$route.params.id);
-    console.log(this.trial);
   },
 };
 </script>

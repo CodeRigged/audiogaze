@@ -1,7 +1,7 @@
 <template>
   <div class="absolute-center">
     <div>
-      {{ loadingMessage ? loadingMessage : 'Loading, please wait...' }}
+      {{ loadingMessage ? loadingMessage : 'Loading, please wait' }}...
       <v-progress-circular :size="20" color="primary" width="3" indeterminate />
     </div>
   </div>

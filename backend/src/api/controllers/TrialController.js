@@ -13,7 +13,7 @@ const addTrial = async (req, res) => {
     added &&
       res.status(SuccessfulCodes.CREATED).json(await TrialService.getAll());
   } catch (e) {
-    res.sendStatus(ClientErrorCodes.BAD_REQUEST);
+    res.status(ClientErrorCodes.BAD_REQUEST).send({preventRedirect: true});
   }
 };
 

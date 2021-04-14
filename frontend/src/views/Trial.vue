@@ -217,8 +217,10 @@ export default {
         'getTrial',
         this.$route.params.id,
       );
-      const {tracks} = trial;
-      this.trials = this.mapTrack(tracks);
+      if (trial) {
+        const {tracks} = trial;
+        this.trials = this.mapTrack(tracks);
+      }
     }
   },
 };

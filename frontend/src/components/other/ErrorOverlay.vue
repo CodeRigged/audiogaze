@@ -1,23 +1,31 @@
 <template>
-  <v-overlay opacity="0.5">
-    <v-card width="750" class="pa-2" light>
+  <v-overlay v-if="showErrorOverlay" opacity="0.5">
+    <v-card width="500" class="pa-2" light>
       <v-card-title>
+        Something went wrong!
         <v-spacer />
-        <app-button
-          color="black"
-          @button-pressed="setErrorVisibility(false)"
-          icon
-          svg="close"
-        />
+        <v-icon color="black" @click="setErrorVisibility">
+          mdi-close
+        </v-icon>
       </v-card-title>
-      <v-card-text class="title error--text">{{}}</v-card-text>
+      <v-card-text>{{ errorMessage }}</v-card-text>
+      <v-divider />
+      <v-card-actions>
+        <v-spacer />
+        <v-btn @click="setErrorVisibility" plain small>Continue</v-btn>
+      </v-card-actions>
     </v-card>
   </v-overlay>
 </template>
 <script>
+import {mapActions, mapState} from 'vuex';
 export default {
   name: 'error-overlay',
   description:
     'This is the overlay which appears when an api call returns an error.',
+  methods: {...mapActions(['setErrorVisibility'])},
+  computed: {
+    ...mapState(['showErrorOverlay', 'errorMessage']),
+  },
 };
 </script>
