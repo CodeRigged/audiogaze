@@ -15,7 +15,7 @@ export {duplicateMixin};
 
 const appStateMixin = {
   methods: {
-    ...mapActions('app-state', ['setErrorVisibility']),
+    ...mapActions('app-state', ['setError']),
   },
   computed: {
     ...mapState('app-state', [

@@ -9,10 +9,6 @@ const log = console.log;
  */
 const defaultAppState = () => ({
   isFullScreen: false,
-  isLoading: false,
-  loadingMessage: null,
-  showErrorOverlay: false,
-  errorMessage: null,
   loading: {
     isVisible: false,
     message: null,
@@ -34,20 +30,8 @@ const addTrial = {
   state: defaultAppState(),
 
   mutations: {
-    loading(state, isLoading) {
-      state.isLoading = isLoading;
-    },
-    errorOverlay(state, isError) {
-      state.showErrorOverlay = isError;
-    },
     isFullScreen(state, isFullScreen) {
       state.isFullScreen = isFullScreen;
-    },
-    setLoadingMessage(state, message) {
-      state.loadingMessage = message;
-    },
-    setErrorMessage(state, message) {
-      state.errorMessage = message;
     },
     setMessage(state, {key, message}) {
       state[key].message = message;
@@ -67,18 +51,23 @@ const addTrial = {
         commit('setMessage', {key: 'infoSnackbar', message: null});
       }
     },
-    setErrorVisibility({commit}, message) {
+    setError({commit}, message) {
       if (typeof message === 'string') {
-        commit('errorOverlay', true);
-        commit('setErrorMessage', message);
+        commit('setVisibility', {key: 'errorOverlay', isVisible: true});
+        commit('setMessage', {key: 'errorOverlay', message});
       } else {
-        commit('errorOverlay', false);
-        commit('setErrorMessage', null);
+        commit('setVisibility', {key: 'errorOverlay', isVisible: false});
+        commit('setMessage', {key: 'errorOverlay', message: null});
       }
     },
-    setLoadingComplete({commit}) {
-      commit('loading', false);
-      commit('setLoadingMessage', null);
+    setLoading({commit}, message) {
+      if (message) {
+        commit('setVisibility', {key: 'loading', isVisible: true});
+        commit('setMessage', {key: 'loading', message});
+      } else {
+        commit('setVisibility', {key: 'loading', isVisible: false});
+        commit('setMessage', {key: 'loading', message: null});
+      }
     },
     toggleFullScreen({commit}) {
       if (!document.fullscreenElement) {
@@ -94,14 +83,26 @@ const addTrial = {
   },
 
   getters: {
+    errorOverlayVisbility(state) {
+      return state.errorOverlay.isVisible;
+    },
+    errorOverlayMessage(state) {
+      return state.errorOverlay.message;
+    },
     infoSnackbarVisible(state) {
       return state.infoSnackbar.isVisible;
     },
     infoSnackbarMessage(state) {
       return state.infoSnackbar.message;
     },
-    snackbarTimeout(state) {
+    infoSnackbarTimeout(state) {
       return state.infoSnackbar.timeout;
+    },
+    loadingVisbility(state) {
+      return state.loading.isVisible;
+    },
+    loadingMessage(state) {
+      return state.loading.message;
     },
   },
 };

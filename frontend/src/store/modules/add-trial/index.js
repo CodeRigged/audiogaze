@@ -143,7 +143,7 @@ const addTrial = {
         })
         .catch((e) => {
           dispatch(
-            'appState/setErrorVisibility',
+            'appState/setError',
             `Couldn't add trial. Please check if you have correctly input all fields.`,
             {
               root: true,

@@ -14,22 +14,11 @@ export default new Vuex.Store({
       trial: {number: 2, image: 4, timeRange: 4, actions: 2},
       audio: {number: 1, track: 3, timeRange: 4, channel: 2, actions: 2},
     },
-    isFullScreen: false,
-    isLoading: false,
-    loadingMessage: null,
-    showErrorOverlay: false,
-    errorMessage: null,
   },
   mutations: {
     updateState(state, input) {
       const {key, data} = input;
       state[key] = data;
-    },
-    loading(state, isLoading) {
-      state.isLoading = isLoading;
-    },
-    isFullScreen(state, isFullScreen) {
-      state.isFullScreen = isFullScreen;
     },
   },
   actions: {
@@ -60,9 +49,11 @@ export default new Vuex.Store({
             `,
           );
           console.log(message);
-          commit('appState/loading', true);
+
           if (message) {
-            commit('appState/setLoadingMessage', message);
+            dispatch('appState/setLoading', message);
+          } else {
+            dispatch('appState/setLoading', null);
           }
           return config;
         },
@@ -72,14 +63,14 @@ export default new Vuex.Store({
       );
       response.use(
         (res) => {
-          dispatch('appState/setLoadingComplete');
+          dispatch('appState/setLoading');
           return res;
         },
         (err) => {
           if (!err.response.data.preventRedirect) {
             router.push('/');
           }
-          dispatch('appState/setLoadingComplete');
+          dispatch('appState/setLoading');
           return Promise.reject(err);
         },
       );
@@ -93,7 +84,7 @@ export default new Vuex.Store({
           commit('updateState', {key: 'trials', data: res.data});
         })
         .catch((e) => {
-          dispatch('appState/setErrorVisibility', `Couldn't load trials.`);
+          dispatch('appState/setError', `Couldn't load trials.`);
         });
     },
     async connectEyetracker({dispatch}) {
@@ -103,7 +94,7 @@ export default new Vuex.Store({
         })
         .catch((e) => {
           dispatch(
-            'appState/setErrorVisibility',
+            'appState/setError',
             `Couldn't establich connection  with eyetracker.`,
           );
         });
@@ -118,10 +109,7 @@ export default new Vuex.Store({
           message: 'Preparing trial',
         })
         .catch((e) => {
-          dispatch(
-            'appState/setErrorVisibility',
-            `Couldn't find trial with given id.`,
-          );
+          dispatch('appState/setError', `Couldn't find trial with given id.`);
         });
       if (res) {
         const data = res.data;
@@ -135,7 +123,7 @@ export default new Vuex.Store({
         })
         .catch((e) => {
           dispatch(
-            'appState/setErrorVisibility',
+            'appState/setError',
             `Something went wrong with the synchronization process.`,
           );
         });

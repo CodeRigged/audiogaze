@@ -1,5 +1,10 @@
 <template>
-  <v-snackbar color="success" top v-model="snackbar" :timeout="snackbarTimeout">
+  <v-snackbar
+    color="success"
+    top
+    v-model="snackbar"
+    :timeout="infoSnackbarTimeout"
+  >
     {{ infoSnackbarMessage }}
     <template v-slot:action="{attrs}">
       <v-icon v-bind="attrs" @click="setInformation">
@@ -23,7 +28,7 @@ export default {
     ...mapGetters('appState', [
       'infoSnackbarVisible',
       'infoSnackbarMessage',
-      'snackbarTimeout',
+      'infoSnackbarTimeout',
     ]),
     snackbar: {
       get() {

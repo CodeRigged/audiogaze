@@ -4,8 +4,8 @@
     <error-overlay />
     <breadcrumb v-if="!isFullScreen" />
     <v-main class="background">
-      <loading-filter v-if="isLoading" />
-      <router-view v-show="!isLoading" />
+      <loading-filter v-if="loadingVisbility" />
+      <router-view v-show="!loadingVisbility" />
     </v-main>
     <app-footer v-if="!isFullScreen" />
   </v-app>
@@ -15,7 +15,7 @@
 import Breadcrumb from '@/components/navigation/Breadcrumb.vue';
 import ErrorOverlay from '@/components/other/ErrorOverlay.vue';
 import LoadingFilter from '@/components/other/LoadingFilter.vue';
-import {mapState} from 'vuex';
+import {mapGetters, mapState} from 'vuex';
 import Footer from './components/navigation/Footer.vue';
 import InfoSnackbar from './components/other/InfoSnackbar.vue';
 
@@ -29,7 +29,10 @@ export default {
   },
   name: 'app',
   methods: {},
-  computed: {...mapState('appState', ['isLoading', 'isFullScreen'])},
+  computed: {
+    ...mapGetters('appState', ['loadingVisbility']),
+    ...mapState('appState', ['isFullScreen']),
+  },
   watch: {},
   created() {
     this.$store.dispatch('setup');
