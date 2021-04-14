@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <info-snackbar />
     <error-overlay />
     <breadcrumb v-if="!isFullScreen" />
     <v-main class="background">
@@ -16,6 +17,7 @@ import ErrorOverlay from '@/components/other/ErrorOverlay.vue';
 import LoadingFilter from '@/components/other/LoadingFilter.vue';
 import {mapState} from 'vuex';
 import Footer from './components/navigation/Footer.vue';
+import InfoSnackbar from './components/other/InfoSnackbar.vue';
 
 export default {
   components: {
@@ -23,10 +25,11 @@ export default {
     ErrorOverlay,
     Breadcrumb,
     LoadingFilter,
+    InfoSnackbar,
   },
   name: 'app',
   methods: {},
-  computed: {...mapState(['isLoading', 'isFullScreen'])},
+  computed: {...mapState('appState', ['isLoading', 'isFullScreen'])},
   watch: {},
   created() {
     this.$store.dispatch('setup');

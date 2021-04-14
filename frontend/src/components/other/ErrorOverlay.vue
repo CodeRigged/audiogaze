@@ -23,9 +23,9 @@ export default {
   name: 'error-overlay',
   description:
     'This is the overlay which appears when an api call returns an error.',
-  methods: {...mapActions(['setErrorVisibility'])},
+  methods: {...mapActions('appState', ['setErrorVisibility'])},
   computed: {
-    ...mapState(['showErrorOverlay', 'errorMessage']),
+    ...mapState('appState', ['showErrorOverlay', 'errorMessage']),
   },
 };
 </script>

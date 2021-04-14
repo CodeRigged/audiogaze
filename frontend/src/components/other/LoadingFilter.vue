@@ -13,7 +13,7 @@ export default {
   data: () => ({}),
   props: {},
   methods: {},
-  computed: {...mapState(['loadingMessage'])},
+  computed: {...mapState('appState', ['loadingMessage'])},
   watch: {},
 };
 </script>

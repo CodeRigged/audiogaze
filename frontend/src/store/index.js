@@ -28,17 +28,8 @@ export default new Vuex.Store({
     loading(state, isLoading) {
       state.isLoading = isLoading;
     },
-    errorOverlay(state, isError) {
-      state.showErrorOverlay = isError;
-    },
     isFullScreen(state, isFullScreen) {
       state.isFullScreen = isFullScreen;
-    },
-    setLoadingMessage(state, message) {
-      state.loadingMessage = message;
-    },
-    setErrorMessage(state, message) {
-      state.errorMessage = message;
     },
   },
   actions: {
@@ -57,12 +48,21 @@ export default new Vuex.Store({
           const {method, baseURL, url, message} = config;
           console.log(
             `%cMade ${method} request to ${baseURL + url}`,
-            'display: inline-block; padding: 4px ;background-color:#848484;border-radius: 0 40px 40px 0; font-size:14px; color:#9EFF8A; font-weight:800',
+            `
+            display: inline-block;
+            padding: 2px;
+            border: 1px solid #77aaff;
+            background-color:rgba(202, 198, 198, 0.1);
+            border-radius: 5px; 
+            font-size:12px; 
+            color:#37f76a; 
+            font-weight:800
+            `,
           );
           console.log(message);
-          commit('loading', true);
+          commit('appState/loading', true);
           if (message) {
-            commit('setLoadingMessage', message);
+            commit('appState/setLoadingMessage', message);
           }
           return config;
         },
@@ -72,42 +72,17 @@ export default new Vuex.Store({
       );
       response.use(
         (res) => {
-          dispatch('setLoadingComplete');
-
+          dispatch('appState/setLoadingComplete');
           return res;
         },
         (err) => {
           if (!err.response.data.preventRedirect) {
             router.push('/');
           }
-          dispatch('setLoadingComplete');
+          dispatch('appState/setLoadingComplete');
           return Promise.reject(err);
         },
       );
-    },
-    toggleFullScreen({commit}) {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-        commit('isFullScreen', true);
-      } else {
-        if (document.exitFullscreen) {
-          commit('isFullScreen', false);
-          document.exitFullscreen();
-        }
-      }
-    },
-    setErrorVisibility({commit}, message) {
-      if (typeof message === 'string') {
-        commit('errorOverlay', true);
-        commit('setErrorMessage', message);
-      } else {
-        commit('errorOverlay', false);
-        commit('setErrorMessage', null);
-      }
-    },
-    setLoadingComplete({commit}) {
-      commit('loading', false);
-      commit('setLoadingMessage', null);
     },
     async loadTrials({commit, dispatch}) {
       await Vue.axios
@@ -118,7 +93,7 @@ export default new Vuex.Store({
           commit('updateState', {key: 'trials', data: res.data});
         })
         .catch((e) => {
-          dispatch('setErrorVisibility', `Couldn't load trials.`);
+          dispatch('appState/setErrorVisibility', `Couldn't load trials.`);
         });
     },
     async connectEyetracker({dispatch}) {
@@ -128,7 +103,7 @@ export default new Vuex.Store({
         })
         .catch((e) => {
           dispatch(
-            'setErrorVisibility',
+            'appState/setErrorVisibility',
             `Couldn't establich connection  with eyetracker.`,
           );
         });
@@ -143,7 +118,10 @@ export default new Vuex.Store({
           message: 'Preparing trial',
         })
         .catch((e) => {
-          dispatch('setErrorVisibility', `Couldn't find trial with given id.`);
+          dispatch(
+            'appState/setErrorVisibility',
+            `Couldn't find trial with given id.`,
+          );
         });
       if (res) {
         const data = res.data;
@@ -157,7 +135,7 @@ export default new Vuex.Store({
         })
         .catch((e) => {
           dispatch(
-            'setErrorVisibility',
+            'appState/setErrorVisibility',
             `Something went wrong with the synchronization process.`,
           );
         });

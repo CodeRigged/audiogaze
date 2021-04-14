@@ -45,10 +45,11 @@ export default {
     data: [],
   }),
   computed: {
-    ...mapState(['isFullScreen']),
+    ...mapState('appState', ['isFullScreen']),
   },
   methods: {
-    ...mapActions(['toggleFullScreen', 'connectEyetracker']),
+    ...mapActions('appState', ['toggleFullScreen']),
+    ...mapActions(['connectEyetracker']),
     async retake() {
       const status = await this.connectEyetracker(this.$route.params.id);
       if (status === 200) {
@@ -141,13 +142,10 @@ export default {
               });
             }
           });
-          console.log(this.data);
-          const results = await this.$store.dispatch('sendResults', {
+          await this.$store.dispatch('sendResults', {
             id: this.$route.params.id,
             clientData: this.data,
           });
-
-          console.log(this.data, results);
 
           this.data = [];
           this.toggleFullScreen();
