@@ -3,6 +3,9 @@ import timeRangeSchema from './TimeRangeModel';
 
 const required = true;
 
+/**
+ *  Schema of audio.
+ */
 const audioSchema = new mongoose.Schema({
   number: {
     type: Number,

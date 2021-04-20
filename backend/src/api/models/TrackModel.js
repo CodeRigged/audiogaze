@@ -4,6 +4,9 @@ import timeRangeSchema from './TimeRangeModel';
 
 const required = true;
 
+/**
+ * Track schema.
+ */
 const trackSchema = new mongoose.Schema({
   number: {
     type: Number,

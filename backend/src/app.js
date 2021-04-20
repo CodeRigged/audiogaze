@@ -15,10 +15,14 @@ mongoose.connect(`mongodb://${config.HOST}/${config.DB_NAME}`, {
   useFindAndModify: false,
 });
 
+/* initialize database */
 const db = mongoose.connection;
 db.dropDatabase();
 
+/* action which will execute if connection to database results in an error */
 db.on('error', console.error.bind(console, 'connection error:'));
+
+/* action which will execute on successful connection to database */
 db.once('open', () => console.log('Connected to database.'));
 
 /* register your middleware functions */
@@ -29,6 +33,8 @@ app.use(express.urlencoded({extended: true}));
 app.use(middleware.timeLog);
 app.use(middleware.accessControl);
 
+// middleware registered
+
 /* register your API */
 app.use(/*optional endpoint: config.ENDPOINT, */ api);
 
@@ -37,6 +43,7 @@ app.listen(port, () => {
   console.log(`Server started at http://localhost:${port}`);
 });
 
+/* action which will execute if server is stopped through Ctrl+C keyboard input */
 process.on('SIGINT', () => {
   console.log('\nGracefully shutting down from SIGINT (Ctrl-C)');
   process.exit(1);

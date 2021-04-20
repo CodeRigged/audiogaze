@@ -1,6 +1,7 @@
 import dotenvFlow from 'dotenv-flow';
 dotenvFlow.config();
 
+// variables read from .env.local-file
 const {
   PORT = /* default PORT */ '3000',
   ENDPOINT = /* default endpoint */ '/',
@@ -9,6 +10,7 @@ const {
   DB_NAME /* change name in environment file */,
 } = process.env;
 
+// config variables of our application
 const config = Object.freeze({
   PORT,
   ENDPOINT,

@@ -5,33 +5,60 @@ import {
   SuccessfulCodes,
 } from 'more-http-status-codes';
 
-/** @type {import('express').RequestHandler} */
+/**
+ * @description First the received request is parsed then the add function is called on the trial service.
+ *
+ * If trial is successfully added, 201 (Created) is sent with updated array of trials, else 400 (Bad Request).
+ * Else if an error occurs 400 (Bad request) is sent, with a preventRedirect tag, which tells client to remain on page.
+ *
+ * @type {import('express').RequestHandler} */
 const addTrial = async (req, res) => {
   try {
+    // request body is parsed to fit trial schema
     const trial = TrialService.parseInput(req.body.trial);
+    // parsed trial is added to database
     const added = await TrialService.add(trial);
-    added &&
-      res.status(SuccessfulCodes.CREATED).json(await TrialService.getAll());
+
+    // response sent to client
+    added
+      ? res.status(SuccessfulCodes.CREATED).json(await TrialService.getAll())
+      : res.status(ClientErrorCodes.BAD_REQUEST).send({preventRedirect: true});
   } catch (e) {
+    // response if an error occurs
     res.status(ClientErrorCodes.BAD_REQUEST).send({preventRedirect: true});
   }
 };
 
-/** @type {import('express').RequestHandler} */
+/**
+ * @description Calls the getById function on the trial service and sends matching trial corresponding to input id to client.
+ *
+ * If no corresponding trial is found, 404 (Not found) is sent.
+ * Else if an error occurs 400 (Bad request) is sent.
+ *
+ * @type {import('express').RequestHandler}
+ */
 const getTrialById = async (req, res) => {
   try {
+    // finds trial corresponding to id request parameter
     const trial = await TrialService.getById(req.params.id);
-    if (trial) {
-      res.status(SuccessfulCodes.OK).json(trial);
-    } else {
-      res.sendStatus(ClientErrorCodes.NOT_FOUND);
-    }
+
+    // response sent to client
+    trial
+      ? res.status(SuccessfulCodes.OK).json(trial)
+      : res.sendStatus(ClientErrorCodes.NOT_FOUND);
   } catch (e) {
+    // response if an error occurs
     res.sendStatus(ClientErrorCodes.BAD_REQUEST);
   }
 };
 
-/** @type {import('express').RequestHandler} */
+/**
+ * @description Calls the getAll function on the trial service and sends corresponding data to client.
+ *
+ * If an error occurs 400 (Bad request) is sent.
+ *
+ * @type {import('express').RequestHandler}
+ */
 const getTrials = async (req, res) => {
   try {
     res.json(await TrialService.getAll());
@@ -40,107 +67,29 @@ const getTrials = async (req, res) => {
   }
 };
 
-/** @type {import('express').RequestHandler} */
+/**
+ * @description This function synchronizes data collected by eyetracker with (trial) results received from client.
+ *
+ * @type {import('express').RequestHandler}
+ */
 const syncData = async (req, res) => {
   try {
     const id = req.params.id;
-    /**  @type {Array} */
     const clientData = req.body;
-    // clientData.sort((x, y) => x.timestamp - y.timestamp);
-    /**  @type {Array} */
     const eyetrackerData = req.eyetrackerData;
-    var results = [];
 
-    const startTime = clientData[0].timestamp;
-    for (let index = 0; index < clientData.length; index++) {
-      const {type, src: imgSrc, timestamp: imgStartTime, started} = clientData[
-        index++
-      ];
-      if (started && type === 'img') {
-        let dataRecordStartIndex = eyetrackerData.findIndex(
-          (data) => data.timestamp > imgStartTime,
-        );
-
-        let endItem = clientData.find(
-          (item) => imgSrc === item.src && !item.started && item.type === 'img',
-        );
-
-        let dataRecordEndIndex = eyetrackerData.findIndex(
-          (data) => data.timestamp > endItem.timestamp,
-        );
-
-        /*       const dataRecordStartTime =
-          eyetrackerData[dataRecordStartIndex].timestamp; */
-
-        for (
-          dataRecordStartIndex;
-          dataRecordStartIndex < dataRecordEndIndex;
-          dataRecordStartIndex++
-        ) {
-          const {data, timestamp: eyetrackerTime} = eyetrackerData[
-            dataRecordStartIndex
-          ];
-          if (data.REC) {
-            const eyetrackerAttributes = data.REC._attributes;
-            const timestamp =
-              eyetrackerTime /* + dataRecordStartTime - imgStartTime */ -
-              startTime;
-
-            results.push({
-              imgSrc,
-              timestamp,
-              ...eyetrackerAttributes,
-            });
-          }
-        }
-      }
-    }
-    for (let index = 0; index < clientData.length; index++) {
-      const {
-        type,
-        src: audioSrc,
-        timestamp: audioStartTime,
-        started,
-      } = clientData[index];
-      if (started && type === 'audio') {
-        let audioEndTime = clientData.find(
-          (item) =>
-            audioSrc === item.src && !item.started && item.type === 'audio',
-        ).timestamp;
-
-        let audioEndIndex = clientData.findIndex(
-          (item) =>
-            audioSrc === item.src && !item.started && item.type === 'audio',
-        );
-        index = audioEndIndex + 1;
-
-        results = results.map((value) => {
-          if (value.audioSrc) {
-            return value;
-          }
-          const timestamp = value.timestamp;
-          if (
-            audioStartTime - startTime <= timestamp &&
-            timestamp <= audioEndTime - startTime
-          ) {
-            value.audioSrc = audioSrc;
-          } else {
-            value.audioSrc = null;
-          }
-          return value;
-        });
-      }
-    }
-    TrialService.update(id, results)
+    // Calls the update function on the trial service to synchronize data and update results array
+    TrialService.update(id, clientData, eyetrackerData)
       .then((success) => {
+        // send response to client, if data was successfully updated
         res.status(SuccessfulCodes.OK).send('Data successfully synchronized.');
       })
       .catch((e) => {
-        console.log(e);
+        // If an error occurs, 500 (Internal server error) is sent
         res.sendStatus(ServerErrorCodes.INTERNAL_SERVER_ERROR);
       });
   } catch (e) {
-    console.log(e);
+    // else 400 (Bad request) is sent
     res.sendStatus(ClientErrorCodes.BAD_REQUEST);
   }
 };

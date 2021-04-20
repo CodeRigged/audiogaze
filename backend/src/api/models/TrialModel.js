@@ -4,6 +4,9 @@ import trackSchema from './TrackModel';
 
 const required = true;
 
+/**
+ * Trial schema.
+ */
 const trialSchema = new mongoose.Schema(
   {
     name: {

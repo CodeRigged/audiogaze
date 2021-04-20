@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 
 const required = true;
 
+/**
+ * Schema of single data record from eyetracker.
+ */
 const singleRecord = new mongoose.Schema({
   FPOGD: {
     type: String,
@@ -79,7 +82,9 @@ const singleRecord = new mongoose.Schema({
     required,
   },
 });
-
+/**
+ * Schema of all collected data from eyetracker.
+ */
 const recordsSchema = new mongoose.Schema(
   {
     data: [{type: singleRecord, immutable: true}],
