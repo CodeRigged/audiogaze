@@ -36,6 +36,7 @@ export default {
   title: 'Trial',
   path: paths.runTrial,
   data: () => ({
+    audio: new Audio(),
     trials: [],
     channelLimit: 2,
     currentStartTime: 0,
@@ -62,39 +63,6 @@ export default {
         console.log('No connection to eyetracker possible');
       }
     },
-    // async play() {
-    // TODO
-
-    //   const audioElement = new Audio(
-    //     require(process.env.VUE_APP_PATH_TO_AUDIO_FOLDER +
-    //       `One Down Dog - Wes Hutchinson.mp3`),
-    //   );
-
-    //   const audioCtx = new AudioContext();
-
-    //   const audioSrc = audioCtx.createMediaElementSource(audioElement);
-
-    //   const volumeNodeL = new GainNode(audioCtx);
-    //   const volumeNodeR = new GainNode(audioCtx);
-
-    //   volumeNodeL.gain.value = 0;
-    //   volumeNodeR.gain.value = 2;
-
-    //   const splitterNode = audioCtx.createChannelSplitter(2);
-    //   const mergerNode = audioCtx.createChannelMerger(2);
-
-    //   audioSrc.connect(splitterNode);
-
-    //   splitterNode.connect(volumeNodeL, 0);
-    //   splitterNode.connect(volumeNodeR, 1);
-
-    //   volumeNodeL.connect(mergerNode, 0, 0); // connect INPUT channel 0
-    //   volumeNodeR.connect(mergerNode, 0, 1); // connect INPUT channel 1
-
-    //   mergerNode.connect(audioCtx.destination);
-
-    //   audioElement.play();
-    // },
     runTrials() {
       this.trialStarted = true;
       this.trialEnded = false;
@@ -139,13 +107,8 @@ export default {
           this.trialEnded = true;
           this.currentTrial = 0;
 
-          this.trials.forEach(({audios}) => {
-            if (audios) {
-              audios.forEach(({audio}) => {
-                audio.currentTime = 0;
-              });
-            }
-          });
+          this.audio.removeAttribute('src');
+
           await this.$store.dispatch('sendResults', {
             id: this.$route.params.id,
             clientData: this.data,
@@ -159,19 +122,21 @@ export default {
     runAudio() {
       const ttlAudios = this.audios.length;
       /**
-       * @type {{channels:Array}}
+       * @type {{audio: HTMLAudioElement, channels:Array}}
        */
       const {startAt, stopAt, audio, src, channels} = this.audios[
         this.currentAudio++
       ];
-      // setTimeout(() => {
+
+      this.audio.setAttribute('src', audio);
+
       /**
        * Create audio context
        * @type {AudioContext}
        */
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       // audio-source
-      const audioSrc = audioCtx.createMediaElementSource(audio);
+      const audioSrc = audioCtx.createMediaElementSource(this.audio);
 
       // create splitter node and connect it to audio-source
       const splitterNode = audioCtx.createChannelSplitter(this.channelLimit);
@@ -196,7 +161,7 @@ export default {
       // finally connect the audio context to its destination
       mergerNode.connect(audioCtx.destination);
       // play audio
-      audio.play();
+      this.audio.play();
       console.log(`At ${new Date()}: ${src} has started playing`);
       this.data.push({
         type: 'audio',
@@ -214,7 +179,7 @@ export default {
           timestamp: Date.now(),
           started: false,
         });
-        audio.pause();
+        this.audio.pause();
         if (this.currentAudio < ttlAudios) {
           this.runAudio();
         } else {
@@ -243,9 +208,8 @@ export default {
             audio.startAt = timeRange.from;
             audio.stopAt = timeRange.to;
             audio.src = audioPath;
-            audio.audio = new Audio(
-              require(process.env.VUE_APP_PATH_TO_AUDIO_FOLDER + audioPath),
-            );
+            audio.audio = require(process.env.VUE_APP_PATH_TO_AUDIO_FOLDER +
+              audioPath);
             audio.channels = channels;
             return audio;
           });
