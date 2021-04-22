@@ -29,24 +29,29 @@
 import {paths} from '@/utils/Enums';
 import {mapActions, mapState} from 'vuex';
 /**
- * The trial page is the page, where the trial is taken.
+ * @description The trial page is the page, where trials are taken and processed.
  */
 export default {
   name: 'trial',
   title: 'Trial',
   path: paths.runTrial,
   data: () => ({
+    // HTMLAudioElement which all audio-tracks run on
     audio: new Audio(),
-    trials: [],
+    // default channel-limit is two (Stereo)
     channelLimit: 2,
-    currentStartTime: 0,
+    // trial-specific helper variables
+    trials: [],
     currentTrial: 0,
     imgSrc: null,
+    // audio-specific helper variables
     audios: [],
     currentAudio: 0,
     audioSrc: null,
+    // helper-booleans
     trialStarted: false,
     trialEnded: false,
+    // array which collects all data => sent to server at end of trial
     data: [],
   }),
   computed: {
@@ -63,31 +68,45 @@ export default {
         console.log('No connection to eyetracker possible');
       }
     },
+    /**
+     * @description Method which is called when 'Start Trial'-button is clicked on
+     */
     runTrials() {
       this.trialStarted = true;
       this.trialEnded = false;
+      // call toggleFullScreen from vuex-store
       this.toggleFullScreen();
+      // call nextTrial method => this is where all the magic happens
       this.nextTrial();
     },
+    /**
+     * @description Method which defines the process of one trial
+     */
     nextTrial() {
       const ttlTrial = this.trials.length;
+      /**
+       * Deconstruct variables from trial at index {this.currentTrial}
+       * @type {{startAt: number, stopAt: number, src: image-module, audios: Array, imagePath: string}}
+       */
       const {startAt, stopAt, src, audios, imagePath} = this.trials[
         this.currentTrial++
       ];
-      this.currentStartTime = startAt;
+      // interval = how long image is shown to user
       const interval = stopAt - startAt;
       this.imgSrc = src;
-
+      // push sample with necessary data to data-array (sent to server at end of trial)
       this.data.push({
         type: 'img',
         src: imagePath,
         timestamp: Date.now(),
         started: true,
       });
-
-      console.log(`Displaying ${imagePath} at ${new Date()}.`);
-
+      // log for client-feedback, check browser console
+      console.log(`At ${new Date()}: ${imagePath} is beeing displayed.`);
+      // setTimeout for when next data-sample is pushed to data-array (so server knows when image stopped displaying)
       setTimeout(() => {
+        // log for client-feedback, check browser console
+        console.log(`At ${new Date()}: ${imagePath} has stopped displaying`);
         this.data.push({
           type: 'img',
           src: imagePath,
@@ -95,18 +114,20 @@ export default {
           started: false,
         });
       }, interval);
-
+      // if current trial also includes audio-tracks, call the runAudio-method
       if (audios) {
         this.audios = audios;
         this.runAudio();
       }
+      // as long as all trials haven't finished processing, continue with nextTrial
       if (this.currentTrial < ttlTrial && !this.trialEnded) {
         setTimeout(this.nextTrial, interval);
       } else {
+        // once trials have finished, reset all data, toggle fullscreen to windowed-mode and send data to server
         setTimeout(async () => {
           this.trialEnded = true;
           this.currentTrial = 0;
-
+          // remove src attribute from audio, so user doesn't accidently continue any unfinished audio-tracks
           this.audio.removeAttribute('src');
 
           await this.$store.dispatch('sendResults', {
@@ -119,6 +140,9 @@ export default {
         }, interval);
       }
     },
+    /**
+     * @description Method which defines the process of audio-playback
+     */
     runAudio() {
       const ttlAudios = this.audios.length;
       /**
@@ -127,7 +151,8 @@ export default {
       const {startAt, stopAt, audio, src, channels} = this.audios[
         this.currentAudio++
       ];
-
+      // interval = how long audio is played
+      const interval = stopAt - startAt;
       this.audio.setAttribute('src', audio);
 
       /**
@@ -148,9 +173,9 @@ export default {
 
       // loop through channelLimit
       for (let index = 0; index < this.channelLimit; index++) {
-        // create new node
+        // create new node for every channel
         const node = new GainNode(audioCtx);
-        // check if channel is included in the channels array, if not => set volume of node to 0
+        // check if channel is included in the channels array, if not => set volume of node to 0 (user won't hear any sound from that channel)
         channels.includes(index)
           ? (node.gain.value = 2)
           : (node.gain.value = 0);
@@ -162,7 +187,9 @@ export default {
       mergerNode.connect(audioCtx.destination);
       // play audio
       this.audio.play();
+      // log for client-feedback, check browser console
       console.log(`At ${new Date()}: ${src} has started playing`);
+      // push sample with necessary data to data-array
       this.data.push({
         type: 'audio',
         src,
@@ -172,27 +199,34 @@ export default {
       });
 
       setTimeout(() => {
+        // log for client-feedback, check browser console
         console.log(`At ${new Date()}: ${src} has stopped playing`);
+        // push sample with necessary data to data-array
         this.data.push({
           type: 'audio',
           src,
           timestamp: Date.now(),
           started: false,
         });
+        // stop audio
         this.audio.pause();
+        // as long as all audio-tracks haven't finished processing, continue with runAudio
         if (this.currentAudio < ttlAudios) {
           this.runAudio();
         } else {
+          // reset to 0 for next trial
           this.currentAudio = 0;
         }
-      }, stopAt - startAt);
+      }, interval);
     },
     /**
-     * @description This function
+     * @description Method maps tracks array to required format for the trial to work.
      *
-     * @param {{ imagePath:string, timeRange:{from:number, to:number},
-     *  audios:{ audioPath:string, channels: {id: number}, timeRange: {from: number, to: number}}[]
-     * }[]}tracks
+     * @param {{
+     *  imagePath: string,
+     *  timeRange: { from: number, to: number },
+     *  audios: { audioPath: string, channels: { id: number }, timeRange: { from: number, to: number }}[]
+     * }[]} tracks
      */
     mapTrack(tracks) {
       return tracks.map(({imagePath, timeRange, audios}) => {
@@ -200,6 +234,7 @@ export default {
         track.startAt = timeRange.from;
         track.stopAt = timeRange.to;
         track.imagePath = imagePath;
+        // loads image-module with path (/to/image/files/folder) set in .env file
         track.src = require(process.env.VUE_APP_PATH_TO_IMAGES_FOLDER +
           imagePath);
         if (audios.length > 0) {
@@ -208,6 +243,7 @@ export default {
             audio.startAt = timeRange.from;
             audio.stopAt = timeRange.to;
             audio.src = audioPath;
+            // loads audio-module with path (/to/audio/files/folder) set in .env file
             audio.audio = require(process.env.VUE_APP_PATH_TO_AUDIO_FOLDER +
               audioPath);
             audio.channels = channels;
@@ -228,7 +264,7 @@ export default {
         'getTrial',
         this.$route.params.id,
       );
-      // if trial is found, call mapTracks method
+      // if trial is found, set channelLimit and call mapTracks method
       if (trial) {
         const {channelLimit, tracks} = trial;
         this.channelLimit = channelLimit;

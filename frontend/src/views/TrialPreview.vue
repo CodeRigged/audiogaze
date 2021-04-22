@@ -59,7 +59,7 @@
 <script>
 import {paths} from '@/utils/Enums';
 /**
- * The preview page displays the trial, as a mean to verify if values are correct.
+ * @description The preview page displays the trial, as a mean to verify if values are correct.
  */
 export default {
   name: 'preview-trial',

@@ -19,7 +19,7 @@ import {mapGetters, mapState} from 'vuex';
 import Footer from './components/navigation/Footer.vue';
 import InfoSnackbar from './components/other/InfoSnackbar.vue';
 /**
- *  @description The App-component is the core of everything.
+ *  @description The App-component is the core of Gazeaudio.
  */
 export default {
   components: {

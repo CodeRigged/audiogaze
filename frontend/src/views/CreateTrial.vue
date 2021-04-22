@@ -18,7 +18,7 @@
           <v-col>
             <v-select
               v-model="limit"
-              :error-messages="detectedLimit < limit ? channelErrorMessage : ''"
+              :error-messages="channelErrorMessage"
               :items="channels"
               label="Channel limit"
             />
@@ -41,7 +41,9 @@
 import {paths} from '@/utils/Enums';
 import CreateTrial from '@/components/pages/create-trial/CreateTrial';
 import {mapActions, mapMutations, mapState} from 'vuex';
-
+/**
+ * @description The create-trial page is the page, where trials are created.
+ */
 export default {
   components: {
     CreateTrial,
@@ -58,28 +60,30 @@ export default {
     ...mapActions('addTrial', ['addTrial', 'resetTrial']),
   },
   computed: {
+    ...mapState('addTrial', ['name', 'timeUnit', 'channelLimit']),
+    // maximum allowed channels is 8
+    channels() {
+      return Array.from(new Array(8), (val, index) => index + 1);
+    },
+    // message displayed if limit exceed dected limit
+    channelErrorMessage() {
+      return this.detectedLimit < this.limit
+        ? `Browser detected a limit of ${this.detectedLimit} channels for current device`
+        : '';
+    },
+    // check how many channels can be accessed from current browser / audio-device
+    detectedLimit() {
+      var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      return audioCtx.destination.maxChannelCount;
+    },
+    // options of time-precision
     time() {
       return [
         {symbol: 's', timeUnit: 'seconds'},
         {symbol: 'ms', timeUnit: 'milliseconds'},
       ];
     },
-    ...mapState('addTrial', ['name', 'timeUnit', 'channelLimit']),
-    trial: {
-      get() {
-        return this.name;
-      },
-      set(name) {
-        this.updateName(name);
-      },
-    },
-    detectedLimit() {
-      var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      return audioCtx.destination.maxChannelCount;
-    },
-    channelErrorMessage() {
-      return `Browser detected a limit of ${this.detectedLimit} channels for current device`;
-    },
+    // getter and setter for trial-channelLimit (vuex-store)
     limit: {
       get() {
         return this.channelLimit;
@@ -88,9 +92,16 @@ export default {
         this.updateChannelLimit(limit);
       },
     },
-    channels() {
-      return Array.from(new Array(8), (val, index) => index + 1);
+    // getter and setter for trial-name (vuex-store)
+    trial: {
+      get() {
+        return this.name;
+      },
+      set(name) {
+        this.updateName(name);
+      },
     },
+    // getter and setter for trial-timeUnit (vuex-store)
     precision: {
       get() {
         return this.timeUnit;

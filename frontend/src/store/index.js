@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import {paths} from '@/utils/Enums';
 import Vue from 'vue';
 import router from '@/router';
@@ -6,6 +5,11 @@ import Vuex from 'vuex';
 import modules from './modules/all-modules';
 Vue.use(Vuex);
 
+/**
+ * @description Vuex-store, where all the important data is saved
+ *
+ * See {@link https://vuex.vuejs.org/ vuex}...
+ */
 export default new Vuex.Store({
   state: {
     trials: [],
@@ -22,19 +26,28 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    /**
+     * @description Method is called in App-component
+     */
     setup({dispatch, commit}) {
+      // set interceptors
       dispatch('setInterceptors');
-      document.addEventListener('fullscreenchange', (e) => {
+      // adds an event-listener which reacts to screen-mode changes
+      document.addEventListener('fullscreenchange', () => {
         if (!(document.webkitIsFullScreen || document.mozFullScreen || false)) {
           commit('appState/isFullScreen', false);
         }
       });
     },
-    setInterceptors({commit, dispatch}) {
+    /**
+     * @description Method sets interceptors of axios http-client
+     */
+    setInterceptors({dispatch}) {
       const {request, response} = Vue.axios.interceptors;
       request.use(
         (config) => {
           const {method, baseURL, url, message} = config;
+          // basic log-messages
           console.log(
             `%cMade ${method} request to ${baseURL + url}`,
             `
@@ -59,7 +72,11 @@ export default new Vuex.Store({
             font-weight:800
           `,
           );
-
+          /**
+           * when a request is made set the state of app to "loading"
+           * => a loading spinner will appear on the center of the screen,
+           * with a default message (if not specified with request)
+           */
           if (message) {
             dispatch('appState/setLoading', message);
           } else {
@@ -73,37 +90,30 @@ export default new Vuex.Store({
       );
       response.use(
         (res) => {
+          // stops loading spinner
           dispatch('appState/setLoading');
           return res;
         },
         (err) => {
+          // if server sends 'preventRedirect'-tag, the page will be not redirect to home page on-error
           if (!err.response.data.preventRedirect) {
             router.push('/');
           }
+          // stops loading spinner
           dispatch('appState/setLoading');
           return Promise.reject(err);
         },
       );
     },
-    async loadTrials({commit, dispatch}) {
-      await Vue.axios
-        .get('/trials', {
-          message: 'Loading Trials',
-        })
-        .then((res) => {
-          commit('updateState', {key: 'trials', data: res.data});
-        })
-        .catch((e) => {
-          dispatch('appState/setLoading');
-          dispatch('appState/setError', `Couldn't load trials.`);
-        });
-    },
+    /**
+     * @description Methods which tells server to attempt a connection with eyetracker
+     */
     async connectEyetracker({dispatch}) {
       const res = await Vue.axios
         .get(`/eyetracker/connect`, {
           message: 'Connecting to Gazepoint Eyetracker',
         })
-        .catch((e) => {
+        .catch(() => {
           dispatch(
             'appState/setError',
             `Couldn't establish connection  with eyetracker.`,
@@ -114,12 +124,31 @@ export default new Vuex.Store({
         return status;
       }
     },
+    /**
+     * @description Methods which gets all trials from server
+     */
+    async loadTrials({dispatch}) {
+      await Vue.axios
+        .get('/trials', {
+          message: 'Loading Trials',
+        })
+        .then((res) => {
+          dispatch('updateTrials', res.data);
+        })
+        .catch(() => {
+          dispatch('appState/setLoading');
+          dispatch('appState/setError', `Couldn't load trials.`);
+        });
+    },
+    /**
+     * @description Methods which gets single trial (matching input id) from server
+     */
     async getTrial({dispatch}, id) {
       const res = await Vue.axios
         .get(`/trials/${id}`, {
           message: 'Preparing trial',
         })
-        .catch((e) => {
+        .catch(() => {
           dispatch('appState/setError', `Couldn't find trial with given id.`);
         });
       if (res) {
@@ -127,12 +156,15 @@ export default new Vuex.Store({
         return data;
       }
     },
+    /**
+     * @description Methods which sends results from a trial to server
+     */
     async sendResults({dispatch}, {clientData, id}) {
       const res = await Vue.axios
         .put(`trials/${id}`, clientData, {
           message: 'Trial is ending',
         })
-        .catch((e) => {
+        .catch(() => {
           dispatch(
             'appState/setError',
             `Something went wrong with the synchronization process.`,
@@ -142,10 +174,13 @@ export default new Vuex.Store({
         return res;
       }
     },
+    /**
+     * @description Update state of trials-array
+     */
     updateTrials({commit}, data) {
       commit('updateState', {key: 'trials', data});
     },
   },
+  // register modules
   modules,
-  getters: {},
 });

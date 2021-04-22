@@ -23,6 +23,11 @@
   </v-data-table>
 </template>
 <script>
+/**
+ * @description Component which is used on index-page.
+ *
+ * Displays results from trial.
+ */
 export default {
   name: 'results-overview',
   data: () => ({}),

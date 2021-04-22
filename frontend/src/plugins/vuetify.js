@@ -5,26 +5,31 @@ import '@mdi/font/css/materialdesignicons.css';
 
 Vue.use(Vuetify);
 
+// read default colors set in .env-file
 const {
   VUE_APP_DARK_COLOR: dark,
   VUE_APP_LIGHT_COLOR: light,
-  VUE_APP_PROGRESS_COLOR: progress,
+  VUE_APP_PRIMARY_COLOR: primary = '#000',
+  VUE_APP_SECONDARY_COLOR: secondary = '#000',
+  VUE_APP_BACKGROUND_COLOR: background = '#f9f9f9',
 } = process.env;
 
-export default new Vuetify({
+// initialize vuetify
+const vuetify = new Vuetify({
   icons: {
-    iconfont: 'mdi', // 'mdi' || 'mdiSvg' || 'md' || 'fa' || 'fa4' || 'faSvg'
+    iconfont: 'mdi',
   },
+  // set theme
   theme: {
     themes: {
       light: {
-        primary: process.env.VUE_APP_PRIMARY_COLOR || '#000000',
-        secondary: process.env.VUE_APP_SECONDARY_COLOR || '#000000',
-        background: process.env.VUE_APP_BACKGROUND_COLOR || '#f9f9f9',
+        primary,
+        secondary,
+        background,
         dark,
         light,
-        progress,
       },
     },
   },
 });
+export default vuetify;

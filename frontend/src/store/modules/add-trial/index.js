@@ -3,9 +3,10 @@ import Vue from 'vue';
 import router from '@/router';
 
 const log = console.log;
-
-/*  Default state of a track sequence. 
-    A track sequence doesn't require any audio. */
+/**
+ *  @description Default state of a track sequence.
+ *  A track sequence doesn't require any audio.
+ */
 const defaultTrackState = () => ({
   imagePath: null,
   timeRange: {
@@ -15,7 +16,9 @@ const defaultTrackState = () => ({
   audios: [],
 });
 
-/* default state of an audio sequence */
+/**
+ *  @description Default state of an audio sequence.
+ */
 const defaultAudioState = () => ({
   audioPath: null,
   channels: null,
@@ -25,7 +28,9 @@ const defaultAudioState = () => ({
   },
 });
 
-/* default state of a trial */
+/**
+ *  @description Default state of a trial.
+ */
 const defaultTrialState = () => ({
   name: null,
   timeUnit: null,
@@ -51,6 +56,12 @@ const addTrial = {
     updateChannelLimit(state, limit) {
       state.channelLimit = limit;
     },
+
+    /**
+     * @description Method which adds a track to tracks-array.
+     *
+     * Additionally, sets the time-range of next track.
+     */
     addTrack(state) {
       const track = state.tracks[state.tracks.length - 1];
       const {to} = track.timeRange;
@@ -62,12 +73,19 @@ const addTrial = {
     updateTracks(state, tracks) {
       state.tracks = tracks;
     },
+    /**
+     * @description Method which updates all time-ranges simultaneously.
+     */
     removeTrack(state, trackIndex) {
       state.tracks.splice(trackIndex, 1);
     },
+    /**
+     * @description Method which updates all time-ranges simultaneously.
+     */
     updateTimeRanges(state, {trackIndex, audioIndex, timeRange, updateAudio}) {
       const audiosLength = state.tracks[trackIndex].audios.length;
       if (!updateAudio) {
+        // update time-ranges of tracks
         const previous = trackIndex - 1;
         const next = trackIndex + 1;
         if (
@@ -75,16 +93,20 @@ const addTrial = {
           state.tracks[trackIndex].audios[audiosLength - 1].timeRange.to >=
             timeRange.to
         ) {
+          // update if track contains audio, and if audio isn't within given time-range of track
           state.tracks[trackIndex].audios[audiosLength - 1].timeRange.to =
             timeRange.to;
         }
         if (previous >= 0) {
+          // update previous element
           state.tracks[previous].timeRange.to = timeRange.from;
         }
         if (next <= state.tracks.length - 1) {
+          // update next element
           state.tracks[next].timeRange.from = timeRange.to;
         }
       } else {
+        // update time-ranges of audio
         const previous = audioIndex - 1;
         const next = audioIndex + 1;
         if (
@@ -98,6 +120,7 @@ const addTrial = {
           state.tracks[trackIndex].audios[previous].timeRange.to >
             timeRange.from
         ) {
+          // update previous element, if time-range from the previous element is superior to the from-range from updated element
           state.tracks[trackIndex].audios[previous].timeRange.to =
             timeRange.from;
         }
@@ -105,21 +128,35 @@ const addTrial = {
           next <= audiosLength - 1 &&
           state.tracks[trackIndex].audios[next].timeRange.from < timeRange.to
         ) {
+          // update next element, if time-range from from the next element is inferior to the to-range from updated element
           state.tracks[trackIndex].audios[next].timeRange.from = timeRange.to;
         }
       }
     },
+    /**
+     * @description Method which adds an audio corresponding to track at {trackIndex}.
+     *
+     * Additionally, sets the time-range if certain conditions are met.
+     */
     addAudio(state, trackIndex) {
       const newRow = defaultAudioState();
       const audios = state.tracks[trackIndex].audios;
       const audio = audios[audios.length - 1];
-      if (audio) {
+      if (audios.length === 0) {
+        // set the time-range of the first element of the audios array to the time-range start from the track
+        const from = state.tracks[trackIndex].timeRange.from;
+        newRow.timeRange.from = from;
+      } else {
+        // else set the time-range of the next element of the audios array to the time-range end from the previous element
         const to = audio.timeRange.to;
         newRow.timeRange.from = to;
         newRow.timeRange.to = to;
       }
       state.tracks[trackIndex].audios.push(newRow);
     },
+    /**
+     * @description Method which removes an audio corresponding to track at {trackIndex} with {audioIndex}.
+     */
     removeAudio(state, {trackIndex, audioIndex}) {
       state.tracks[trackIndex].audios.splice(audioIndex, 1);
     },
@@ -127,7 +164,7 @@ const addTrial = {
 
   actions: {
     /**
-     * @param {{state: {tracks:Array}}} - An object parameter with string and number properties
+     * @description Methods which sends a new trial to server with current state of module.
      */
     async addTrial({state, dispatch}) {
       await Vue.axios
@@ -160,8 +197,6 @@ const addTrial = {
       router.push('/');
     },
   },
-
-  getters: {},
 };
 
 export default addTrial;

@@ -53,19 +53,24 @@
 import {paths} from '@/utils/Enums';
 import {mapState} from 'vuex';
 import ResultsOverview from '@/components/pages/index/ResultsOverview.vue';
+/**
+ * @description The index page is an overview of all trials and their results, acquired from server.
+ */
 export default {
   name: 'index',
   title: 'Home',
   path: paths.index,
-  data: () => ({expanded: [], singleExpand: false}),
+  data: () => ({expanded: []}),
   components: {
     ResultsOverview,
   },
-  description: 'Overview page',
   computed: {
     ...mapState({
       addTrial: (state) => state.paths.addTrial,
     }),
+    /**
+     * @description Headers of table
+     */
     trialHeaders() {
       return [
         {text: 'Index', value: 'index', width: 100},
@@ -92,11 +97,15 @@ export default {
         {text: 'Results', align: 'end', value: 'data-table-expand'},
       ];
     },
+    /**
+     * Trials found in store
+     */
     trials() {
       return this.$store.state.trials;
     },
   },
   async mounted() {
+    // load trials (saved in store)
     await this.$store.dispatch('loadTrials');
   },
 };

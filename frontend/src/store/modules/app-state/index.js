@@ -1,9 +1,3 @@
-/* eslint-disable no-unused-vars */
-import Vue from 'vue';
-import router from '@/router';
-
-const log = console.log;
-
 /**
  *  @description Default state of the app when page is first loaded.
  */
@@ -20,6 +14,7 @@ const defaultAppState = () => ({
   infoSnackbar: {
     isVisible: false,
     message: null,
+    // default timeout for snackbar (= disappears after 2s)
     timeout: 2000,
   },
 });
