@@ -17,7 +17,6 @@ mongoose.connect(`mongodb://${config.HOST}/${config.DB_NAME}`, {
 
 /* initialize database */
 const db = mongoose.connection;
-db.dropDatabase();
 
 /* action which will execute if connection to database results in an error */
 db.on('error', console.error.bind(console, 'connection error:'));
