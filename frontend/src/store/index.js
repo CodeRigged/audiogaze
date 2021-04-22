@@ -63,7 +63,7 @@ export default new Vuex.Store({
           if (message) {
             dispatch('appState/setLoading', message);
           } else {
-            dispatch('appState/setLoading', null);
+            dispatch('appState/setLoading');
           }
           return config;
         },
@@ -94,6 +94,7 @@ export default new Vuex.Store({
           commit('updateState', {key: 'trials', data: res.data});
         })
         .catch((e) => {
+          dispatch('appState/setLoading');
           dispatch('appState/setError', `Couldn't load trials.`);
         });
     },

@@ -1,7 +1,6 @@
 <template>
   <v-data-table hide-default-footer :headers="resultsHeaders" :items="results">
-    <template v-slot:item.index="{index}">{{ index + 1 }}</template
-    ><template v-slot:item.index="{index}">{{ index + 1 }}</template>
+    <template v-slot:item.index="{index}">{{ index + 1 }}</template>
     <template v-slot:item.actions="{item}">
       <v-menu offset-y bottom>
         <template #activator="{on,attrs}">
@@ -33,7 +32,7 @@ export default {
       const replacer = (key, value) => (value === null ? 'No value' : value); // specify how you want to handle null values here
       const header = Object.keys(json[0]);
       const csv = [
-        header.join(';'), // header row first
+        header.map((key) => key.toUpperCase()).join(';'), // header row first
         ...json.map((row) =>
           header
             .map((fieldName) => JSON.stringify(row[fieldName], replacer))

@@ -35,7 +35,7 @@
                   <v-divider />
                   <v-row>
                     <v-col>
-                      Played channels: {{ audio.channels.join(', ') }}
+                      Plays on channel(s): {{ audio.channels.join(', ') }}
                     </v-col>
                   </v-row>
                 </div>

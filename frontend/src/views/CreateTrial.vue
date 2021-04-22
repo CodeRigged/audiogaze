@@ -17,9 +17,8 @@
           </v-col>
           <v-col>
             <v-select
-              :persistent-hint="detectedLimit < limit"
-              :hint="channelHintMessage"
               v-model="limit"
+              :error-messages="detectedLimit < limit ? channelErrorMessage : ''"
               :items="channels"
               label="Channel limit"
             />
@@ -78,8 +77,8 @@ export default {
       var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       return audioCtx.destination.maxChannelCount;
     },
-    channelHintMessage() {
-      return `Browser detected a limit of ${this.detectedLimit}`;
+    channelErrorMessage() {
+      return `Browser detected a limit of ${this.detectedLimit} channels for current device`;
     },
     limit: {
       get() {

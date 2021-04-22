@@ -89,7 +89,7 @@ export default {
           text: 'Updated at',
           value: 'updatedAt',
         },
-        {text: '', value: 'data-table-expand'},
+        {text: 'Results', align: 'end', value: 'data-table-expand'},
       ];
     },
     trials() {

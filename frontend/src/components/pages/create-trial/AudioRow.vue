@@ -9,7 +9,7 @@
         v-model="file"
         label="Track"
         prepend-icon="mdi-image"
-        accept=".mp3"
+        accept=".mp3, .wav"
       />
     </v-col>
     <v-col :cols="timeRange">
@@ -81,8 +81,8 @@ export default {
     }),
     channelTypes() {
       return Array.from(new Array(this.channelLimit), (val, index) => ({
-        id: index + 1,
-        text: `Channel ${index + 1}`,
+        id: index,
+        text: `Channel ${index}`,
       }));
     },
   },
