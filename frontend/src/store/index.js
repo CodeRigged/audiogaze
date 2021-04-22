@@ -105,7 +105,7 @@ export default new Vuex.Store({
         .catch((e) => {
           dispatch(
             'appState/setError',
-            `Couldn't establich connection  with eyetracker.`,
+            `Couldn't establish connection  with eyetracker.`,
           );
         });
       if (res) {

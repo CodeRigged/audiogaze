@@ -58,20 +58,23 @@
 </template>
 <script>
 import {paths} from '@/utils/Enums';
+/**
+ * The preview page displays the trial, as a mean to verify if values are correct.
+ */
 export default {
   name: 'preview-trial',
   title: 'Trial Preview',
   path: paths.previewTrial,
   data: () => ({trial: null}),
-  props: {},
   methods: {
     loadImage(imagePath) {
+      // loads the image of your PC with corresponding path
       return require(process.env.VUE_APP_PATH_TO_IMAGES_FOLDER + imagePath);
     },
   },
-  computed: {},
   watch: {},
   async created() {
+    // get trial from server
     this.trial = await this.$store.dispatch('getTrial', this.$route.params.id);
   },
 };

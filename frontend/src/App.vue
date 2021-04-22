@@ -18,7 +18,9 @@ import LoadingFilter from '@/components/other/LoadingFilter.vue';
 import {mapGetters, mapState} from 'vuex';
 import Footer from './components/navigation/Footer.vue';
 import InfoSnackbar from './components/other/InfoSnackbar.vue';
-
+/**
+ *  @description The App-component is the core of everything.
+ */
 export default {
   components: {
     AppFooter: Footer,
@@ -28,13 +30,12 @@ export default {
     InfoSnackbar,
   },
   name: 'app',
-  methods: {},
   computed: {
     ...mapGetters('appState', ['loadingVisbility']),
     ...mapState('appState', ['isFullScreen']),
   },
-  watch: {},
   created() {
+    // run setup from vuex-store
     this.$store.dispatch('setup');
   },
 };

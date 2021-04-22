@@ -28,6 +28,9 @@
 <script>
 import {paths} from '@/utils/Enums';
 import {mapActions, mapState} from 'vuex';
+/**
+ * The trial page is the page, where the trial is taken.
+ */
 export default {
   name: 'trial',
   title: 'Trial',
@@ -183,6 +186,13 @@ export default {
         }
       }, startAt - this.currentStartTime + stopAt - startAt);
     },
+    /**
+     * @description This function
+     *
+     * @param {{ imagePath:string, timeRange:{from:number, to:number},
+     *  audios:{ audioPath:string, channels: {id: number}, timeRange: {from: number, to: number}}[]
+     * }[]}tracks
+     */
     mapTrack(tracks) {
       return tracks.map(({imagePath, timeRange, audios}) => {
         const track = {};
@@ -209,12 +219,16 @@ export default {
     },
   },
   async mounted() {
+    // attempt to connect to eyetracker
     const status = await this.connectEyetracker(this.$route.params.id);
+    // if status is equals 200 (Ok), connection was successful or eyetracker is already connected
     if (status === 200) {
+      // get trial corresponding the id in url-parameters
       const trial = await this.$store.dispatch(
         'getTrial',
         this.$route.params.id,
       );
+      // if trial is found, call mapTracks method
       if (trial) {
         const {tracks} = trial;
         this.trials = this.mapTrack(tracks);
