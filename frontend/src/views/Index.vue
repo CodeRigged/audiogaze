@@ -69,7 +69,7 @@ export default {
       addTrial: (state) => state.paths.addTrial,
     }),
     /**
-     * @description Headers of table
+     * @description Headers of trials table
      */
     trialHeaders() {
       return [

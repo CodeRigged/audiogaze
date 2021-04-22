@@ -47,6 +47,9 @@
 <script>
 import {mapState} from 'vuex';
 import Range from '@/components/other/Range.vue';
+/**
+ * @description This is the audio-input row, used in the process of trial-creation.
+ */
 export default {
   name: 'audio-row',
   description: 'Input row',
@@ -69,7 +72,6 @@ export default {
       this.value.audioPath = track?.name;
     },
   },
-  methods: {},
   computed: {
     ...mapState({
       channelLimit: (state) => state.addTrial.channelLimit,
@@ -86,6 +88,5 @@ export default {
       }));
     },
   },
-  mounted() {},
 };
 </script>

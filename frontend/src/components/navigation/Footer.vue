@@ -1,8 +1,7 @@
 <template>
   <v-footer app fixed color="primary lighten-1" padless>
     <v-card flat tile width="100%" class="background">
-      <v-divider></v-divider>
-
+      <v-divider />
       <v-card-actions>
         <div class="caption">
           {{ version }}
@@ -17,15 +16,14 @@
   </v-footer>
 </template>
 <script>
+/**
+ * @description This is the footer displayed at the bottom of the application.
+ *
+ * Its used to display information and provide useful links.
+ */
 export default {
   name: 'app-footer',
   description: 'Footer of the app',
-  mixins: [],
-  data: () => ({}),
-  components: {},
-  props: {},
-  watch: {},
-  methods: {},
   computed: {
     version() {
       return 'v.' + process.env.PACKAGE_VERSION;
@@ -34,6 +32,5 @@ export default {
       return 'https://github.com/CodeRigged/gazepoint-with-audio';
     },
   },
-  mounted() {},
 };
 </script>

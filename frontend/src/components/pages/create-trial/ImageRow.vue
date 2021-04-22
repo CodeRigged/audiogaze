@@ -38,6 +38,9 @@
 <script>
 import Range from '@/components/other/Range.vue';
 import {mapState} from 'vuex';
+/**
+ * @description This is the trial-input row, used in the process of trial-creation.
+ */
 export default {
   name: 'input-row',
   description: 'Input row',
@@ -62,7 +65,6 @@ export default {
       this.value.imagePath = file?.name;
     },
   },
-  methods: {},
   computed: {
     ...mapState({
       trialNumber: (state) => state.colsWidth.trial.number,
@@ -71,6 +73,5 @@ export default {
       actions: (state) => state.colsWidth.trial.actions,
     }),
   },
-  mounted() {},
 };
 </script>

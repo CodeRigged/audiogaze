@@ -8,12 +8,11 @@
 </template>
 <script>
 import {mapGetters} from 'vuex';
+/**
+ * @description This is the loading filter which appears when an api call has been made.
+ */
 export default {
   name: 'loading-template',
-  data: () => ({}),
-  props: {},
-  methods: {},
   computed: {...mapGetters('appState', ['loadingMessage'])},
-  watch: {},
 };
 </script>

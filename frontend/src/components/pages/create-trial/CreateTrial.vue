@@ -44,22 +44,24 @@
   </v-container>
 </template>
 <script>
-import {/* mapActions, */ mapMutations, mapState} from 'vuex';
+import {mapMutations, mapState} from 'vuex';
 import AudioRow from './AudioRow.vue';
 import ImageHeaders from './ImageHeaders.vue';
 import ImageRow from './ImageRow.vue';
-
+/**
+ * @description This is the main component of the trial-creation process.
+ *
+ * It includes the audio- and image-row (including the headers)
+ */
 export default {
   name: 'create-trial-page',
   description: 'description',
-  mixins: [],
   data: () => ({showAudiosIndex: null}),
   components: {
     ImageRow,
     ImageHeaders,
     AudioRow,
   },
-  props: {},
   watch: {
     tracksArray: {
       handler(tracks) {
@@ -102,6 +104,5 @@ export default {
       },
     },
   },
-  mounted() {},
 };
 </script>

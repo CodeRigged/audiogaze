@@ -7,9 +7,12 @@
   </v-tooltip>
 </template>
 <script>
+/**
+ * An example how a global component could look like,
+ * though tooltips haven't been used in this application at present.
+ */
 export default {
   name: 'tooltip',
-  description: 'This is a custom tooltip',
   props: {
     tooltipText: {type: String, default: 'Missing tooltip text'},
     pos: {type: String, default: 'bottom'},

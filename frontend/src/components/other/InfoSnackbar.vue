@@ -15,9 +15,13 @@
 </template>
 <script>
 import {mapActions, mapGetters, mapState} from 'vuex';
+/**
+ * @description This is a snackbar which appears to give user quick and short feedback.
+ *
+ * @example Successfull addition of a trial.
+ */
 export default {
   name: 'info-snackbar',
-  props: {},
   methods: {
     ...mapActions('appState', ['setInformation']),
   },

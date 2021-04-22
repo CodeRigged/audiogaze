@@ -9,11 +9,11 @@
 
 <script>
 import {mapState} from 'vuex';
+/**
+ * @description Headers of trial-creation process.
+ */
 export default {
   name: 'image-headers',
-  data: () => ({}),
-  props: {},
-  methods: {},
   computed: {
     ...mapState({
       trialNumber: (state) => state.colsWidth.trial.number,
@@ -22,6 +22,5 @@ export default {
       actions: (state) => state.colsWidth.trial.actions,
     }),
   },
-  watch: {},
 };
 </script>

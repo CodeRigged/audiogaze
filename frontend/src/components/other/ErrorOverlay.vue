@@ -19,10 +19,11 @@
 </template>
 <script>
 import {mapActions, mapGetters} from 'vuex';
+/**
+ * @description This is the overlay which appears when an api call returns an error.
+ */
 export default {
   name: 'error-overlay',
-  description:
-    'This is the overlay which appears when an api call returns an error.',
   methods: {...mapActions('appState', ['setError'])},
   computed: {
     ...mapGetters('appState', ['errorOverlayVisbility', 'errorOverlayMessage']),

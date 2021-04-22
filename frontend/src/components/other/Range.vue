@@ -22,16 +22,17 @@
   </v-row>
 </template>
 <script>
+/**
+ * @description This is the range-component, primarily used in the process of trial-creation.
+ */
 export default {
   name: 'range',
   description: 'Range component.',
-  mixins: [],
   data() {
     return {
       focused: false,
     };
   },
-  components: {},
   props: {
     value: {type: Object},
     label: String,
@@ -53,12 +54,7 @@ export default {
     handleInput(event) {
       event = event ? event : window.event;
       var charCode = event.which ? event.which : event.keyCode;
-      if (
-        charCode > 31 &&
-        (charCode < 48 || charCode > 57)
-        // &&
-        // charCode !== 46
-      ) {
+      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
         event.preventDefault();
       } else {
         return true;

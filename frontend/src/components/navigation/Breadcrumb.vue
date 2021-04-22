@@ -3,6 +3,11 @@
 </template>
 
 <script>
+/**
+ * @description This is the breadcrumb displayed at the top of the applicaiton.
+ *
+ * Its used to navigate the application.
+ */
 export default {
   name: 'breadcrumb',
   data: () => ({
@@ -14,9 +19,6 @@ export default {
     ],
   }),
   methods: {
-    refreshPage() {
-      this.$store.dispatch('document/loadData', this.$route.params.cid);
-    },
     addBreadcrumb(text, to) {
       this.items.push({text, to});
     },
