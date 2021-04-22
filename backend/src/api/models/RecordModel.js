@@ -77,6 +77,10 @@ const singleRecord = new mongoose.Schema({
     type: String,
     required,
   },
+  channels: {
+    type: String,
+    required,
+  },
   timestamp: {
     type: Number,
     required,

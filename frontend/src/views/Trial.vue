@@ -37,6 +37,7 @@ export default {
   path: paths.runTrial,
   data: () => ({
     trials: [],
+    channelLimit: 2,
     currentStartTime: 0,
     currentTrial: 0,
     imgSrc: null,
@@ -157,19 +158,54 @@ export default {
     },
     runAudio() {
       const ttlAudios = this.audios.length;
-      const {startAt, stopAt, audio, src /* channels */} = this.audios[
+      /**
+       * @type {{channels:Array}}
+       */
+      const {startAt, stopAt, audio, src, channels} = this.audios[
         this.currentAudio++
       ];
-      setTimeout(() => {
-        audio.play();
-        console.log(`At ${new Date()}: ${src} has started playing`);
-        this.data.push({
-          type: 'audio',
-          src,
-          timestamp: Date.now(),
-          started: true,
-        });
-      }, startAt - this.currentStartTime);
+      // setTimeout(() => {
+      /**
+       * Create audio context
+       * @type {AudioContext}
+       */
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      // audio-source
+      const audioSrc = audioCtx.createMediaElementSource(audio);
+
+      // create splitter node and connect it to audio-source
+      const splitterNode = audioCtx.createChannelSplitter(this.channelLimit);
+
+      audioSrc.connect(splitterNode);
+
+      // create merger node
+      const mergerNode = audioCtx.createChannelMerger(this.channelLimit);
+
+      // loop through channelLimit
+      for (let index = 0; index < this.channelLimit; index++) {
+        // create new node
+        const node = new GainNode(audioCtx);
+        // check if channel is included in the channels array, if not => set volume of node to 0
+        channels.includes(index)
+          ? (node.gain.value = 2)
+          : (node.gain.value = 0);
+
+        splitterNode.connect(node, index); // connect node to output channel {index}
+        node.connect(mergerNode, 0, index); // connect INPUT channel 0 with output channel {index}
+      }
+      // finally connect the audio context to its destination
+      mergerNode.connect(audioCtx.destination);
+      // play audio
+      audio.play();
+      console.log(`At ${new Date()}: ${src} has started playing`);
+      this.data.push({
+        type: 'audio',
+        src,
+        channels,
+        timestamp: Date.now(),
+        started: true,
+      });
+
       setTimeout(() => {
         console.log(`At ${new Date()}: ${src} has stopped playing`);
         this.data.push({
@@ -184,7 +220,7 @@ export default {
         } else {
           this.currentAudio = 0;
         }
-      }, startAt - this.currentStartTime + stopAt - startAt);
+      }, stopAt - startAt);
     },
     /**
      * @description This function
@@ -230,7 +266,8 @@ export default {
       );
       // if trial is found, call mapTracks method
       if (trial) {
-        const {tracks} = trial;
+        const {channelLimit, tracks} = trial;
+        this.channelLimit = channelLimit;
         this.trials = this.mapTrack(tracks);
       }
     }

@@ -32,7 +32,7 @@ class TrialService {
    * and updates trial with corresponding id
    *
    * @param {string} id
-   * @param {{type: 'img'|'audio', src: string, timestamp: number, started: boolean}[]} clientData - data collected by eyetracker
+   * @param {{type: 'img'|'audio', src: string, timestamp: number, channels: string|undefined, started: boolean}[]} clientData - data collected by eyetracker
    * @param {{data:{REC:{_attributes:object}}, timestamp:number}[]} eyetrackerData - data received from client
    * @returns boolean
    */
@@ -117,6 +117,7 @@ class TrialService {
       const {
         type,
         src: audioSrc,
+        channels,
         timestamp: audioStartTime,
         started,
       } = clientData[index];
@@ -157,11 +158,13 @@ class TrialService {
             audioStartTime - startTime <= timestamp &&
             timestamp <= audioEndTime - startTime
           ) {
-            // if audio played during the time where an image was shown, adds corresponding audio - src
+            // if audio played during the time where an image was shown, adds corresponding audio - src and channels
             value.audioSrc = audioSrc;
+            value.channels = channels.join(', ');
           } else {
             // if audio wasn't played in time frame, set tag to null
             value.audioSrc = null;
+            value.channels = null;
           }
           return value;
         });
