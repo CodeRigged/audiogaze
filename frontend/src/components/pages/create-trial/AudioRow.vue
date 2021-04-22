@@ -72,6 +72,7 @@ export default {
   methods: {},
   computed: {
     ...mapState({
+      channelLimit: (state) => state.addTrial.channelLimit,
       audioNumber: (state) => state.colsWidth.audio.number,
       track: (state) => state.colsWidth.audio.track,
       timeRange: (state) => state.colsWidth.audio.timeRange,
@@ -79,7 +80,7 @@ export default {
       actions: (state) => state.colsWidth.audio.actions,
     }),
     channelTypes() {
-      return Array.from(new Array(8), (val, index) => ({
+      return Array.from(new Array(this.channelLimit), (val, index) => ({
         id: index + 1,
         text: `Channel ${index + 1}`,
       }));

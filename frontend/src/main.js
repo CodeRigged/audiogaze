@@ -4,18 +4,20 @@ import router from './router';
 import {vuetify} from '@/plugins';
 import store from '@/store';
 
-// register global components
+// get all global components
 const components = require.context(
   '@/components/global-components/',
   true,
   /.*.(vue|js)$/,
 );
 
+// register all global components
 components.keys().forEach((x) => {
   const component = components(x).default;
   Vue.component(component.name, component);
 });
 
+// mount Vue
 new Vue({
   store,
   router,

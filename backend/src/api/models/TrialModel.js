@@ -13,13 +13,17 @@ const trialSchema = new mongoose.Schema(
       type: String,
       required,
     },
+    channelLimit: {
+      type: Number,
+      required,
+    },
     duration: {type: Number, required},
+    results: {
+      type: [recordsSchema],
+    },
     tracks: {
       type: [trackSchema],
       required,
-    },
-    results: {
-      type: [recordsSchema],
     },
   },
   {

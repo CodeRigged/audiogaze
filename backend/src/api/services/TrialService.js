@@ -217,16 +217,17 @@ class TrialService {
    *
    * @param {{
    *  name: string,
-   *  tracks: { imagePath:string, timeRange:{from:number, to:number},
-   *  audios:{ audioPath:string, channels: {id: number}, timeRange: {from: number, to: number}}[]
+   *  tracks: { imagePath:string, timeRange: {from:number, to:number},
+   *  audios: { audioPath:string, channels: {id: number}, timeRange: {from: number, to: number}}[]
    * }[],
+   *  channelLimit: number,
    *  timeUnit: 'ms'|'s'
    * }} trial
    *
    * @returns Parsed trial
    */
   parseInput(trial) {
-    const {name, tracks, timeUnit} = trial;
+    const {name, tracks, timeUnit, channelLimit} = trial;
     const parsedTracks = tracks.map(({imagePath, timeRange, audios}, index) => {
       const track = {
         number: index,
@@ -255,7 +256,7 @@ class TrialService {
     const parsedTrial = {
       name,
       duration,
-      timestamp: Date.now(),
+      channelLimit,
       tracks: parsedTracks,
     };
     return parsedTrial;

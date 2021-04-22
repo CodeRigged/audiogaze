@@ -68,26 +68,25 @@ export default {
     }),
     trialHeaders() {
       return [
-        {text: 'Index', align: 'start', value: 'index', width: 100},
+        {text: 'Index', value: 'index', width: 100},
         {
           text: 'Name',
-          align: 'start',
           value: 'name',
         },
         {
           text: 'Trial duration (in ms)',
-          align: 'start',
           value: 'duration',
         },
-
+        {
+          text: 'Channel Limit',
+          value: 'channelLimit',
+        },
         {
           text: 'Created at',
-          align: 'start',
           value: 'createdAt',
         },
         {
           text: 'Updated at',
-          align: 'start',
           value: 'updatedAt',
         },
         {text: '', value: 'data-table-expand'},

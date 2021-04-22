@@ -29,6 +29,7 @@ const defaultAudioState = () => ({
 const defaultTrialState = () => ({
   name: null,
   timeUnit: null,
+  channelLimit: null,
   tracks: [defaultTrackState()],
 });
 
@@ -46,6 +47,9 @@ const addTrial = {
     },
     updateTimeUnit(state, timeUnit) {
       state.timeUnit = timeUnit;
+    },
+    updateChannelLimit(state, limit) {
+      state.channelLimit = limit;
     },
     addTrack(state) {
       const track = state.tracks[state.tracks.length - 1];
