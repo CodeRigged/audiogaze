@@ -5,6 +5,7 @@ html {
   overflow-y: auto !important;
 }
 
+// used to center elements
 .absolute-center {
   position: absolute;
   top: 50%;
@@ -12,11 +13,7 @@ html {
   transform: translate(-50%, -50%);
 }
 
-.range-label {
-  position: absolute;
-  transform: translateY(-10px);
-  font-weight: 100;
-}
+// used in range-component
 .range-seperator {
   padding: 0.24rem !important;
   hr {
@@ -25,15 +22,7 @@ html {
     border: 0.12rem solid;
   }
 }
-.no-data {
-  font: italic bold 18px Arial;
-  padding-left: 18px;
-}
 
-.opacity-0 {
-  pointer-events: none;
-  opacity: 0;
-}
 a {
   text-decoration: none;
 }
