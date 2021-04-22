@@ -50,7 +50,7 @@
   </v-container>
 </template>
 <script>
-import {paths} from '@/utils/Enums';
+import {paths} from '@/config';
 import {mapState} from 'vuex';
 import ResultsOverview from '@/components/pages/index/ResultsOverview.vue';
 /**

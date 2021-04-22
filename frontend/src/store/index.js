@@ -1,4 +1,4 @@
-import {paths} from '@/utils/Enums';
+import {paths} from '@/config';
 import Vue from 'vue';
 import router from '@/router';
 import Vuex from 'vuex';

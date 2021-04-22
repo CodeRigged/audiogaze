@@ -4,7 +4,7 @@ dotenvFlow.config();
 // variables read from .env.local-file
 const {
   PORT = /* default PORT */ '3000',
-  ENDPOINT = /* default endpoint */ '/',
+  ENDPOINT = /* default endpoint */ '/api/v1',
   HOST = /* default host */ '127.0.0.1',
   GAZEPOINT_PORT = /* default gazepoint port */ '4242',
   DB_NAME /* change name in environment file */,

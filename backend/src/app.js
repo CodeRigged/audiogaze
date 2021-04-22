@@ -36,7 +36,7 @@ app.use(middleware.accessControl);
 // middleware registered
 
 /* register your API */
-app.use(/*optional endpoint: config.ENDPOINT, */ api);
+app.use(config.ENDPOINT, api);
 
 /* starts the server */
 app.listen(port, () => {

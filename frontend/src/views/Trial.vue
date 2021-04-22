@@ -26,7 +26,7 @@
   </div>
 </template>
 <script>
-import {paths} from '@/utils/Enums';
+import {paths} from '@/config';
 import {mapActions, mapState} from 'vuex';
 /**
  * @description The trial page is the page, where trials are taken and processed.

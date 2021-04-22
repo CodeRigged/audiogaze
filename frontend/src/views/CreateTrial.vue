@@ -38,7 +38,7 @@
   </v-container>
 </template>
 <script>
-import {paths} from '@/utils/Enums';
+import {paths} from '@/config';
 import CreateTrial from '@/components/pages/create-trial/CreateTrial';
 import {mapActions, mapMutations, mapState} from 'vuex';
 /**

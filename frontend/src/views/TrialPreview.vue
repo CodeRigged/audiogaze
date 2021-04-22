@@ -57,7 +57,7 @@
   </v-container>
 </template>
 <script>
-import {paths} from '@/utils/Enums';
+import {paths} from '@/config';
 /**
  * @description The preview page displays the trial, as a mean to verify if values are correct.
  */
