@@ -1,11 +1,11 @@
 version: "3"
 services:
-  backend:
-    container_name: gazeaudio-backend
+  server:
+    container_name: gazeaudio-server
     build:
-      context: ./backend
+      context: ./server
     volumes:
-      - ./backend:/user/app
+      - ./server:/user/app
       - /usr/app/node_modules
     environment:
       - PORT=3000
@@ -13,12 +13,12 @@ services:
     links:
       - mongo
 
-  frontend:
-    container_name: gazeaudio-frontend
+  client:
+    container_name: gazeaudio-client
     build:
-      context: ./frontend
+      context: ./client
     volumes:
-      - ./frontend:/app
+      - ./client:/app
       - /app/node_modules
     ports:
       - "8080:8080"

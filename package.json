@@ -1,0 +1,11 @@
+{
+  "name": "audiogaze",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "client": "cd client && npm run serve",
+    "server": "cd server && npm run start"
+  },
+  "author": "Timothy Antonovics",
+  "license": "MIT"
+}

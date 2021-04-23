@@ -4,7 +4,7 @@ import trialModel from '../models/TrialModel';
 const Trial = mongoose.model('Trial', trialModel);
 
 /**
- * Service which handles all related actions made to trials database
+ * @description Service which handles all related actions made to trials database
  */
 class TrialService {
   /**

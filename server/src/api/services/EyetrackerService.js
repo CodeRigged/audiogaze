@@ -1,6 +1,9 @@
 import net from 'net';
 import config from '../../config';
 
+/**
+ * @description Service which handles all related actions with Gazepoint eye-tracker
+ */
 class EyetrackerService {
   connected = false;
   data = [];
