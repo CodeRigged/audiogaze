@@ -7,7 +7,11 @@ import api from './api';
 const app = express(); // express app
 const port = config.PORT; // default port to listen
 
-/* establish connection to local database */
+/**
+ * Establish connection to database
+ *
+ * URI required when using docker: `mongodb://mongo:27017/${config.DB_NAME}`
+ */
 mongoose.connect(`mongodb://${config.HOST}/${config.DB_NAME}`, {
   useCreateIndex: true,
   useNewUrlParser: true,

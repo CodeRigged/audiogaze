@@ -1,1 +1,10 @@
-assets
+# audio-files
+*.mp3
+*.wav
+# images
+*.jpg
+*.png
+*.jpeg
+# other
+/data
+/assets
