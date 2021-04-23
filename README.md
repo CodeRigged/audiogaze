@@ -16,4 +16,6 @@
 
 ### Using Docker
 
+> **NOTE:** You won't be able to run trials, since you won't be able 
+
 - [Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/install/)

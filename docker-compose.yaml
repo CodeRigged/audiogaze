@@ -8,8 +8,15 @@ services:
       - ./server:/user/app
       - /usr/app/node_modules
     environment:
-      - PORT=3000
-    ports: ["3000:3000"]
+      # General
+      - PORT=${PORT}
+      - ENDPOINT=${ENDPOINT}
+      # Eye tracker specifics
+      - HOST=${HOST}
+      - GAZEPOINT_PORT=${GAZEPOINT_PORT}
+      # Database specifics
+      - DB_NAME=${DB_NAME}
+    ports: ["${PORT}:${PORT}"]
     links:
       - mongo
 
