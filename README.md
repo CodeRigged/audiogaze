@@ -8,14 +8,17 @@
 
 ## Requirements
 
+- [Gazepoint Eye Tracker & Control Software](https://www.gazept.com/downloads/)
+
 ### Local Testing
 
 - [Node.js](https://nodejs.org/en/download/)
 - [MongoDB Community Server](https://www.mongodb.com/try/download/community?tck=docs_server)
-- [Gazepoint Eye Tracker & Control Software](https://www.gazept.com/downloads/)
 
 ### Using Docker
 
-> **NOTE:** You won't be able to run trials, since you won't be able 
-
 - [Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/install/)
+
+#### Optional
+
+- [Github](https://git-scm.com/download/win)

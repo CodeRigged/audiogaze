@@ -16,8 +16,9 @@ services:
       - GAZEPOINT_PORT=${GAZEPOINT_PORT}
       # Database specifics
       - DB_NAME=${DB_NAME}
+      - DB_URI=mongodb://mongo:${MONGO_PORT}/${DB_NAME}
     ports:
-      - "${HOST_PORT}:${SERVER_PORT}"
+      - "${SERVER_PORT}:${SERVER_PORT}"
     links:
       - mongo
 
@@ -29,11 +30,11 @@ services:
       - ./client:/app
       - /app/node_modules
     ports:
-      - "${HOST_PORT}:${CLIENT_PORT}"
+      - "${CLIENT_PORT}:${CLIENT_PORT}"
     environment:
-      - VUE_APP_API_BASE_URL = http://localhost:${SERVER_PORT}${ENDPOINT}
-      - VUE_APP_PATH_TO_AUDIO_FOLDER = /app/src/assets/audio/
-      - VUE_APP_PATH_TO_IMAGES_FOLDER = /app/src/assets/images/
+      - VUE_APP_API_BASE_URL=http://localhost:${SERVER_PORT}${ENDPOINT}
+      - VUE_APP_PATH_TO_AUDIO_FOLDER=/app/src/assets/audio/
+      - VUE_APP_PATH_TO_IMAGES_FOLDER=/app/src/assets/images/
 
   mongo:
     container_name: gazeaudio-database
