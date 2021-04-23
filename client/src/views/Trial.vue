@@ -151,10 +151,12 @@ export default {
       const {startAt, stopAt, audio, src, channels} = this.audios[
         this.currentAudio++
       ];
+
       var nextStart = 0;
       if (this.audios[this.currentAudio]) {
         nextStart += this.audios[this.currentAudio].startAt - stopAt;
       }
+
       // interval = how long audio is played
       const interval = stopAt - startAt;
       this.audio.setAttribute('src', audio);
@@ -165,8 +167,13 @@ export default {
        */
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+      // audio-source
+      const audioSrc = audioCtx.createMediaElementSource(this.audio);
+
       // create splitter node and connect it to audio-source
       const splitterNode = audioCtx.createChannelSplitter(this.channelLimit);
+
+      audioSrc.connect(splitterNode);
 
       // create merger node
       const mergerNode = audioCtx.createChannelMerger(this.channelLimit);
@@ -186,15 +193,12 @@ export default {
       // finally connect the audio context to its destination
       mergerNode.connect(audioCtx.destination);
 
-      // audio-source
-      const audioSrc = audioCtx.createMediaElementSource(this.audio);
-      audioSrc.connect(splitterNode);
-
       // play audio
       this.audio.play();
 
       // log for client-feedback, check browser console
       console.log(`At ${new Date()}: ${src} has started playing`);
+
       // push sample with necessary data to data-array
       this.data.push({
         type: 'audio',
@@ -215,8 +219,9 @@ export default {
           timestamp: Date.now(),
           started: false,
         });
-        // stop audio
+        // stop audio and disconnect mergerNode (prevents channels from overlapping)
         this.audio.pause();
+        mergerNode.disconnect(audioCtx.destination);
       }, interval);
 
       // start next audio
