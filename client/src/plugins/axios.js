@@ -6,6 +6,7 @@ import {config} from '@/config';
 // configure axios http-client
 const axiosInstance = axios.create({
   baseURL: config.apiEndpoint,
+  timeout: 5000,
 });
 
 // pass axios instance to VueAxios

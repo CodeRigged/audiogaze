@@ -39,136 +39,151 @@ class TrialService {
   update(id, clientData, eyetrackerData) {
     // initialize results array
     var results = [];
-
-    /**
-     * Check startTime of when trial started (client-side).
-     * Start time is equals to the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC.
-     *
-     * @type {number} startTime
-     */
-    const startTime = clientData[0].timestamp;
-
-    // loop through clientData array
-    for (let index = 0; index < clientData.length; index++) {
+    try {
       /**
-       * object from clientData
+       * Check startTime of when trial started (client-side).
+       * Start time is equals to the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC.
+       *
+       * @type {number} startTime
        */
-      const {type, src: imgSrc, timestamp: imgStartTime, started} = clientData[
-        index++
-      ];
+      const startTime = clientData[0].timestamp;
 
-      if (started && type === 'img') {
+      // loop through clientData array
+      for (let index = 0; index < clientData.length; index++) {
         /**
-         * Finds the index of entry in eyetrackerData where the timestamp is above the timestamp of clientData entry
-         * (when the image started displaying client-side).
+         * object from clientData
          */
-        let dataRecordStartIndex = eyetrackerData.findIndex(
-          (data) => data.timestamp > imgStartTime,
-        );
-        /**
-         * Finds the entry in clientData where started is equals false (when image stopped displaying client-side)
-         * and the image - src is equal to current object from for-loop.
-         *
-         * Returns timestamp.
-         */
+        const {
+          type,
+          src: imgSrc,
+          timestamp: imgStartTime,
+          started,
+        } = clientData[index++];
 
-        let imgEndTime = clientData.find(
-          (item) => imgSrc === item.src && !item.started && item.type === 'img',
-        ).timestamp;
-
-        /**
-         * Finds the index of entry in eyetrackerData where the timestamp is above the timestamp of clientData entry found above
-         * (when the image started displaying client-side).
-         */
-        let dataRecordEndIndex = eyetrackerData.findIndex(
-          (data) => data.timestamp > imgEndTime,
-        );
-        // loop through eyetrackerData array from given start- to end-index
-        for (
-          dataRecordStartIndex;
-          dataRecordStartIndex < dataRecordEndIndex;
-          dataRecordStartIndex++
-        ) {
+        if (started && type === 'img') {
           /**
-           * object from eyetrackerData
+           * Finds the index of entry in eyetrackerData where the timestamp is above the timestamp of clientData entry
+           * (when the image started displaying client-side).
            */
-          const {data, timestamp: eyetrackerTime} = eyetrackerData[
-            dataRecordStartIndex
-          ];
-          // if data has REC attribute, not always the case
-          if (data.REC) {
-            const eyetrackerAttributes = data.REC._attributes;
-            // subtract the start time of when the trial started from  timestamp of the current eyetracker entry
-            const timestamp =
-              eyetrackerTime /* + dataRecordStartTime - imgStartTime */ -
-              startTime;
-            // push to results array
-            results.push({
-              imgSrc,
-              timestamp,
-              ...eyetrackerAttributes,
-            });
+          let dataRecordStartIndex = eyetrackerData.findIndex(
+            (data) => data.timestamp > imgStartTime,
+          );
+
+          /**
+           * Finds the entry in clientData where started is equals false (when image stopped displaying client-side)
+           * and the image - src is equal to current object from for-loop.
+           *
+           * Returns timestamp.
+           */
+
+          let imgEndTime = clientData.find(
+            (item, itemIndex) =>
+              imgSrc === item.src &&
+              !item.started &&
+              item.type === 'img' &&
+              itemIndex > index,
+          ).timestamp;
+
+          /**
+           * Finds the index of entry in eyetrackerData where the timestamp is above the timestamp of clientData entry found above
+           * (when the image started displaying client-side).
+           */
+          let dataRecordEndIndex = eyetrackerData.findIndex(
+            (data) => data.timestamp > imgEndTime,
+          );
+          // loop through eyetrackerData array from given start- to end-index
+          for (
+            dataRecordStartIndex;
+            dataRecordStartIndex < dataRecordEndIndex;
+            dataRecordStartIndex++
+          ) {
+            /**
+             * object from eyetrackerData
+             */
+            const {data, timestamp: eyetrackerTime} = eyetrackerData[
+              dataRecordStartIndex
+            ];
+            // if data has REC attribute, not always the case
+            if (data.REC) {
+              const eyetrackerAttributes = data.REC._attributes;
+              // subtract the start time of when the trial started from  timestamp of the current eyetracker entry
+              const timestamp =
+                eyetrackerTime /* + dataRecordStartTime - imgStartTime */ -
+                startTime;
+              // push to results array
+              results.push({
+                imgSrc,
+                timestamp,
+                ...eyetrackerAttributes,
+              });
+            }
           }
         }
       }
-    }
-    // loop through clientData array a second time
-    for (let index = 0; index < clientData.length; index++) {
-      const {
-        type,
-        src: audioSrc,
-        channels,
-        timestamp: audioStartTime,
-        started,
-      } = clientData[index];
-      if (started && type === 'audio') {
-        /**
-         * Finds the entry in clientData where started is equals false (when audio started playing client-side)
-         * and the audio - src is equal to current object from for-loop.
-         *
-         * Returns timestamp.
-         */
-        let audioEndTime = clientData.find(
-          (item) =>
-            audioSrc === item.src && !item.started && item.type === 'audio',
-        ).timestamp;
+      // loop through clientData array a second time
+      for (let index = 0; index < clientData.length; index++) {
+        const {
+          type,
+          src: audioSrc,
+          channels,
+          timestamp: audioStartTime,
+          started,
+        } = clientData[index];
+        if (started && type === 'audio') {
+          /**
+           * Finds the entry in clientData where started is equals false (when audio started playing client-side)
+           * and the audio - src is equal to current object from for-loop.
+           *
+           * Returns timestamp.
+           */
+          let audioEndTime = clientData.find(
+            (item, itemIndex) =>
+              audioSrc === item.src &&
+              !item.started &&
+              item.type === 'audio' &&
+              itemIndex > index,
+          );
+          /**
+           * Finds index of the entry in clientData where started is equals false (when audio stopped playing client-side)
+           * and the audio - src is equal to current object from for-loop.
+           *
+           * Returns timestamp.
+           */
+          let audioEndIndex = clientData.findIndex(
+            (item, itemIndex) =>
+              audioSrc === item.src &&
+              !item.started &&
+              item.type === 'audio' &&
+              itemIndex > index,
+          );
+          // sets index of loop equal the audioEndIndex + 1 (enhances speed)
+          index = audioEndIndex + 1;
 
-        /**
-         * Finds index of the entry in clientData where started is equals false (when audio stopped playing client-side)
-         * and the audio - src is equal to current object from for-loop.
-         *
-         * Returns timestamp.
-         */
-        let audioEndIndex = clientData.findIndex(
-          (item) =>
-            audioSrc === item.src && !item.started && item.type === 'audio',
-        );
-
-        // sets index of loop equal the audioEndIndex + 1 (enhances speed)
-        index = audioEndIndex + 1;
-
-        // loop through results array to add audioSrc tag
-        results = results.map((value) => {
-          // skip if value already has an audio src
-          if (value.audioSrc) {
+          // loop through results array to add audioSrc tag
+          results = results.map((value) => {
+            // skip if value already has an audio src
+            if (value.audioSrc) {
+              return value;
+            }
+            const timestamp = value.timestamp;
+            if (
+              audioStartTime - startTime <= timestamp &&
+              timestamp <= audioEndTime.timestamp - startTime
+            ) {
+              // if audio played during the time where an image was shown, adds corresponding audio - src and channels
+              value.audioSrc = audioSrc;
+              value.channels = channels.join(', ');
+            } else {
+              // if audio wasn't played in time frame, set tag to null
+              value.audioSrc = null;
+              value.channels = null;
+            }
             return value;
-          }
-          const timestamp = value.timestamp;
-          if (
-            audioStartTime - startTime <= timestamp &&
-            timestamp <= audioEndTime - startTime
-          ) {
-            // if audio played during the time where an image was shown, adds corresponding audio - src and channels
-            value.audioSrc = audioSrc;
-            value.channels = channels.join(', ');
-          } else {
-            // if audio wasn't played in time frame, set tag to null
-            value.audioSrc = null;
-            value.channels = null;
-          }
-          return value;
-        });
+          });
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
 
     return new Promise((resolve, reject) => {

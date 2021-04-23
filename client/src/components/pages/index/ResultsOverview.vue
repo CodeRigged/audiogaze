@@ -75,31 +75,31 @@ export default {
 
       this.download(fileName, data);
     },
-  },
-  /**
-   * @description Method which downloads a file
-   *
-   * @param {string} fileName
-   * @param {any} data
-   */
-  download(fileName, data) {
-    if (window.navigator.msSaveOrOpenBlob) {
-      // IE 10+
-      window.navigator.msSaveOrOpenBlob(data, fileName);
-    } else {
-      const link = document.createElement('a');
-      if (link.download !== undefined) {
-        // feature detection
-        // Browsers that support HTML5 download attribute
-        const url = URL.createObjectURL(data);
-        link.setAttribute('href', url);
-        link.setAttribute('download', fileName);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    /**
+     * @description Method which downloads a file
+     *
+     * @param {string} fileName
+     * @param {any} data
+     */
+    download(fileName, data) {
+      if (window.navigator.msSaveOrOpenBlob) {
+        // IE 10+
+        window.navigator.msSaveOrOpenBlob(data, fileName);
+      } else {
+        const link = document.createElement('a');
+        if (link.download !== undefined) {
+          // feature detection
+          // Browsers that support HTML5 download attribute
+          const url = URL.createObjectURL(data);
+          link.setAttribute('href', url);
+          link.setAttribute('download', fileName);
+          link.style.visibility = 'hidden';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
       }
-    }
+    },
   },
   computed: {
     /**

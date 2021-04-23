@@ -137,7 +137,7 @@ export default {
 
           this.data = [];
           this.toggleFullScreen();
-        }, interval);
+        }, interval + 500);
       }
     },
     /**
