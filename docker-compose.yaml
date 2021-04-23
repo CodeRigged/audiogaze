@@ -21,6 +21,14 @@ services:
       - "${SERVER_PORT}:${SERVER_PORT}"
     links:
       - mongo
+    depends_on:
+      - mongo
+    healthcheck:
+      test: ["CMD", "npm", "run", "start"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: on-failure
 
   client:
     container_name: gazeaudio-client
@@ -35,6 +43,10 @@ services:
       - VUE_APP_API_BASE_URL=http://localhost:${SERVER_PORT}${ENDPOINT}
       - VUE_APP_PATH_TO_AUDIO_FOLDER=/app/src/assets/audio/
       - VUE_APP_PATH_TO_IMAGES_FOLDER=/app/src/assets/images/
+    logging:
+      driver: none
+    depends_on:
+      - server
 
   mongo:
     container_name: gazeaudio-database

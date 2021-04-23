@@ -47,7 +47,6 @@ class TrialService {
        * @type {number} startTime
        */
       const startTime = clientData[0].timestamp;
-
       // loop through clientData array
       for (let index = 0; index < clientData.length; index++) {
         /**
@@ -83,7 +82,6 @@ class TrialService {
               item.type === 'img' &&
               itemIndex > index,
           ).timestamp;
-
           /**
            * Finds the index of entry in eyetrackerData where the timestamp is above the timestamp of clientData entry found above
            * (when the image started displaying client-side).

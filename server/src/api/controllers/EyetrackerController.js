@@ -23,6 +23,7 @@ const connectEyetracker = async (req, res) => {
       })
       .catch((e) => {
         // response if an error occurs
+        console.log(e);
         res.sendStatus(ServerErrorCodes.SERVICE_UNAVAILABLE);
       });
   }
@@ -36,18 +37,17 @@ const connectEyetracker = async (req, res) => {
  * @type {import("express").RequestHandler}
  */
 const disconnectEyetracker = async (req, res) => {
-  if (!EyetrackerService.connected) {
-    res.sendStatus(SuccessfulCodes.OK);
-  } else {
-    EyetrackerService.disconnect()
-      .then((success) => {
-        // response if disconnection is successful
-        res.sendStatus(SuccessfulCodes.OK);
-      })
-      .catch((e) => {
-        // response if an error occurs
-        res.sendStatus(ServerErrorCodes.INTERNAL_SERVER_ERROR);
-      });
+  try {
+    if (!EyetrackerService.connected) {
+      res.sendStatus(SuccessfulCodes.OK);
+    } else {
+      EyetrackerService.disconnect();
+      // response if disconnection is successful
+      res.sendStatus(SuccessfulCodes.OK);
+    }
+  } catch (e) {
+    res.sendStatus(ServerErrorCodes.INTERNAL_SERVER_ERROR);
+    console.log(e);
   }
 };
 
@@ -64,19 +64,24 @@ const disconnectEyetracker = async (req, res) => {
  * @type {import("express").RequestHandler}
  */
 const loadData = async (req, res, next) => {
-  if (EyetrackerService.connected) {
-    // collected data is mapped to JSON and added to request
-    req.eyetrackerData = EyetrackerService.data.map((element) => {
-      element.data = xml2js(element.data, {compact: true});
-      return element;
-    });
-    // continue
-    next();
-    // eyetracker stops collecting incoming data stream
-    EyetrackerService.disconnect();
-  } else {
-    // response if service is disconnected
-    res.sendStatus(ServerErrorCodes.SERVICE_UNAVAILABLE);
+  try {
+    if (EyetrackerService.connected) {
+      // collected data is mapped to JSON and added to request
+      req.eyetrackerData = EyetrackerService.data.map((element) => {
+        element.data = xml2js(element.data, {compact: true});
+        return element;
+      });
+      // eyetracker stops collecting incoming data stream
+      EyetrackerService.disconnect();
+      // continue
+      next();
+    } else {
+      // response if service is disconnected
+      res.send(ServerErrorCodes.SERVICE_UNAVAILABLE);
+    }
+  } catch (e) {
+    console.log(e);
+    res.send(EyetrackerService.data);
   }
 };
 
@@ -90,9 +95,10 @@ const sendData = async (req, res) => {
   try {
     // collected eyetracker data is sent to client
     res.json(req.eyetrackerData);
-  } catch (error) {
+  } catch (e) {
+    console.log(e);
     // response if an error occurs
-    res.sendStatus(ServerErrorCodes.SERVICE_UNAVAILABLE);
+    res.sendStatus(ServerErrorCodes.INTERNAL_SERVER_ERROR);
   }
 };
 

@@ -52,7 +52,8 @@ class EyetrackerService {
         }
         resolve(true);
       });
-      this.client.on('error', function (err) {
+      this.client.on('error', (err) => {
+        console.log(err);
         reject(false);
       });
     });
@@ -65,19 +66,11 @@ class EyetrackerService {
   }
 
   disconnect() {
-    return new Promise((resolve, reject) => {
-      try {
-        this.client.end();
-        this.client.on('close', () => {
-          this.connected = false;
-          this.data = [];
-          console.log('Gazepoint eyetracker disconnected.');
-          resolve(true);
-        });
-      } catch (e) {
-        console.log(e);
-        reject(false);
-      }
+    this.client.end();
+    this.client.on('close', () => {
+      this.connected = false;
+      this.data = [];
+      console.log('Gazepoint eyetracker disconnected.');
     });
   }
 }
