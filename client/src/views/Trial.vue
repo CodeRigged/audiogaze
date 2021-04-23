@@ -146,11 +146,15 @@ export default {
     runAudio() {
       const ttlAudios = this.audios.length;
       /**
-       * @type {{audio: HTMLAudioElement, channels:Array}}
+       * @type {{startAt:number, stopAt:number, audio: HTMLAudioElement, channels:Array}}
        */
       const {startAt, stopAt, audio, src, channels} = this.audios[
         this.currentAudio++
       ];
+      var nextStart = 0;
+      if (this.audios[this.currentAudio]) {
+        nextStart += this.audios[this.currentAudio].startAt - stopAt;
+      }
       // interval = how long audio is played
       const interval = stopAt - startAt;
       this.audio.setAttribute('src', audio);
@@ -160,13 +164,9 @@ export default {
        * @type {AudioContext}
        */
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      // audio-source
-      const audioSrc = audioCtx.createMediaElementSource(this.audio);
 
       // create splitter node and connect it to audio-source
       const splitterNode = audioCtx.createChannelSplitter(this.channelLimit);
-
-      audioSrc.connect(splitterNode);
 
       // create merger node
       const mergerNode = audioCtx.createChannelMerger(this.channelLimit);
@@ -185,8 +185,14 @@ export default {
       }
       // finally connect the audio context to its destination
       mergerNode.connect(audioCtx.destination);
+
+      // audio-source
+      const audioSrc = audioCtx.createMediaElementSource(this.audio);
+      audioSrc.connect(splitterNode);
+
       // play audio
       this.audio.play();
+
       // log for client-feedback, check browser console
       console.log(`At ${new Date()}: ${src} has started playing`);
       // push sample with necessary data to data-array
@@ -198,6 +204,7 @@ export default {
         started: true,
       });
 
+      // pause current audio
       setTimeout(() => {
         // log for client-feedback, check browser console
         console.log(`At ${new Date()}: ${src} has stopped playing`);
@@ -210,6 +217,10 @@ export default {
         });
         // stop audio
         this.audio.pause();
+      }, interval);
+
+      // start next audio
+      setTimeout(() => {
         // as long as all audio-tracks haven't finished processing, continue with runAudio
         if (this.currentAudio < ttlAudios) {
           this.runAudio();
@@ -217,7 +228,7 @@ export default {
           // reset to 0 for next trial
           this.currentAudio = 0;
         }
-      }, interval);
+      }, interval + nextStart);
     },
     /**
      * @description Method maps tracks array to required format for the trial to work.

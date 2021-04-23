@@ -73,7 +73,7 @@ const loadData = async (req, res, next) => {
     // continue
     next();
     // eyetracker stops collecting incoming data stream
-    await EyetrackerService.disconnect();
+    EyetrackerService.disconnect();
   } else {
     // response if service is disconnected
     res.sendStatus(ServerErrorCodes.SERVICE_UNAVAILABLE);

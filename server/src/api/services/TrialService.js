@@ -143,21 +143,6 @@ class TrialService {
               item.type === 'audio' &&
               itemIndex > index,
           );
-          /**
-           * Finds index of the entry in clientData where started is equals false (when audio stopped playing client-side)
-           * and the audio - src is equal to current object from for-loop.
-           *
-           * Returns timestamp.
-           */
-          let audioEndIndex = clientData.findIndex(
-            (item, itemIndex) =>
-              audioSrc === item.src &&
-              !item.started &&
-              item.type === 'audio' &&
-              itemIndex > index,
-          );
-          // sets index of loop equal the audioEndIndex + 1 (enhances speed)
-          index = audioEndIndex + 1;
 
           // loop through results array to add audioSrc tag
           results = results.map((value) => {
