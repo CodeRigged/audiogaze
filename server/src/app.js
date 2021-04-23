@@ -9,10 +9,8 @@ const port = config.PORT; // default port to listen
 
 /**
  * Establish connection to database
- *
- * URI required when using docker: `mongodb://mongo:27017/${config.DB_NAME}`
  */
-mongoose.connect(`mongodb://${config.HOST}/${config.DB_NAME}`, {
+mongoose.connect(config.DB_URI, {
   useCreateIndex: true,
   useNewUrlParser: true,
   useUnifiedTopology: true,

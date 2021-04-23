@@ -64,12 +64,20 @@ class EyetrackerService {
     });
   }
 
-  disableDataStream() {
-    this.client.end();
-    this.client.on('close', () => {
-      this.connected = false;
-      this.data = [];
-      console.log('Gazepoint eyetracker closed.');
+  disconnect() {
+    return new Promise((resolve, reject) => {
+      try {
+        this.client.end();
+        this.client.on('close', () => {
+          this.connected = false;
+          this.data = [];
+          console.log('Gazepoint eyetracker disconnected.');
+          resolve(true);
+        });
+      } catch (e) {
+        console.log(e);
+        reject(false);
+      }
     });
   }
 }

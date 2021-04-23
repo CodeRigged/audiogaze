@@ -11,6 +11,15 @@ const GazepointRoute = Router();
  * @get Starts connection with eyetracker.
  */
 GazepointRoute.route('/connect').get(EyetrackerController.connectEyetracker);
+
+/**
+ * {URI}/eyetracker/disconnect methods
+ *
+ * @get Stops connection with eyetracker.
+ */
+GazepointRoute.route('/disconnect').get(
+  EyetrackerController.disconnectEyetracker,
+);
 /**
  * {URI}/eyetracker/data methods
  *

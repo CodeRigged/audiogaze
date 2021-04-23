@@ -29,6 +29,29 @@ const connectEyetracker = async (req, res) => {
 };
 
 /**
+ * @description Check if eyetracker service is connected. If it already is disconnected, 200 (Ok) is sent.
+ *
+ * If not, attempt to disconnect service. Send 200 (Ok) if disconnection is successful.
+ * If disconnection fails, 500 (Internal Server Error) is sent.
+ * @type {import("express").RequestHandler}
+ */
+const disconnectEyetracker = async (req, res) => {
+  if (!EyetrackerService.connected) {
+    res.sendStatus(SuccessfulCodes.OK);
+  } else {
+    EyetrackerService.disconnect()
+      .then((success) => {
+        // response if disconnection is successful
+        res.sendStatus(SuccessfulCodes.OK);
+      })
+      .catch((e) => {
+        // response if an error occurs
+        res.sendStatus(ServerErrorCodes.INTERNAL_SERVER_ERROR);
+      });
+  }
+};
+
+/**
  * @description Check if eyetracker service is connected.
  *
  * If it is, the eyetracker data is mapped to JSON-format and the eyetracker service disables the incoming data stream.
@@ -50,7 +73,7 @@ const loadData = async (req, res, next) => {
     // continue
     next();
     // eyetracker stops collecting incoming data stream
-    EyetrackerService.disableDataStream();
+    await EyetrackerService.disconnect();
   } else {
     // response if service is disconnected
     res.sendStatus(ServerErrorCodes.SERVICE_UNAVAILABLE);
@@ -73,4 +96,4 @@ const sendData = async (req, res) => {
   }
 };
 
-export default {connectEyetracker, loadData, sendData};
+export default {connectEyetracker, disconnectEyetracker, loadData, sendData};
