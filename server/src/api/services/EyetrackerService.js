@@ -61,7 +61,12 @@ class EyetrackerService {
 
   listenToDataStream() {
     this.client.on('data', (data) => {
-      this.data.push({timestamp: Date.now(), data});
+      data = data.trim();
+      if (data.startsWith('<') && data.endsWith('>')) {
+        this.data.push({timestamp: Date.now(), data});
+      } else {
+        console.log(data);
+      }
     });
   }
 
