@@ -17,11 +17,11 @@
       <v-card-actions>
         <v-btn to="/" plain>Return to overview</v-btn>
         <v-spacer />
-        <v-btn text @click="retake">Retake</v-btn>
+        <v-btn text @click="takeTrial">Retake</v-btn>
       </v-card-actions>
     </v-card>
     <div class="absolute-center" v-else-if="!trialStarted">
-      <v-btn @click="runTrials">Start Trial</v-btn>
+      <v-btn @click="takeTrial">Start Trial</v-btn>
     </div>
   </div>
 </template>
@@ -60,8 +60,10 @@ export default {
   methods: {
     ...mapActions('appState', ['toggleFullScreen']),
     ...mapActions(['connectEyetracker']),
-    async retake() {
+    async takeTrial() {
+      // attempt to connect to eyetracker
       const status = await this.connectEyetracker(this.$route.params.id);
+      // if status is equals 200 (Ok), connection was successful or eyetracker is already connected
       if (status === 200) {
         this.runTrials();
       } else {
@@ -271,21 +273,13 @@ export default {
     },
   },
   async mounted() {
-    // attempt to connect to eyetracker
-    const status = await this.connectEyetracker(this.$route.params.id);
-    // if status is equals 200 (Ok), connection was successful or eyetracker is already connected
-    if (status === 200) {
-      // get trial corresponding the id in url-parameters
-      const trial = await this.$store.dispatch(
-        'getTrial',
-        this.$route.params.id,
-      );
-      // if trial is found, set channelLimit and call mapTracks method
-      if (trial) {
-        const {channelLimit, tracks} = trial;
-        this.channelLimit = channelLimit;
-        this.trials = this.mapTrack(tracks);
-      }
+    // get trial corresponding the id in url-parameters
+    const trial = await this.$store.dispatch('getTrial', this.$route.params.id);
+    // if trial is found, set channelLimit and call mapTracks method
+    if (trial) {
+      const {channelLimit, tracks} = trial;
+      this.channelLimit = channelLimit;
+      this.trials = this.mapTrack(tracks);
     }
   },
 };
