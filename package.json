@@ -1,6 +1,7 @@
 {
   "name": "audiogaze",
   "version": "1.0.0",
+  "description": "Audiogaze adds new features not provided by Gazepoints Software",
   "private": true,
   "scripts": {
     "client": "cd client && npm run serve",
