@@ -9,10 +9,11 @@ services:
       - /usr/app/node_modules
     environment:
       # General
+      - HOST=${HOST}
       - PORT=${SERVER_PORT}
       - ENDPOINT=${ENDPOINT}
       # Eye tracker specifics
-      - HOST=${HOST}
+      - GAZEPOINT_ADDRESS=${GAZEPOINT_ADDRESS}
       - GAZEPOINT_PORT=${GAZEPOINT_PORT}
       # Database specifics
       - DB_NAME=${DB_NAME}
@@ -26,8 +27,8 @@ services:
     healthcheck:
       test: ["CMD", "npm", "run", "start"]
       interval: 10s
-      timeout: 5s
-      retries: 3
+      timeout: 15s
+      retries: 5
     restart: on-failure
 
   client:
@@ -43,6 +44,9 @@ services:
       - VUE_APP_API_BASE_URL=http://localhost:${SERVER_PORT}${ENDPOINT}
       - VUE_APP_PATH_TO_AUDIO_FOLDER=/app/src/assets/audio/
       - VUE_APP_PATH_TO_IMAGES_FOLDER=/app/src/assets/images/
+      - VUE_APP_PATH_ADD_TRIAL=${VUE_APP_PATH_ADD_TRIAL}
+      - VUE_APP_PATH_RUN_TRIAL=${VUE_APP_PATH_RUN_TRIAL}
+      - VUE_APP_PATH_PREVIEW_TRIAL=${VUE_APP_PATH_PREVIEW_TRIAL}
     logging:
       driver: none
     depends_on:
@@ -57,4 +61,6 @@ services:
       - "27017:27017"
     environment:
       - DB_URI= mongodb://mongo:${MONGO_PORT}/${DB_NAME}
+    logging:
+      driver: none
     restart: always

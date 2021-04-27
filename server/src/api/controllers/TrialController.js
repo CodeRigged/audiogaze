@@ -30,6 +30,29 @@ const addTrial = async (req, res) => {
 };
 
 /**
+ * @description Calls the remove function on the trial service
+ *
+ * Removes trial corresponding with the id of input parameter.
+ *
+ * If an error occurs 400 (Bad request) is sent.
+ *
+ * @type {import('express').RequestHandler} */
+const removeTrial = async (req, res) => {
+  try {
+    // remove trial corresponding to id request parameter
+    const removed = TrialService.remove(req.params.id);
+
+    // response sent to client
+    removed
+      ? res.status(SuccessfulCodes.OK).json(await TrialService.getAll())
+      : res.sendStatus(ClientErrorCodes.BAD_REQUEST);
+  } catch (e) {
+    // response if an error occurs
+    res.status(ClientErrorCodes.BAD_REQUEST).send({preventRedirect: true});
+  }
+};
+
+/**
  * @description Calls the getById function on the trial service and sends matching trial corresponding to input id to client.
  *
  * If no corresponding trial is found, 404 (Not found) is sent.
@@ -39,7 +62,7 @@ const addTrial = async (req, res) => {
  */
 const getTrialById = async (req, res) => {
   try {
-    // finds trial corresponding to id request parameter
+    // find trial corresponding to id request parameter
     const trial = await TrialService.getById(req.params.id);
 
     // response sent to client
@@ -94,4 +117,4 @@ const syncData = async (req, res) => {
   }
 };
 
-export default {addTrial, getTrials, getTrialById, syncData};
+export default {addTrial, removeTrial, getTrials, getTrialById, syncData};

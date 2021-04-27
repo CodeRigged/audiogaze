@@ -22,6 +22,7 @@ TrialRouter.route('/')
  */
 TrialRouter.route('/:id')
   .get(TrialController.getTrialById)
-  .put(EyetrackerController.loadData, TrialController.syncData);
+  .put(EyetrackerController.loadData, TrialController.syncData)
+  .delete(TrialController.removeTrial);
 
 export default TrialRouter;

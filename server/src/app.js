@@ -21,7 +21,9 @@ mongoose.connect(config.DB_URI, {
 const db = mongoose.connection;
 
 /* action which will execute if connection to database results in an error */
-db.on('error', console.error.bind(console, 'connection error:'));
+db.on('error', () => {
+  throw new Error('Error with database-connection');
+});
 
 /* action which will execute on successful connection to database */
 db.once('open', () => console.log('Connected to database.'));

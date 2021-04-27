@@ -25,7 +25,7 @@ class EyetrackerService {
       console.log('Ended Gazepoint eyetracker [timeout].');
     });
     this.client.connect({
-      host: config.HOST,
+      host: config.GAZEPOINT_ADDRESS,
       port: config.GAZEPOINT_PORT,
     });
     return new Promise((resolve, reject) => {

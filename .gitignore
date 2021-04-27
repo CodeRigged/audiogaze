@@ -1,12 +1,7 @@
-# audio-files
-*.mp3
-*.wav
-# images
-*.jpg
-*.png
-*.jpeg
+# Files
+*.docx
+
 # other
 /data
-/assets
 node_modules
 dist

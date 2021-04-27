@@ -29,10 +29,11 @@
             </v-card-text>
             <v-divider />
             <v-card-actions>
-              <v-btn disabled small>
+              <delete-trial :trial-id="item._id" />
+              <!-- <v-btn disabled small>
                 Export all results
                 <v-icon>mdi-download</v-icon>
-              </v-btn>
+              </v-btn> -->
               <v-spacer />
               <v-btn :to="`preview/trial/${item._id}`" small>
                 View Trial
@@ -53,6 +54,7 @@
 import {paths} from '@/config';
 import {mapState} from 'vuex';
 import ResultsOverview from '@/components/pages/index/ResultsOverview.vue';
+import DeleteTrial from '../components/pages/index/DeleteTrial.vue';
 /**
  * @description The index page is an overview of all trials and their results, acquired from server.
  */
@@ -63,6 +65,7 @@ export default {
   data: () => ({expanded: []}),
   components: {
     ResultsOverview,
+    DeleteTrial,
   },
   computed: {
     ...mapState({

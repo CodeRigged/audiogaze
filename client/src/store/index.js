@@ -149,12 +149,34 @@ export default new Vuex.Store({
           message: 'Preparing trial',
         })
         .catch(() => {
-          dispatch('appState/setError', `Couldn't find trial with given id.`);
+          dispatch('appState/setError', `Couldn't find trial with id ${id}`);
         });
       if (res) {
         const data = res.data;
         return data;
       }
+    },
+    /**
+     * @description Methods which gets single trial (matching input id) from server
+     */
+    async removeTrial({dispatch}, id) {
+      await Vue.axios
+        .delete(`/trials/${id}`, {
+          message: 'Deleting trial',
+        })
+        .then((res) => {
+          const {status, data} = res;
+          if (status === 200) {
+            dispatch(
+              'appState/setInformation',
+              `Successfully remove trial with id ${id}`,
+            );
+            dispatch('updateTrials', data);
+          }
+        })
+        .catch(() => {
+          dispatch('appState/setError', `Couldn't delete trial with id ${id}`);
+        });
     },
     /**
      * @description Methods which sends results from a trial to server

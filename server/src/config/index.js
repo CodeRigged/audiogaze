@@ -6,8 +6,9 @@ const {
   PORT = /* default PORT */ '3000',
   ENDPOINT = /* default endpoint */ '/api/v1',
   HOST = /* default host */ '127.0.0.1',
+  GAZEPOINT_ADDRESS = /* default gazepoint control address */ '127.0.0.1',
   GAZEPOINT_PORT = /* default gazepoint port */ '4242',
-  DB_NAME /* change name in environment file */,
+  DB_NAME = /* change name in environment file */ 'defaultDBName',
   DB_URI = `mongodb://${HOST}/${DB_NAME}`,
 } = process.env;
 
@@ -17,6 +18,7 @@ const config = Object.freeze({
   ENDPOINT,
   HOST,
   GAZEPOINT_PORT,
+  GAZEPOINT_ADDRESS,
   DB_NAME,
   DB_URI,
 });

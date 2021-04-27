@@ -28,6 +28,25 @@ class TrialService {
     });
   }
   /**
+   * @description Adds new trial to trial model
+   *
+   * @param {{name:string,duration:number,timestamp: number,tracks: trackModel}} service
+   * @returns boolean
+   */
+  remove(id) {
+    return new Promise((resolve, reject) => {
+      Trial.findByIdAndDelete(id, (err) => {
+        if (err) {
+          console.error(err);
+          reject(false);
+        } else {
+          console.log(`Successfully remove trial with id: ${id}`);
+          resolve(true);
+        }
+      });
+    });
+  }
+  /**
    * @description Synchronizes data collected by eyetracker with (trial) results received from client
    * and updates trial with corresponding id
    *
