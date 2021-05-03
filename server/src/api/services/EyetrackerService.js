@@ -21,9 +21,10 @@ class EyetrackerService {
   connect(options) {
     this.client = new net.Socket();
     this.client.setEncoding('utf-8');
-    this.client.setTimeout(5000, () => {
+    this.client.setTimeout(25000, () => {
       console.log('Ended Gazepoint eyetracker [timeout].');
     });
+
     this.client.connect({
       host: config.GAZEPOINT_ADDRESS,
       port: config.GAZEPOINT_PORT,
@@ -51,6 +52,9 @@ class EyetrackerService {
           });
         }
         resolve(true);
+      });
+      this.client.on('timeout', () => {
+        reject(false);
       });
       this.client.on('error', (err) => {
         console.log(err);

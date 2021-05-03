@@ -22,7 +22,7 @@ const addTrial = async (req, res) => {
     // response sent to client
     added
       ? res.status(SuccessfulCodes.CREATED).json(await TrialService.getAll())
-      : res.status(ClientErrorCodes.BAD_REQUEST).send({preventRedirect: true});
+      : res.status(ClientErrorCodes.NOT_FOUND).send({preventRedirect: true});
   } catch (e) {
     // response if an error occurs
     res.status(ClientErrorCodes.BAD_REQUEST).send({preventRedirect: true});

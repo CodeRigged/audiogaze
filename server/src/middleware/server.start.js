@@ -1,6 +1,8 @@
 // logs message when an API call is made including current time
 const timeLog = (req, res, next) => {
-  console.log(`API call to ${req.originalUrl} at ${new Date()}`);
+  console.log(
+    `${req.method} request made to ${req.originalUrl} at ${new Date()}`,
+  );
   next();
 };
 
