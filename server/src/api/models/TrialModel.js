@@ -28,7 +28,7 @@ const trialSchema = new mongoose.Schema(
   },
   {
     timestamps: {
-      createdAt: 'created_at',
+      createAt: 'created_at',
     },
   },
 );

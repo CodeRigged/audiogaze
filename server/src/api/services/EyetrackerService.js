@@ -19,17 +19,18 @@ class EyetrackerService {
   ];
 
   connect(options) {
-    this.client = new net.Socket();
-    this.client.setEncoding('utf-8');
-    this.client.setTimeout(25000, () => {
-      console.log('Ended Gazepoint eyetracker [timeout].');
-    });
-
-    this.client.connect({
-      host: config.GAZEPOINT_ADDRESS,
-      port: config.GAZEPOINT_PORT,
-    });
     return new Promise((resolve, reject) => {
+      this.client = new net.Socket();
+      this.client.setEncoding('utf-8');
+      this.client.setTimeout(25000, () => {
+        reject(false);
+        console.log('Ended Gazepoint eyetracker [timeout].');
+      });
+
+      this.client.connect({
+        host: config.GAZEPOINT_ADDRESS,
+        port: config.GAZEPOINT_PORT,
+      });
       this.client.on('connect', () => {
         console.log('Gazepoint eyetracker connected.');
         this.connected = true;
@@ -52,9 +53,6 @@ class EyetrackerService {
           });
         }
         resolve(true);
-      });
-      this.client.on('timeout', () => {
-        reject(false);
       });
       this.client.on('error', (err) => {
         console.log(err);

@@ -22,6 +22,7 @@ Audiogaze is a web-service which allows users to create and run trials by adding
 
 ### Local Testing
 
+- [Vue.js](https://vuejs.org/)
 - [Node.js](https://nodejs.org/en/download/)
 - [MongoDB Community Server](https://www.mongodb.com/try/download/community?tck=docs_server)
 
@@ -35,7 +36,7 @@ Audiogaze is a web-service which allows users to create and run trials by adding
 
 ## Installation & Setup
 
-> **NOTE:** make sure the Gazepoint Control Software is running
+> **NOTE:** make sure the Gazepoint Control Software is running and that the eye tracker is calibrated
 
 ### With Docker
 
@@ -63,6 +64,14 @@ Audiogaze is a web-service which allows users to create and run trials by adding
   VUE_APP_PATH_TO_IMAGES_FOLDER = /path/to/image/files/folder
   VUE_APP_PATH_TO_AUDIO_FOLDER = /path/to/audio/files/folder
   ```
+
+  > rename the .env-template file to .env
+
+- Install Vue globally
+
+```console
+ npm install -g @vue/cli
+```
 
 - Install dependencies in server and client folder
 
