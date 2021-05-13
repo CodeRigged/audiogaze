@@ -19,10 +19,17 @@ TrialRouter.route('/')
  *
  * @get Get trial matching id parameter.
  * @put Updates trial matching id paramter (synchronization of data from client and eyetracker).
+ * @delete Deletes trial matching id parameter
  */
 TrialRouter.route('/:id')
   .get(TrialController.getTrialById)
   .put(EyetrackerController.loadData, TrialController.syncData)
   .delete(TrialController.removeTrial);
+/**
+ * {URI}/trials/:id/results methods
+ *
+ * @get Get results matching trial id parameter.
+ */
+TrialRouter.route('/:id/results').get(TrialController.getTrialResults);
 
 export default TrialRouter;

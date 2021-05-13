@@ -67,7 +67,7 @@ class EyetrackerService {
       if (data.startsWith('<') && data.endsWith('>')) {
         this.data.push({timestamp: Date.now(), data});
       } else {
-        console.log(data);
+        console.log('Error');
       }
     });
   }

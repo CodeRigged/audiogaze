@@ -76,6 +76,27 @@ const getTrialById = async (req, res) => {
 };
 
 /**
+ * @description Calls the getResults function on the trial service and sends matching results corresponding to input id to client.
+ *
+ * If no results are found, 404 (Not found) is sent.
+ * Else if an error occurs 400 (Bad request) is sent.
+ *
+ * @type {import('express').RequestHandler}
+ */
+const getTrialResults = async (req, res) => {
+  try {
+    // find trial corresponding to id request parameter
+    const results = await TrialService.getResults(req.params.id);
+    // response sent to client
+    results
+      ? res.status(SuccessfulCodes.OK).json(results)
+      : res.sendStatus(ClientErrorCodes.NOT_FOUND);
+  } catch (e) {
+    // response if an error occurs
+    res.sendStatus(ClientErrorCodes.BAD_REQUEST);
+  }
+};
+/**
  * @description Calls the getAll function on the trial service and sends corresponding data to client.
  *
  * If an error occurs 400 (Bad request) is sent.
@@ -117,4 +138,11 @@ const syncData = async (req, res) => {
   }
 };
 
-export default {addTrial, removeTrial, getTrials, getTrialById, syncData};
+export default {
+  addTrial,
+  removeTrial,
+  getTrials,
+  getTrialById,
+  syncData,
+  getTrialResults,
+};

@@ -40,7 +40,7 @@ class TrialService {
           console.error(err);
           reject(false);
         } else {
-          console.log(`Successfully remove trial with id: ${id}`);
+          console.log(`Successfully removed trial with id: ${id}`);
           resolve(true);
         }
       });
@@ -117,9 +117,8 @@ class TrialService {
             /**
              * object from eyetrackerData
              */
-            const {data, timestamp: eyetrackerTime} = eyetrackerData[
-              dataRecordStartIndex
-            ];
+            const {data, timestamp: eyetrackerTime} =
+              eyetrackerData[dataRecordStartIndex];
             // if data has REC attribute, not always the case
             if (data.REC) {
               const eyetrackerAttributes = data.REC._attributes;
@@ -219,6 +218,17 @@ class TrialService {
    */
   getById(id) {
     return Trial.findById(id, (err, trial) => {
+      err && error(err);
+    });
+  }
+  /**
+   * @description Get trial results matching trial id
+   *
+   * @param {string} id
+   * @returns results
+   */
+  getResults(id) {
+    return Trial.findById(id, {_id: 0, results: 1}, (err, trial) => {
       err && error(err);
     });
   }

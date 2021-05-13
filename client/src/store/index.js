@@ -159,6 +159,26 @@ export default new Vuex.Store({
     /**
      * @description Methods which gets single trial (matching input id) from server
      */
+
+    async getTrialResults({dispatch}, id) {
+      const res = await Vue.axios
+        .get(`/trials/${id}/results`, {
+          message: 'Preparing trial results',
+        })
+        .catch(() => {
+          dispatch(
+            'appState/setError',
+            `Couldn't find trial results with id ${id}`,
+          );
+        });
+      if (res) {
+        const data = res.data.results;
+        return data;
+      }
+    },
+    /**
+     * @description Methods which gets single trial (matching input id) from server
+     */
     async removeTrial({dispatch}, id) {
       await Vue.axios
         .delete(`/trials/${id}`, {
@@ -169,7 +189,7 @@ export default new Vuex.Store({
           if (status === 200) {
             dispatch(
               'appState/setInformation',
-              `Successfully remove trial with id ${id}`,
+              `Successfully removed trial with id ${id}`,
             );
             dispatch('updateTrials', data);
           }

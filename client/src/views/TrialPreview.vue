@@ -4,9 +4,7 @@
       <v-card-title>You are viewing {{ trial.name }}</v-card-title>
       <v-card-subtitle class="caption">Id: {{ trial._id }}</v-card-subtitle>
       <v-card-text>
-        The trial has a duration of {{ trial.duration }} ms and has been run a
-        total amount of {{ trial.results.length }}.
-
+        The trial has a duration of {{ trial.duration }} ms.
         <br />
         <br />
         Images (in order):

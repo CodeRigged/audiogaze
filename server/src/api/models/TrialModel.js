@@ -20,6 +20,7 @@ const trialSchema = new mongoose.Schema(
     duration: {type: Number, required},
     results: {
       type: [recordsSchema],
+      select: false,
     },
     tracks: {
       type: [trackSchema],
