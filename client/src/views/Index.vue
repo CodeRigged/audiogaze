@@ -9,7 +9,9 @@
       single-expand
       show-expand
       class="elevation-1"
+      @item-expanded="loadResults"
     >
+      >
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>Trials</v-toolbar-title>
@@ -25,7 +27,7 @@
         <td class="pa-1" :colspan="headers.length + 1">
           <v-card flat>
             <v-card-text>
-              <results-overview :results="item.results" />
+              <results-overview :results="results" />
             </v-card-text>
             <v-divider />
             <v-card-actions>
@@ -52,7 +54,7 @@
 </template>
 <script>
 import {paths} from '@/config';
-import {mapState} from 'vuex';
+import {mapActions, mapState} from 'vuex';
 import ResultsOverview from '@/components/pages/index/ResultsOverview.vue';
 import DeleteTrial from '../components/pages/index/DeleteTrial.vue';
 /**
@@ -62,10 +64,16 @@ export default {
   name: 'index',
   title: 'Home',
   path: paths.index,
-  data: () => ({expanded: []}),
+  data: () => ({expanded: [], results: []}),
   components: {
     ResultsOverview,
     DeleteTrial,
+  },
+  methods: {
+    ...mapActions(['getTrialResults']),
+    async loadResults({item}) {
+      this.results = await this.getTrialResults(item._id);
+    },
   },
   computed: {
     ...mapState({

@@ -148,7 +148,7 @@ export default {
     runAudio() {
       const ttlAudios = this.audios.length;
       /**
-       * @type {{startAt:number, stopAt:number, audio: HTMLAudioElement, channels:Array}}
+       * @type {{startAt:number, stopAt:number, audio:string, src:string, channels:Array}}
        */
       const {startAt, stopAt, audio, src, channels} = this.audios[
         this.currentAudio++
@@ -161,36 +161,31 @@ export default {
 
       // interval = how long audio is played
       const interval = stopAt - startAt;
+
       this.audio.setAttribute('src', audio);
 
       /**
-       * Create audio context
+       * Create audio context and set channel count to channel limitmm
        * @type {AudioContext}
        */
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-      // audio-source
-      const audioSrc = audioCtx.createMediaElementSource(this.audio);
+      audioCtx.destination.channelCount = this.channelLimit;
 
       // create splitter node and connect it to audio-source
       const splitterNode = audioCtx.createChannelSplitter(this.channelLimit);
-
+      // audio-source
+      const audioSrc = audioCtx.createMediaElementSource(this.audio);
       audioSrc.connect(splitterNode);
-
       // create merger node
       const mergerNode = audioCtx.createChannelMerger(this.channelLimit);
-
       // loop through channelLimit
       for (let index = 0; index < this.channelLimit; index++) {
         // create new node for every channel
-        const node = new GainNode(audioCtx);
-        // check if channel is included in the channels array, if not => set volume of node to 0 (user won't hear any sound from that channel)
-        channels.includes(index)
-          ? (node.gain.value = 2)
-          : (node.gain.value = 0);
-
-        splitterNode.connect(node, index); // connect node to output channel {index}
-        node.connect(mergerNode, 0, index); // connect INPUT channel 0 with output channel {index}
+        const node = audioCtx.createGain();
+        // connect node to splitterNode from output {index} to input channel 0
+        splitterNode.connect(node, index, 0);
+        // check if channel is included in the channels array, if it is connect it mergerNode to splitterNode
+        channels.includes(index) && splitterNode.connect(mergerNode, 0, index);
       }
       // finally connect the audio context to its destination
       mergerNode.connect(audioCtx.destination);
@@ -223,6 +218,7 @@ export default {
         });
         // stop audio and disconnect mergerNode (prevents channels from overlapping)
         this.audio.pause();
+        this.audio = new Audio();
         mergerNode.disconnect(audioCtx.destination);
       }, interval);
 
