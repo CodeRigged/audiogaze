@@ -5,6 +5,7 @@
         v-on="listeners"
         v-model.number="value.from"
         @keypress="handleInput"
+        @blur="$emit('timerange-updated')"
         label="from"
       />
     </v-col>
@@ -16,6 +17,7 @@
         v-on="listeners"
         v-model.number="value.to"
         @keypress="handleInput"
+        @blur="$emit('timerange-updated')"
         label="to"
       />
     </v-col>
