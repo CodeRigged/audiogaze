@@ -34,6 +34,12 @@ export default {
     ...mapGetters('appState', ['loadingVisbility']),
     ...mapState('appState', ['isFullScreen']),
   },
+  watch: {
+    $route(to) {
+      document.title = `${to.meta.title} - Audiogaze` || 'Audiogaze';
+    },
+  },
+
   created() {
     // run setup from vuex-store
     this.$store.dispatch('setup');

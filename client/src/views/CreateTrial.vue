@@ -49,7 +49,7 @@ export default {
     CreateTrial,
   },
   name: 'new-test',
-  title: 'New trial',
+  title: 'New Trial',
   path: paths.addTrial,
   methods: {
     ...mapMutations('addTrial', [
