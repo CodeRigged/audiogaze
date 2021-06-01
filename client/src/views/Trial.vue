@@ -21,7 +21,12 @@
       </v-card-actions>
     </v-card>
     <div class="absolute-center" v-else-if="!trialStarted">
-      <v-btn @click="takeTrial">Start Trial</v-btn>
+      <v-row justify="center">
+        <v-btn @click="takeTrial">Start Trial</v-btn>
+      </v-row>
+      <v-row>
+        <v-text-field v-model="participant" label="Participant" />
+      </v-row>
     </div>
   </div>
 </template>
@@ -53,6 +58,8 @@ export default {
     trialEnded: false,
     // array which collects all data => sent to server at end of trial
     data: [],
+    // participants information (e.G. 'participant-1' or 'Max Müller')
+    participant: null,
   }),
   computed: {
     ...mapState('appState', ['isFullScreen']),
@@ -134,6 +141,7 @@ export default {
 
           await this.$store.dispatch('sendResults', {
             id: this.$route.params.id,
+            participant: this.participant,
             clientData: this.data,
           });
 
