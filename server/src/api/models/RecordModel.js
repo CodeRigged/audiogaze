@@ -6,6 +6,10 @@ const required = true;
  * Schema of single data record from eyetracker.
  */
 const singleRecord = new mongoose.Schema({
+  group: {
+    type: Number,
+    required,
+  },
   FPOGD: {
     type: String,
     required,
@@ -91,6 +95,10 @@ const singleRecord = new mongoose.Schema({
  */
 const recordsSchema = new mongoose.Schema(
   {
+    participant: {
+      type: String,
+      required,
+    },
     data: [{type: singleRecord, immutable: true}],
   },
   {

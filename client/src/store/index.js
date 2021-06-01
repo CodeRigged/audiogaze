@@ -201,11 +201,15 @@ export default new Vuex.Store({
     /**
      * @description Methods which sends results from a trial to server
      */
-    async sendResults({dispatch}, {clientData, id}) {
+    async sendResults({dispatch}, {clientData, participant, id}) {
       const res = await Vue.axios
-        .put(`trials/${id}`, clientData, {
-          message: 'Trial is ending',
-        })
+        .put(
+          `trials/${id}`,
+          {clientData, participant},
+          {
+            message: 'Trial is ending',
+          },
+        )
         .catch(() => {
           dispatch(
             'appState/setError',

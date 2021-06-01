@@ -53,9 +53,10 @@ class TrialService {
    * @param {string} id
    * @param {{type: 'img'|'audio', src: string, timestamp: number, channels: string|undefined, started: boolean}[]} clientData - data collected by eyetracker
    * @param {{data:{REC:{_attributes:object}}, timestamp:number}[]} eyetrackerData - data received from client
+   * @param {string} participant
    * @returns boolean
    */
-  update(id, clientData, eyetrackerData) {
+  update(id, clientData, eyetrackerData, participant) {
     // initialize results array
     var results = [];
     try {
@@ -66,6 +67,7 @@ class TrialService {
        * @type {number} startTime
        */
       const startTime = clientData[0].timestamp;
+      let group = 0;
       // loop through clientData array
       for (let index = 0; index < clientData.length; index++) {
         /**
@@ -76,9 +78,10 @@ class TrialService {
           src: imgSrc,
           timestamp: imgStartTime,
           started,
-        } = clientData[index++];
+        } = clientData[index];
 
         if (started && type === 'img') {
+          group++;
           /**
            * Finds the index of entry in eyetrackerData where the timestamp is above the timestamp of clientData entry
            * (when the image started displaying client-side).
@@ -128,6 +131,7 @@ class TrialService {
                 startTime;
               // push to results array
               results.push({
+                group,
                 imgSrc,
                 timestamp,
                 ...eyetrackerAttributes,
@@ -188,26 +192,31 @@ class TrialService {
     }
 
     return new Promise((resolve, reject) => {
-      Trial.findByIdAndUpdate(
-        id,
-        {
-          $push: {
-            results: {
-              data: results,
+      if (data.length > 0) {
+        Trial.findByIdAndUpdate(
+          id,
+          {
+            $push: {
+              results: {
+                participant,
+                data: results,
+              },
             },
           },
-        },
-        {new: true},
-        (err, updatedTrial) => {
-          if (err) {
-            console.error(err);
-            reject(false);
-          } else {
-            console.log(`Successfully updated trial ${id}: ${updatedTrial}`);
-            resolve(true);
-          }
-        },
-      );
+          {new: true},
+          (err, updatedTrial) => {
+            if (err) {
+              console.error(err);
+              reject(false);
+            } else {
+              console.log(`Successfully updated trial ${id}: ${updatedTrial}`);
+              resolve(true);
+            }
+          },
+        );
+      } else {
+        reject(false);
+      }
     });
   }
   /**

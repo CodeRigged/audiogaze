@@ -123,6 +123,7 @@ export default {
       return [
         {text: 'Index', align: 'start', value: 'index', width: 100},
         {text: 'Taken at', align: 'center', value: 'createdAt'},
+        {text: 'Participant', align: 'center', value: 'participant'},
         {text: 'Total Entries', align: 'center', value: 'data.length'},
         {text: 'Actions', align: 'center', value: 'actions', width: 100},
       ];

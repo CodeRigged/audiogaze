@@ -119,11 +119,10 @@ const getTrials = async (req, res) => {
 const syncData = async (req, res) => {
   try {
     const id = req.params.id;
-    const clientData = req.body;
+    const {clientData, participant} = req.body;
     const eyetrackerData = req.eyetrackerData;
-
     // Calls the update function on the trial service to synchronize data and update results array
-    TrialService.update(id, clientData, eyetrackerData)
+    TrialService.update(id, clientData, eyetrackerData, participant)
       .then((success) => {
         // send response to client, if data was successfully updated
         res.status(SuccessfulCodes.OK).send('Data successfully synchronized.');
