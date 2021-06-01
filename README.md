@@ -96,7 +96,7 @@ Audiogaze is a web-service which allows users to create and run trials by adding
 - Adding trials
 - Running trials
 - Viewing trials
-- Exporting results
+- Viewing and Exporting results
 - Removing trials
 
 ### API
@@ -124,6 +124,8 @@ Audiogaze is a web-service which allows users to create and run trials by adding
 - **URLs**
 
   > `GET | PUT | DELETE /:id`
+
+  > `GET /:id/results?limit={number}`
 
 ## License
 
