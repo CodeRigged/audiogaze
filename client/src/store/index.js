@@ -160,9 +160,12 @@ export default new Vuex.Store({
      * @description Methods which gets single trial (matching input id) from server
      */
 
-    async getTrialResults({dispatch}, id) {
+    async getTrialResults({dispatch}, {id, skip}) {
+      const limit = router.currentRoute.query.limit
+        ? router.currentRoute.query.limit
+        : 5;
       const res = await Vue.axios
-        .get(`/trials/${id}/results`, {
+        .get(`/trials/${id}/results/?skip=${skip}&limit=${limit}`, {
           message: 'Preparing trial results',
         })
         .catch(() => {
@@ -172,8 +175,7 @@ export default new Vuex.Store({
           );
         });
       if (res) {
-        const data = res.data.results;
-        return data;
+        return res.data;
       }
     },
     /**

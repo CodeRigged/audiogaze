@@ -79,7 +79,6 @@ class TrialService {
           timestamp: imgStartTime,
           started,
         } = clientData[index];
-
         if (started && type === 'img') {
           group++;
           /**
@@ -190,9 +189,8 @@ class TrialService {
     } catch (error) {
       console.log(error);
     }
-
     return new Promise((resolve, reject) => {
-      if (data.length > 0) {
+      if (results.length > 0) {
         Trial.findByIdAndUpdate(
           id,
           {
@@ -231,7 +229,7 @@ class TrialService {
     });
   }
   /**
-   * @description Get trial results matching trial id
+   * @description Get trial results matching trial id and limited payload
    *
    * @param {string} id
    * @returns results

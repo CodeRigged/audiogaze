@@ -1,10 +1,5 @@
 <template>
-  <v-data-table
-    class="elevation-1"
-    :items-per-page="15"
-    :headers="resultsHeaders"
-    :items="results"
-  >
+  <v-data-table :items-per-page="15" :headers="resultsHeaders" :items="results">
     <template v-slot:item.index="{index}">{{ index + 1 }}</template>
     <template v-slot:item.actions="{item}">
       <v-menu offset-y bottom>

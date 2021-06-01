@@ -1,6 +1,15 @@
 <template>
   <v-container fluid>
-    <results-overview :results="results" />
+    <v-card>
+      <results-overview :results="results" />
+      <v-card-actions>
+        <v-btn @click="loadResults" class="float-right" text>
+          Load more...
+        </v-btn>
+        <v-spacer></v-spacer>
+        <v-btn class="float-right" to="/" plain>Return to overview</v-btn>
+      </v-card-actions>
+    </v-card>
   </v-container>
 </template>
 <script>
@@ -20,8 +29,14 @@ export default {
   },
   methods: {
     ...mapActions(['getTrialResults']),
-    async loadResults() {
-      this.results = await this.getTrialResults(this.$route.params.id);
+    async loadResults(limit = 5) {
+      this.results.push(
+        ...(await this.getTrialResults({
+          id: this.$route.params.id,
+          skip: this.results.length,
+          limit,
+        })),
+      );
     },
   },
   mounted() {

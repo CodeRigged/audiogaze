@@ -85,11 +85,13 @@ const getTrialById = async (req, res) => {
  */
 const getTrialResults = async (req, res) => {
   try {
+    const {limit, skip} = req.query;
     // find trial corresponding to id request parameter
-    const results = await TrialService.getResults(req.params.id);
+    const results = await TrialService.getResults(req.params.id, skip, limit);
+    const slicedResults = results.results.slice(skip, skip + limit);
     // response sent to client
     results
-      ? res.status(SuccessfulCodes.OK).json(results)
+      ? res.status(SuccessfulCodes.OK).json(slicedResults)
       : res.sendStatus(ClientErrorCodes.NOT_FOUND);
   } catch (e) {
     // response if an error occurs
@@ -128,12 +130,14 @@ const syncData = async (req, res) => {
         res.status(SuccessfulCodes.OK).send('Data successfully synchronized.');
       })
       .catch((e) => {
+        console.log(e);
         // If an error occurs, 500 (Internal server error) is sent
         res.sendStatus(ServerErrorCodes.INTERNAL_SERVER_ERROR);
       });
   } catch (e) {
+    console.log(e);
     // else 400 (Bad request) is sent
-    res.sendStatus(ClientErrorCodes.BAD_REQUEST);
+    // res.sendStatus(ClientErrorCodes.BAD_REQUEST);
   }
 };
 

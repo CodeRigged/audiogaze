@@ -40,7 +40,7 @@
                 <v-icon small>mdi-eye</v-icon>
               </v-list-item-action>
             </v-list-item>
-            <v-list-item :to="`results/trial/${item._id}`">
+            <v-list-item :to="`results/trial/${item._id}?limit=5`">
               <v-list-item-title>View Results</v-list-item-title>
               <v-list-item-action>
                 <v-icon small>mdi-database-import-outline</v-icon>
