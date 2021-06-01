@@ -1,10 +1,12 @@
 <template>
   <v-dialog max-width="60vw" v-model="dialog">
     <template v-slot:activator="{on, attrs}">
-      <v-btn plain small v-bind="attrs" v-on="on">
-        Delete
-        <v-icon small>mdi-trash-can-outline</v-icon>
-      </v-btn>
+      <v-list-item v-bind="attrs" v-on="on">
+        <v-list-item-title>Delete</v-list-item-title>
+        <v-list-item-action>
+          <v-icon small>mdi-delete</v-icon>
+        </v-list-item-action>
+      </v-list-item>
     </template>
     <v-card>
       <v-card-title>

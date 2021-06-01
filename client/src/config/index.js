@@ -4,6 +4,7 @@ const {
   VUE_APP_PATH_ADD_TRIAL: addTrial,
   VUE_APP_PATH_RUN_TRIAL: runTrial,
   VUE_APP_PATH_PREVIEW_TRIAL: previewTrial,
+  VUE_APP_PATH_TRIAL_RESULTS: trialResults,
   // Config
   VUE_APP_API_BASE_URL: apiEndpoint,
 } = process.env;
@@ -16,6 +17,7 @@ const paths = Object.freeze({
   addTrial,
   runTrial,
   previewTrial,
+  trialResults,
 });
 /**
  * All configuration-variables of application

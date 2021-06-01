@@ -1,6 +1,7 @@
 <template>
   <v-container fluid>
     <v-data-table
+      class="elevation-1"
       :headers="trialHeaders"
       :items="trials"
       :items-per-page="15"
@@ -8,8 +9,6 @@
       item-key="_id"
       single-expand
       show-expand
-      class="elevation-1"
-      @item-expanded="loadResults"
     >
       >
       <template v-slot:top>
@@ -23,39 +22,41 @@
         </v-toolbar>
       </template>
       <template v-slot:item.index="{index}">{{ index + 1 }}</template>
-      <template v-slot:expanded-item="{headers, item}">
-        <td class="pa-1" :colspan="headers.length + 1">
-          <v-card flat>
-            <v-card-text>
-              <results-overview :results="results" />
-            </v-card-text>
+      <template v-slot:item.data-table-expand="{item}">
+        <v-menu offset-y>
+          <template v-slot:activator="{on, attrs}">
+            <v-icon v-bind="attrs" v-on="on">mdi-chevron-down</v-icon>
+          </template>
+          <v-list dense>
+            <v-list-item :to="`trial/${item._id}`">
+              <v-list-item-title>Start Trial</v-list-item-title>
+              <v-list-item-action>
+                <v-icon small>mdi-play</v-icon>
+              </v-list-item-action>
+            </v-list-item>
+            <v-list-item :to="`preview/trial/${item._id}`">
+              <v-list-item-title>View Trial</v-list-item-title>
+              <v-list-item-action>
+                <v-icon small>mdi-eye</v-icon>
+              </v-list-item-action>
+            </v-list-item>
+            <v-list-item :to="`results/trial/${item._id}`">
+              <v-list-item-title>View Results</v-list-item-title>
+              <v-list-item-action>
+                <v-icon small>mdi-database-import-outline</v-icon>
+              </v-list-item-action>
+            </v-list-item>
             <v-divider />
-            <v-card-actions>
-              <delete-trial :trial-id="item._id" />
-              <!-- <v-btn disabled small>
-                Export all results
-                <v-icon>mdi-download</v-icon>
-              </v-btn> -->
-              <v-spacer />
-              <v-btn :to="`preview/trial/${item._id}`" small>
-                View Trial
-                <v-icon>mdi-eye</v-icon>
-              </v-btn>
-              <v-btn small :to="`trial/${item._id}`">
-                Start Trial
-                <v-icon>mdi-play</v-icon>
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </td>
+            <delete-trial :trial-id="item._id" />
+          </v-list>
+        </v-menu>
       </template>
     </v-data-table>
   </v-container>
 </template>
 <script>
 import {paths} from '@/config';
-import {mapActions, mapState} from 'vuex';
-import ResultsOverview from '@/components/pages/index/ResultsOverview.vue';
+import {mapState} from 'vuex';
 import DeleteTrial from '../components/pages/index/DeleteTrial.vue';
 /**
  * @description The index page is an overview of all trials and their results, acquired from server.
@@ -64,16 +65,9 @@ export default {
   name: 'index',
   title: 'Home',
   path: paths.index,
-  data: () => ({expanded: [], results: []}),
+  data: () => ({expanded: []}),
   components: {
-    ResultsOverview,
     DeleteTrial,
-  },
-  methods: {
-    ...mapActions(['getTrialResults']),
-    async loadResults({item}) {
-      this.results = await this.getTrialResults(item._id);
-    },
   },
   computed: {
     ...mapState({
@@ -105,7 +99,7 @@ export default {
           text: 'Updated at',
           value: 'updatedAt',
         },
-        {text: 'Results', align: 'end', value: 'data-table-expand'},
+        {text: 'Actions', align: 'end', value: 'data-table-expand'},
       ];
     },
     /**
