@@ -1,6 +1,15 @@
 <template>
   <v-data-table :items-per-page="15" :headers="resultsHeaders" :items="results">
     <template v-slot:item.index="{index}">{{ index + 1 }}</template>
+    <template v-slot:item.participant="{item}">
+      <div class="small-width">
+        {{
+          item.participant
+            ? `${item.participant.name}, ${item.participant.age}, ${item.participant.gender}, ${item.participant.handedness} and ${item.participant.comment}`
+            : 'no information'
+        }}
+      </div>
+    </template>
     <template v-slot:item.actions="{item}">
       <v-menu offset-y bottom>
         <template #activator="{on,attrs}">
@@ -118,7 +127,12 @@ export default {
       return [
         {text: 'Index', align: 'start', value: 'index', width: 100},
         {text: 'Taken at', align: 'center', value: 'createdAt'},
-        {text: 'Participant', align: 'center', value: 'participant'},
+        {
+          text: 'Participant (name, age, gender, handedness and comment)',
+          align: 'center',
+          value: 'participant',
+          width: 200,
+        },
         {text: 'Total Entries', align: 'center', value: 'data.length'},
         {text: 'Actions', align: 'center', value: 'actions', width: 100},
       ];
@@ -126,3 +140,8 @@ export default {
   },
 };
 </script>
+<style>
+.small-width {
+  max-width: 25vw;
+}
+</style>

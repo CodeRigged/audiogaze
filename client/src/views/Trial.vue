@@ -21,18 +21,14 @@
       </v-card-actions>
     </v-card>
     <div class="absolute-center" v-else-if="!trialStarted">
-      <v-row justify="center">
-        <v-btn @click="takeTrial">Start Trial</v-btn>
-      </v-row>
-      <v-row>
-        <v-text-field v-model="participant" label="Participant" />
-      </v-row>
+      <participant-information v-model="participant" @start-trial="takeTrial" />
     </div>
   </div>
 </template>
 <script>
 import {paths} from '@/config';
 import {mapActions, mapState} from 'vuex';
+import ParticipantInformation from '../components/pages/trial/ParticipantInformation.vue';
 /**
  * @description The trial page is the page, where trials are taken and processed.
  */
@@ -40,6 +36,7 @@ export default {
   name: 'trial',
   title: 'Trial',
   path: paths.runTrial,
+  components: {ParticipantInformation},
   data: () => ({
     // HTMLAudioElement which all audio-tracks run on
     audio: new Audio(),
@@ -59,7 +56,13 @@ export default {
     // array which collects all data => sent to server at end of trial
     data: [],
     // participants information (e.G. 'participant-1' or 'Max Müller')
-    participant: null,
+    participant: {
+      name: null,
+      age: null,
+      gender: null,
+      handedness: null,
+      comment: null,
+    },
   }),
   computed: {
     ...mapState('appState', ['isFullScreen']),

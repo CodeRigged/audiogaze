@@ -90,13 +90,37 @@ const singleRecord = new mongoose.Schema({
     required,
   },
 });
+
+const participantInformation = new mongoose.Schema({
+  name: {
+    type: String,
+    default: 'Anonymous',
+  },
+  age: {
+    type: Number,
+  },
+  gender: {
+    type: String,
+    enum: ['Male', 'Female', 'Diverse'],
+    default: 'Diverse',
+  },
+  handedness: {
+    type: String,
+    enum: ['Right', 'Left', 'Mixed', 'Ambidexterity', 'Other'],
+    default: 'Other',
+  },
+  comment: {
+    type: String,
+  },
+});
+
 /**
  * Schema of all collected data from eyetracker.
  */
 const recordsSchema = new mongoose.Schema(
   {
     participant: {
-      type: String,
+      type: participantInformation,
       required,
     },
     data: [{type: singleRecord, immutable: true}],
