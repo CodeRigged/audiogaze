@@ -191,27 +191,28 @@ class TrialService {
     }
     return new Promise((resolve, reject) => {
       if (results.length > 0) {
-        Trial.findByIdAndUpdate(
-          id,
-          {
-            $push: {
-              results: {
-                participant,
-                data: results,
-              },
-            },
-          },
-          {new: true},
-          (err, updatedTrial) => {
-            if (err) {
-              console.error(err);
-              reject(false);
-            } else {
-              console.log(`Successfully updated trial ${id}: ${updatedTrial}`);
-              resolve(true);
-            }
-          },
-        );
+        resolve(results);
+        // Trial.findByIdAndUpdate(
+        //   id,
+        //   {
+        //     $push: {
+        //       results: {
+        //         participant,
+        //         data: results,
+        //       },
+        //     },
+        //   },
+        //   {new: true},
+        //   (err, updatedTrial) => {
+        //     if (err) {
+        //       console.error(err);
+        //       reject(false);
+        //     } else {
+        //       console.log(`Successfully updated trial ${id}: ${updatedTrial}`);
+        //       resolve(true);
+        //     }
+        //   },
+        // );
       } else {
         reject(false);
       }

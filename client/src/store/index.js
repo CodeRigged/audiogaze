@@ -219,7 +219,7 @@ export default new Vuex.Store({
           );
         });
       if (res) {
-        return res;
+        return res.data;
       }
     },
     /**

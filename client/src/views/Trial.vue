@@ -15,9 +15,10 @@
       <v-card-title> Thanks for taking the trial!</v-card-title>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn to="/" plain>Return to overview</v-btn>
+        <v-btn small to="/" plain>Return to overview</v-btn>
         <v-spacer />
-        <v-btn text @click="takeTrial">Retake</v-btn>
+        <v-btn small text @click="takeTrial">Retake</v-btn>
+        <download-menu :file-name="fileName" :itemToDownload="results" />
       </v-card-actions>
     </v-card>
     <div class="absolute-center" v-else-if="!trialStarted">
@@ -29,6 +30,7 @@
 import {paths} from '@/config';
 import {mapActions, mapState} from 'vuex';
 import ParticipantInformation from '../components/pages/trial/ParticipantInformation.vue';
+import DownloadMenu from '../components/other/DownloadMenu.vue';
 /**
  * @description The trial page is the page, where trials are taken and processed.
  */
@@ -36,7 +38,7 @@ export default {
   name: 'trial',
   title: 'Trial',
   path: paths.runTrial,
-  components: {ParticipantInformation},
+  components: {ParticipantInformation, DownloadMenu},
   data: () => ({
     // HTMLAudioElement which all audio-tracks run on
     audio: new Audio(),
@@ -63,9 +65,18 @@ export default {
       handedness: null,
       comment: null,
     },
+    results: [],
   }),
   computed: {
     ...mapState('appState', ['isFullScreen']),
+    fileName() {
+      const {name, age, gender, handedness, comment} = this.participant;
+      return `${name ? name : 'No name'}|${age ? age : 'No age'}|${
+        gender ? gender : 'No gender'
+      }|${handedness ? handedness : 'No handedness'}|${
+        comment ? comment : 'No comment'
+      }|`;
+    },
   },
   methods: {
     ...mapActions('appState', ['toggleFullScreen']),
@@ -142,7 +153,7 @@ export default {
           // remove src attribute from audio, so user doesn't accidently continue any unfinished audio-tracks
           this.audio.removeAttribute('src');
 
-          await this.$store.dispatch('sendResults', {
+          this.results = await this.$store.dispatch('sendResults', {
             id: this.$route.params.id,
             participant: this.participant,
             clientData: this.data,

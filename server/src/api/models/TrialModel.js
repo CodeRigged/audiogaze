@@ -18,10 +18,11 @@ const trialSchema = new mongoose.Schema(
       required,
     },
     duration: {type: Number, required},
-    results: {
+    /* ****deprecated/not used****
+      results: {
       type: [recordsSchema],
       select: false,
-    },
+    }, */
     tracks: {
       type: [trackSchema],
       required,

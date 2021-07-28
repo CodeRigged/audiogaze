@@ -125,9 +125,10 @@ const syncData = async (req, res) => {
     const eyetrackerData = req.eyetrackerData;
     // Calls the update function on the trial service to synchronize data and update results array
     TrialService.update(id, clientData, eyetrackerData, participant)
-      .then((success) => {
-        // send response to client, if data was successfully updated
-        res.status(SuccessfulCodes.OK).send('Data successfully synchronized.');
+      .then((data) => {
+        data
+          ? res.status(SuccessfulCodes.OK).json(data)
+          : res.sendStatus(ServerErrorCodes.INTERNAL_SERVER_ERROR);
       })
       .catch((e) => {
         console.log(e);
