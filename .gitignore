@@ -1,5 +1,6 @@
 # Files
 *.docx
+.env
 
 # other
 /data

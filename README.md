@@ -42,6 +42,7 @@ Audiogaze is a web-service which allows users to create and run trials by adding
 
 - Add your image- and audio-files in the [images](client/src/assets/images/README.md)- and in the [audio](client/src/assets/audio/README.md)-folder respectively
 - Replace GAZEPOINT_ADDRESS' hashtags in environment-file of root folder with control address found in [Gazepoint Control Settings](assets/GazepointControlSettings.png) (when you are running the software)
+- Remove the `-template` from the `.env-template` in the root folder
 - Run in command-shell and wait until everything is setup:
 
   ```console
