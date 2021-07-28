@@ -28,8 +28,10 @@ TrialRouter.route('/:id')
 /**
  * {URI}/trials/:id/results methods
  *
+ * DEPRECATED / NOT USED
+ *
  * @get Get results matching trial id parameter.
  */
-TrialRouter.route('/:id/results').get(TrialController.getTrialResults);
+// TrialRouter.route('/:id/results').get(TrialController.getTrialResults);
 
 export default TrialRouter;

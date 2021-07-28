@@ -33,6 +33,8 @@
 </template>
 <script>
 /**
+ * DEPRECATED/NOT USED
+ *
  * @description Component which is used on index-page.
  *
  * Displays results from trial.

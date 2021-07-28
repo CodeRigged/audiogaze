@@ -17,6 +17,8 @@ import {mapActions} from 'vuex';
 import {paths} from '@/config';
 import ResultsOverview from '@/components/pages/trial-results/ResultsOverview.vue';
 /**
+ *  DEPRECATED/NOT USED => Move to /src/views if you are thinking about using this component
+ *
  * @description The index page is an overview of all trials and their results, acquired from server.
  */
 export default {
