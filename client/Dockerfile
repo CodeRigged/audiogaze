@@ -1,13 +1,28 @@
 #client/Dockerfile
 
-FROM node:12.2.0-alpine
+FROM node:14-alpine3.12
 
-WORKDIR /app
+ENV SERVICE_USER audiogaze
+ENV SERVICE_GROUP audiogaze
 
-COPY package*.json ./
+RUN addgroup -S ${SERVICE_GROUP} && adduser -S ${SERVICE_USER} -G ${SERVICE_GROUP}
 
-RUN npm install
+ARG PORT
+ARG VUE_APP_API_BASE_URL
+ARG VUE_APP_PATH_TO_AUDIO_FOLDER
+ARG VUE_APP_PATH_TO_IMAGES_FOLDER
+ENV PORT=${PORT}
+ENV VUE_APP_API_BASE_URL=${VUE_APP_API_BASE_URL}
+ENV VUE_APP_PATH_TO_IMAGES_FOLDER=${VUE_APP_PATH_TO_IMAGES_FOLDER}
+ENV VUE_APP_PATH_TO_AUDIO_FOLDER=${VUE_APP_PATH_TO_AUDIO_FOLDER}
+COPY --chown=audiogaze:audiogaze . /webapp/client
 
-COPY . .
+WORKDIR /webapp/client
 
-CMD ["npm","run","serve"]
+RUN npm install -g http-server \
+&& npm install \
+&& npm run build
+
+USER ${SERVICE_USER}
+
+CMD http-server -p ${PORT} dist

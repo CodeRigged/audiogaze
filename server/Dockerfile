@@ -1,13 +1,18 @@
 #server/Dockerfile
 
-FROM node:12.2.0-alpine
+FROM node:14-alpine3.12
 
-WORKDIR /usr/app
+ENV SERVICE_USER=audiogaze
+ENV SERVICE_GROUP=audiogaze
 
-COPY package*.json ./
+RUN addgroup -S ${SERVICE_GROUP} && adduser -S ${SERVICE_USER} -G ${SERVICE_GROUP}
 
-RUN npm install
+COPY --chown=audiogaze:audiogaze . /webapp/server
 
-COPY . .
+WORKDIR /webapp/server
+
+RUN apk add --no-cache --virtual .apk-dev-deps python3 make g++ gcc git\
+&& npm install \
+&& apk del .apk-dev-deps
 
 CMD ["npm","run","start"]
